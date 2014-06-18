@@ -2,13 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>crux-smart-faces</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>Crux Smart Faces</name>
 	<description>Crux widgets library</description>
 
-    <properties>
-        <cruxVersion>5.1.0</cruxVersion>
-    </properties>
+	<properties>
+		<cruxVersion>5.1.1</cruxVersion>
+	</properties>
 
 	<parent>
 		<groupId>org.cruxframework</groupId>
