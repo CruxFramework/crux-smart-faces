@@ -4,7 +4,7 @@
 	<artifactId>crux-smart-faces</artifactId>
 	<version>1.0.2-SNAPSHOT</version>
 	<name>Crux Smart Faces</name>
-	<description>Crux widgets library</description>
+	<description>Crux Smart Faces library</description>
 
 	<properties>
 		<cruxVersion>5.1.1</cruxVersion>
