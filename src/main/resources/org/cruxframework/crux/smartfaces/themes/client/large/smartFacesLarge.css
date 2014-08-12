@@ -356,4 +356,68 @@
 	background-color: #4496C6;	
 }
 
+.top-disposal-header-panel-large
+{
+	margin-top:-20px;
+	margin-bottom: -20px;
+	height: auto;
+	width: 100%;
+}
 
+.top-disposal-menu-panel-large
+{
+	
+}
+
+.top-disposal-footer-panel-large
+{
+	margin-top:-20px;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	margin-bottom: -20px;
+	z-index: 10;
+}
+
+.top-disposal-content-panel-large
+{
+	
+}
+
+.left-disposal-menu-panel-large
+{
+	width:200px;
+	height: 100%;
+	float:left;
+	position:relative;
+}
+
+.left-disposal-menu-panel-large .facesMenu
+{
+	height:100%;
+}
+
+.left-disposal-footer-panel-large
+{
+	margin-top:-20px;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	margin-bottom: -20px;
+	z-index: 10;
+}
+
+.left-disposal-header-panel-large
+{
+	overflow:auto;
+	height: auto;
+	width: 100%;
+}
+
+.left-disposal-content-panel-large
+{
+	width:literal("calc(100% - 210px)");
+	padding-left: 10px;
+	height:100%;
+	float:left;
+}
