@@ -1,9 +1,5 @@
-HTML
-{
-	margin: 0px;
-	padding: 0px;
-	height: 100%;
-}
+@url svgIconMenu svgIconMenu;
+
 BODY
 {
 	background-color: #CAD0D3;
@@ -424,3 +420,82 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     color:white;
     font-size:12px;
 }
+
+.top-disposal-header-panel-small
+{
+	height: 100%;
+	width: 100%;
+	min-height: 40px;
+	max-height: 40px;
+	position:fixed;
+	top:-20px;
+	left:0;
+	z-index:4;
+	padding-left:40px;
+	
+}
+
+.top-disposal-menu-panel-small
+{
+	padding-top: 40px; 
+}
+
+.top-disposal-footer-panel-small
+{
+	margin-top:-20px;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	margin-bottom: -20px;
+	z-index: 10;
+}
+
+.top-disposal-content-panel-small
+{
+	position:relative;
+}
+
+.menu-disposal-small
+{
+	top: 0px;
+	left: 0px;
+	z-index: 2;
+	position: absolute;
+	width:100% !important;
+	height:100%: !important;
+}
+
+.top-menu-disposal-menubutton-container
+{
+	width:40px;
+	height:40px;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:4;
+}
+
+.top-menu-disposal-menubutton
+{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:40px;
+	height:40px;
+	background:svgIconMenu no-repeat center center rgba(0,0,0,0.3);
+	background-size:80% auto;
+}
+
+
+/* -------------------- facesMenu -----------------------*/
+
+/*  === Vertical Slider ===  */
+
+.facesMenu.faces-Menu-slide
+{
+	width:100%;
+	height:100%;
+    position:relative;
+    overflow:hidden;
+}
+
