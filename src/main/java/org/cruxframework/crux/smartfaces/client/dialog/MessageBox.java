@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-MessageBox";
+	public static final String DEFAULT_STYLE_NAME = "faces-MessageBox faces-popup";
 
 	public static enum MessageType
 	{

@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WaitBox extends AbstractDialogBox
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-WaitBox";
+	public static final String DEFAULT_STYLE_NAME = "faces-WaitBox faces-popup";
 
 	/**
 	 * Creates a wait box

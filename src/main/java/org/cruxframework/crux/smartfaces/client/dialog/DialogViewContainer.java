@@ -126,7 +126,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer createDialog(String viewName)
 	{
-		return createDialog(viewName, viewName, true, false, true, true, DialogBox.DEFAULT_STYLE_NAME, null, null, -1, -1, null);
+		return createDialog(viewName, viewName, true, false, true, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable)
 	{
-		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAME, null, null, -1, -1, null);
+		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public DialogViewContainer()
 	{
-		this(true, true, true, true, DialogBox.DEFAULT_STYLE_NAME);
+		this(true, true, true, true, DialogBox.DEFAULT_STYLE_NAMES);
 	}
 	
 	/**

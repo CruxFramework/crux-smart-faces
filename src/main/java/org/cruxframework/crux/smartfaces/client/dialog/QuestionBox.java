@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class QuestionBox extends AbstractDialogBox
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-QuestionBox";
+	public static final String DEFAULT_STYLE_NAME = "faces-QuestionBox faces-popup";
 
 	private Label msgLabel;
 	private NavPanel buttonsPanel;
