@@ -82,7 +82,7 @@ body
 {
 	margin: 0px;
 	padding: 0px;
-	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
+	font-family:Open Sans, Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size:13px;
 	color:#111;
 	-webkit-font-smoothing: antialiased;
@@ -994,7 +994,7 @@ td > div > .faces--group
 
 .faces-popup.faces-MessageBox .faces-body
 {
-	
+	text-align:center;
 }
 
 
