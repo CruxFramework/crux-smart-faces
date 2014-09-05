@@ -3,7 +3,9 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @external *;
 
-*:focus, *:active, *:hover
+@url svgIconClose svgIconClose;
+
+*:focus, *:active, *:hover	
 {
 	/**
 	* Prevent that blue (or black, if in iOS) overlay on an element
@@ -28,13 +30,13 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 	cursor:not-allowed !important;
 }
 
-.cf:before,
-.cf:after {
+.faces--clearfix:before,
+.faces--clearfix:after {
     content: " "; /* 1 */
     display: table; /* 2 */
 }
 
-.cf:after {
+.faces--clearfix:after {
     clear: both;
 }
 
@@ -42,8 +44,8 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
  Makes the element that uses this class
  with non-selectable text 
 */
-.faces-ns,
-.faces-ns *
+.faces-noSelectable,
+.faces-noSelectable *
 {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -91,12 +93,12 @@ body
 
 /* -------------------- dialogs z-indexes -----------------------*/
 
-.dialogGlass
+.faces-overlay
 {
 	z-index:5;
 }
 
-.faces-DialogBox, .faces-MessageBox, .faces-Confirm
+.faces-popup
 {
 	z-index:6;
 }
@@ -106,46 +108,70 @@ body
 	z-index:7;
 }
 
+
+/* -------------------- facesLabel -----------------------*/
+
+.faces-Label
+{
+	color: #1c5994;
+}
+
 /* -------------------- facesMenu -----------------------*/
 
-.facesMenu
+.faces-Menu
 {
-	background:#f5f5f5;
-	border:1px solid #d1d1d1;
+	background:#4496c6;
+	border:1px solid #1a6299;
 	box-shadow:0 -2px 0 rgba(0,0,0,0.03) inset, 0 2px 2px rgba(0,0,0,0.07);
+	position:relative;
 }
 
-.facesMenu > .facesMenu-ul > .facesMenu-li
+.faces-Menu .faces-Label,
+.faces-Menu .gwt-Label,
+.faces-Menu .gwt-Anchor,
+.faces-Menu .crux-Anchor
 {
-	color:#222;
+	color:#fff;
+	text-shadow:none;
 }
 
-.facesMenu * {
+.faces-Menu > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li .faces-Label
+{
+	color:#343434;
+}
+
+.faces-Menu a
+{
+	text-decoration:none;
+}
+
+.faces-Menu *
+{
     -webkit-transition:all 0.1s linear;
     -moz-transition:all 0.1s linear;
     -ms-transition:all 0.1s linear;
     transition:all 0.1s linear;
 }
 
-.facesMenu .facesMenu-ul .facesMenu-ul
+.faces-Menu .faces-Menu-ul .faces-Menu-ul
 {
 	z-index:3;
 }
 
-.facesMenu .facesMenu-li
+.faces-Menu .faces-Menu-li
 {
 	position:relative;
 	cursor:pointer;
 }
 
-.facesMenu-openCloseTriggerHelper
+.faces-Menu-openCloseTriggerHelper
 {
 	border:none;
 	padding:0;
 	z-index:2;
 }
 
-.facesMenu.facesMenu-horizontal.facesMenu-fixed
+.faces-Menu.faces-Menu-horizontal.faces-Menu-fixed
 {
 	position:fixed;
 	top:0;
@@ -155,23 +181,23 @@ body
 
 /* === Dropdown General === */
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fff;
 	box-shadow:0 5px 25px rgba(0,0,0,0.3);
 }
 
-.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.faces-Menu.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li:hover
 {
-	background:rgba(0,0,0,0.03);
+	background:rgba(0,0,0,0.15);
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
 {
 	border:1px solid #aaa;
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul .facesMenu-li
+.faces-Menu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul .faces-Menu-li
 {
     padding:10px;
     font-size:13px;
@@ -179,12 +205,12 @@ body
     border-bottom:1px solid #aaa;
 }
 
-.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.faces-Menu.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li:hover
 {
 	/*box-shadow:0 -2px 0 rgba(0,0,0,0.15) inset;*/
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 	position:absolute;
@@ -193,19 +219,29 @@ body
 
 /* === Dropdown Horizontal === */
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal
 {
     width:100%;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-hasChildren
 {
-    float:left;
-    padding:10px 4%;
-    border-right:1px solid #d7d7d7;
+	padding-right:20px
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
+{
+    float:left;
+    border-right:1px solid #1a6299;
+}
+
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > *
+{
+    padding:10px;
+    display:inline-block;
+}
+
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul
 {
 	bottom:0;
 	left:0;
@@ -217,23 +253,23 @@ body
 	border-radius:0 0 3px 3px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li:hover > .faces-Menu-ul
 {
 	display:block;	
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:hover
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li:hover
 {
 	background:#eee;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:last-child
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li:last-child
 {
 	border-bottom:none;
 	border-radius:0 0 3px 3px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul
 {
 	top:0;
 	right:0;
@@ -243,17 +279,17 @@ body
 	margin-left:-2px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-li
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -264,11 +300,13 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
-	border-right: 2px solid #444;
-	border-bottom: 2px solid #444;
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
+	border-right: 2px solid #fff;
+	border-bottom: 2px solid #fff;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -278,31 +316,33 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #bbb;
 	border-top: 2px solid #bbb;
 }
 
 /*  === Vertical Dropdown ===  */
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical,
-.facesMenu.facesMenu-tree.facesMenu-vertical,
-.facesMenu.facesMenu-accordion.facesMenu-vertical
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical,
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical,
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical
 {
 	width:200px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li:last-child
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li .faces-Menu-ul
 {
 	top:0;
 	right:0;
@@ -313,12 +353,12 @@ body
 	width:literal("calc(100% + 2px)");
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li:hover > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	position: absolute;
 	right: 13px;
@@ -333,18 +373,18 @@ body
 
 /*  === Tree ===  */
 
-.facesMenu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical > .faces-Menu-ul
 {
 	position:relative;
 	padding:10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li
 {
 	padding:5px 10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	width:13px;
 	height:13px;
@@ -356,12 +396,12 @@ body
 	border-radius:2px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:hover
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:hover
 {
 	background:#fff;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	content:'';
 	width:1px;
@@ -373,7 +413,7 @@ body
 	left:5px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	width:7px;
@@ -385,12 +425,12 @@ body
 	left:2px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:before
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open:before
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open:before
 {
 	content:'';
 	border-left:1px dotted #ccc;
@@ -402,17 +442,17 @@ body
 	
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-ul
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-ul > .facesMenu-li:after
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-ul > .faces-Menu-li:after
 {
 	content:'';
 	border-top:1px dotted #ccc;
@@ -425,7 +465,7 @@ body
 
 /*  === Vertical Accordion ===  */
 
-.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
+.faces-Menu.faces-Menu-accordion > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > .faces-Label
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
@@ -433,58 +473,58 @@ body
 	font-weight:bold;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-li.facesMenu-open > .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li .faces-Menu-ul .faces-Label
 {
 	border-bottom:1px solid rgba(0, 0, 0, 0.13);
 	padding:5px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child .faces-Label
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li:last-child .faces-Label
 {
 	/*border-bottom:none;*/
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fff;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul
 {
 	background:#eee;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul
 {
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	position:absolute;
 	right:0;
 	top:5px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before,
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:13px;
 	right:5px;
@@ -493,7 +533,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:9px;
 	right:9px;
@@ -501,7 +541,7 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:8px;
 	right:5px;
@@ -510,7 +550,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:4px;
 	right:9px;
@@ -518,36 +558,38 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
 
 /*  === Horizontal Accordion ===  */
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal
 {
 	height:200px;
 	display:inline-block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
 	float:left;
 	min-width:38px;
 	height:200px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > .faces-Label
 {
 	-webkit-transform:rotate(-90deg);
+	-moz-transform:rotate(-90deg);
+	transform:rotate(-90deg);
 	width:199px;
 	margin-left:-81px;
 	margin-top:80px;
 	position:absolute;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul
 {
 	width:300px;
 	background:#fff;
@@ -557,50 +599,50 @@ body
 	border-right:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-ul
 {
 	border-right:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul
 {
 	height:198px;	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fafafa;
 	font-size:11px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul
 {
 	margin-left:37px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open > .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Label
 {
 	padding:10px;
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Label
 {
 	padding:10px;
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-ul .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-ul .faces-Menu-openCloseTriggerHelper
 {
 	position:absolute;
 	right:14px;
@@ -609,15 +651,15 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before,
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:13px;
 	left:13px;
@@ -625,7 +667,7 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:9px;
 	left:17px;
@@ -633,7 +675,7 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:0;
 	left:-2px;
@@ -641,7 +683,7 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:-4px;
 	right:-2px;
@@ -650,12 +692,12 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li:last-child > .faces-SelectablePanel > .faces-Label
+.faces-Menu.faces-Menu-accordion > .faces-Menu-ul > .faces-Menu-li:last-child > .faces-SelectablePanel > .faces-Label
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open:last-child > .facesMenu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li.faces-Menu-open:last-child > .faces-Menu-ul
 {
 	border-left:1px solid #ccc;
 	border-right:0;
@@ -663,7 +705,7 @@ body
 
 /*  === Vertical Slider ===  */
 
-.facesMenu.facesMenu-slide
+.faces-Menu.faces-Menu-slide
 {
 	width:200px;
 	height:100%;
@@ -671,12 +713,12 @@ body
     overflow:hidden;
 }
 
-.facesMenu.facesMenu-slide ul ul
+.faces-Menu.faces-Menu-slide ul ul
 {
 	-webkit-transition:all 0.5s cubic-bezier(.14,.97,.46,1);
 	transition:all 0.5s cubic-bezier(.14,.97,.46,1);
-    -webkit-transform:translateX(200px);
-	transform:translateX(200px);
+    -webkit-transform:translateX(100%);
+	transform:translateX(100%);
 	
 	position:absolute;
     top:0;
@@ -687,31 +729,32 @@ body
     z-index:2;
 }
 
-.facesMenu.facesMenu-slide ul li
+.faces-Menu.faces-Menu-slide ul li
 {
 	height:40px;
     border-bottom:1px solid #ccc;
     position:initial;
 }
 
-.facesMenu.facesMenu-slide ul li:hover
+.faces-Menu.faces-Menu-slide ul li:hover
 {
 	background:rgba(0,0,0,0.03);
 }
 
-.facesMenu.facesMenu-slide ul li .faces-SelectablePanel
+.faces-Menu.faces-Menu-slide ul li .faces-SelectablePanel
 {	
     padding:10px;
 }
 
-.facesMenu.facesMenu-slide .facesMenu-li.facesMenu-open > .facesMenu-ul
+.faces-Menu.faces-Menu-slide .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	-webkit-transform:translateX(0px);
+	-moz-transform:translateX(0px);
 	transform:translateX(0px);
     box-shadow:-1px 0 0 rgba(0,0,0,0.2);   
 }
 
-.facesMenu.facesMenu-slide .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.faces-Menu.faces-Menu-slide .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	float:right;
 	margin-top:-20px;
@@ -720,8 +763,303 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #808080;
 	border-top: 2px solid #808080;
 	z-index:1;
 }
 
+.faces-Menu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper
+{
+	width:100%;
+	height:22px;
+	display:block;
+	border:0;
+	background:rgba(0,0,0,0.06);
+	box-shadow:0 -1px 0 rgba(0,0,0,0.1) inset;
+	position:relative;
+}
+
+.faces-Menu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper:hover
+{
+	background:rgba(0,0,0,0.1);
+}
+
+.faces-Menu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper:before
+{
+	content:'';
+	position:absolute;
+	left:5px;
+	top:7px;
+	background: rgba(0, 0, 0, 0);
+	width: 6px;
+	height: 6px;
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
+	border-left: 2px solid #808080;
+	border-bottom: 2px solid #808080;
+	z-index:1;
+}
+
+
+/* -------------------- facesButton -----------------------*/
+
+a.faces-Button
+{
+	white-space:nowrap;
+}
+
+a.faces-Button:hover
+{
+	text-decoration:none;
+	color:#fff;
+}
+
+.faces-Button
+{
+    background:#4496c6; 
+    border:1px solid #1a6299;
+    padding:8px 14px;
+    border-radius:1px;
+    font-size:100%;
+    color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,0.15);
+}
+
+.faces-Button:hover
+{
+	border-color:#084471;
+}
+
+.faces-Button:focus
+{
+	box-shadow:0 0 0 3px rgba(0,0,0,0.22);
+}
+
+.faces-Button:focus:active
+{
+	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
+}
+
+.faces-Button.faces--small,
+.faces--small .faces-Button
+{
+	font-size:0.85em;
+	padding:5px 8px;
+}
+
+.faces--group .faces-Button
+{
+	border-radius:0;
+	margin-left:-1px;
+	position:relative;
+}
+
+.faces--group .faces-Button:hover,
+.faces--group .faces-Button:focus
+{
+	z-index:2;
+}
+
+.faces--group .faces-Button:first-child
+{
+	border-radius:2px 0 0 2px;
+}
+
+.faces--group .faces-Button:last-child
+{
+	border-radius:0 2px 2px 0;
+}
+
+td .faces--group,
+td > div > .faces--group
+{
+	margin:5px;
+}
+
+
+/* -------------------- facesOverlay -----------------------*/
+
+.faces-overlay
+{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.3);
+}
+
+
+/* -------------------- facesPopup -----------------------*/
+
+.faces-popup
+{
+	background-color: #fff;
+	border-radius: 3px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 5px 20px rgba(0, 0, 0, 0.4) !important;
+	position: fixed;
+	overflow:hidden;
+}
+
+.faces-popup-header
+{
+	background: #f7f7f7;
+	color: #5491b4;
+	box-shadow: 0 -2px #eaeaea inset, 0 1px 0 #d1d1d1;
+	padding: 11px 2px;
+	position:relative;
+}
+
+.faces-popup-title
+{
+	text-align:center;
+	color:#5491b4;
+}
+
+.faces-popup-dragger
+{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	cursor:move;
+}
+
+.faces-popup-close
+{
+	width:16px;
+	height:16px;
+	background:svgIconClose no-repeat center;
+	background-size:100% auto;
+	border:none;
+	position:absolute;
+	right:10px;
+	top:5px;
+	z-index:2;
+}
+
+.faces-popup-body
+{
+	padding:10px;
+}
+
+.faces-popup-resizer
+{
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	bottom: 0;
+	right: 0;
+	border-top: rgba(0, 0, 0, 0);
+	border-left: rgba(0, 0, 0, 0);
+	cursor: nwse-resize;
+	border-bottom-right-radius: 3px;
+	background: linear-gradient(-45deg, rgba(0,0,0,0) 50%, #aaa 50.1%, #eee 60%);
+	background: -webkit-linear-gradient(-45deg, rgba(0,0,0,0) 50%, #aaa 50.1%, #eee 60%);
+	padding: 10px;
+}
+
+.faces-popup-resizer:before,
+.faces-popup-resizer:after
+{
+	content:"";
+	position:absolute;
+	height:7px;
+	right:3px;
+	border-top:solid 1px #aaa;
+	cursor:nwse-resize;
+	border-bottom-right-radius:2px;
+	-webkit-transform:rotate(135deg);
+	-moz-transform:rotate(135deg);
+	-ms-transform:rotate(135deg);
+	transform:rotate(135deg);
+}
+
+.faces-popup-resizer:before
+{
+	width:11px;
+	bottom:5px;
+}
+
+.faces-popup-resizer:after
+{
+	width:8px;
+	bottom:3px;
+}
+
+.faces-popup-actionPanel
+{
+	padding:10px;
+	margin:10px -10px -10px;
+	display:flex;
+	justify-content:space-around;
+}
+
+.faces-popup-actionPanel .faces-Button
+{
+	min-width:80px;
+}
+
+/* -------------------- faces-MessageBox -----------------------*/
+
+.faces-MessageBox .faces-popup-header
+{
+	background:none;
+	box-shadow:none;
+}
+
+.faces-MessageBox .faces-popup-body
+{
+	text-align:center;
+}
+
+
+/* -------------------- facesProgress -----------------------*/
+
+.faces-Progress
+{
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	-ms-appearance:none;
+	appearance:none;
+	height:3px;
+	width:100%;
+}
+
+.faces-Progress::-webkit-progress-bar
+{
+	background:#eee;
+	border-radius:3px;
+	position:relative;
+	overflow:hidden;
+}
+
+.faces-Progress::-webkit-progress-value
+{
+	background:rgb(68,150,198);
+}
+
+.faces-Progress:not\(\[value\]\)::-webkit-progress-value
+{
+	background:linear-gradient(-90deg, rgba(68,150,198,1), rgba(68,150,198,0));
+	width:50% !important;
+	-webkit-animation: faces-ProgressUndefined 0.8s linear infinite;
+	-moz-animation: faces-ProgressUndefined 0.8s linear infinite;
+	position:absolute;
+	border-radius:3px;
+}
+
+@-webkit-keyframes faces-ProgressUndefined
+{
+	0%   {left:-50%;}
+	100%  {left:101%;}
+}
+@-moz-keyframes faces-ProgressUndefined
+{
+	0%   {left:-50%;}
+	100%  {left:101%;}
+}

@@ -146,7 +146,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer createDialog(String viewName)
 	{
-		return createDialog(viewName, viewName, true, false, true, true, DialogBox.DEFAULT_STYLE_NAME, null, null, -1, -1, null);
+		return createDialog(viewName, viewName, true, false, true, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable)
 	{
-		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAME, null, null, -1, -1, null);
+		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public DialogViewContainer()
 	{
-		this(true, true, true, true, DialogBox.DEFAULT_STYLE_NAME);
+		this(true, true, true, true, DialogBox.DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -502,7 +502,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	@Override
 	protected boolean doAdd(View view, boolean lazy, Object parameter)
 	{
-	    assert(views.isEmpty()):"DialogViewContainer can not contain more then one view";
+	    assert(views.isEmpty()):"DialogViewContainer can not contain more than one view";
 	    activeView = view;
 	    boolean added = super.doAdd(view, lazy, parameter);
 	    if (!added)

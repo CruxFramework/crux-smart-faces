@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
-	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-PopupPanelGlass";
+	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
 	
 	private HandlerRegistration nativePreviewHandlerRegistration;
 	private HandlerRegistration historyHandlerRegistration;
@@ -133,13 +133,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			glass = Document.get().createDivElement();
 			glass.setClassName(glassStyleName);
-
-			Style style = glass.getStyle();
-			style.setPosition(Position.FIXED);
-			style.setLeft(0, Unit.PX);
-			style.setTop(0, Unit.PX);
-			style.setBottom(0, Unit.PX);
-			style.setRight(0, Unit.PX);
 		}
 
 		addCloseHandler(new CloseHandler<PopupPanel>()
@@ -176,7 +169,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		super.getContainerElement().appendChild(containerElement);
 		getElement().getStyle().setPosition(Position.ABSOLUTE);
 	    setPosition(0, 0);
-	    setStyleName(getContainerElement(), "popupContent");
+	    setStyleName(getContainerElement(), "faces-popup-content");
 	}
 	
 	/**
@@ -220,7 +213,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public boolean isShowing()
 	{
-		return isAttached() && showing;
+		return showing;
 	}
 
 	/**

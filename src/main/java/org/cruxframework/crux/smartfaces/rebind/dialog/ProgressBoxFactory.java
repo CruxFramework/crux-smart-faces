@@ -15,57 +15,47 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.dialog;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasChangeHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
-import org.cruxframework.crux.smartfaces.client.dialog.Confirm;
+import org.cruxframework.crux.smartfaces.client.dialog.ProgressBox;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.event.CancelEvtBind;
-import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
 
 /**
- * A factory for Confirm widgets
+ * A factory for ProgressBox widgets
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="confirm", library=Constants.LIBRARY_NAME, attachToDOM=false, targetWidget= Confirm.class,
-					description="A confirm box that can display messages inside a dialog window with Ok and CANCEL buttons.")
+@DeclarativeFactory(id="progressBox", library=Constants.LIBRARY_NAME, attachToDOM=false, targetWidget= ProgressBox.class,
+					description="A progress box that can display messages inside a dialog window with one loading component.")
 @TagAttributes({
-	@TagAttribute(value="dialogTitle", supportsI18N=true, description="Sets the Dialog title."),
-	@TagAttribute(value="okLabel", supportsI18N=true, description="Sets the Dialog ok button text."),
-	@TagAttribute(value="cancelLabel", supportsI18N=true, description="Sets the Dialog cancel button text."),
-	@TagAttribute(value="message", supportsI18N=true, description="Message to be presented on this confirm.")
+	@TagAttribute(value="message", supportsI18N=true, description="Message to be presented on this box."),
+	@TagAttribute(value="value", type=Integer.class, description="The progress value"),
+	@TagAttribute(value="max", type=Integer.class, description="The progress maximum possible value")
 })
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", description="If true, the window can be dragged on the screen"),
-	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", description="If true, the window can be resized")
+	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", description="If true, the window can be dragged on the screen")
 })
-@TagEvents({
-	@TagEvent(value=OkEvtBind.class, description="Event triggered when the confirm ok button is selected."),
-	@TagEvent(value=CancelEvtBind.class, description="Event triggered when the confirm cancel button is selected.")
-})
-public class ConfirmFactory extends PanelFactory<WidgetCreatorContext>
+public class ProgressBoxFactory extends PanelFactory<WidgetCreatorContext>
        implements DialogFactory<WidgetCreatorContext>, 
-                  HasCloseHandlersFactory<WidgetCreatorContext> 
+                  HasCloseHandlersFactory<WidgetCreatorContext>,
+                  HasValueFactory<WidgetCreatorContext>, 
+                  HasChangeHandlersFactory<WidgetCreatorContext>                  
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		String className = getWidgetClassName();
 		boolean movable = context.readBooleanWidgetProperty("movable", true);
-		boolean resizable = context.readBooleanWidgetProperty("resizable", false);
-		String styleName = context.readWidgetProperty("styleName", Confirm.DEFAULT_STYLE_NAMES);
-		
-		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+movable+", "+resizable+", "+EscapeUtils.quote(styleName)+");");
+		out.println("final "+className + " " + context.getWidget()+" = "+className+".createIfSupported("+movable+")");
 	}
 	
 	@Override

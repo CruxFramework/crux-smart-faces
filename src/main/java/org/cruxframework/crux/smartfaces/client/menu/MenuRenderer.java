@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -26,24 +26,23 @@ public interface MenuRenderer
 {
 	void render(Menu menu, LargeType largeType, SmallType smallType);
 	
-	
 	class LargeMenuRenderer implements MenuRenderer
 	{
 		@Override
 		public void render(Menu menu, LargeType largeType, SmallType smallType) 
 		{
 			assert (largeType != null):"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.";
-			removeAllLargeTypes(menu);
+//			removeAllLargeTypes(menu);
 			menu.addStyleName(largeType.styleName);
 		}
 
-		private void removeAllLargeTypes(Menu menu)
-		{
-			for(LargeType type : LargeType.values())
-			{
-				menu.removeStyleName(type.styleName);
-			}
-		}
+//		private void removeAllLargeTypes(Menu menu)
+//		{
+//			for(LargeType type : LargeType.values())
+//			{
+//				menu.removeStyleName(type.styleName);
+//			}
+//		}
 	}
 
 	class SmallMenuRenderer implements MenuRenderer
@@ -52,16 +51,16 @@ public interface MenuRenderer
 		public void render(Menu menu, LargeType largeType, SmallType smallType) 
 		{
 			assert (smallType != null):"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.";
-			removeAllSmallTypes(menu);
+//			removeAllSmallTypes(menu);
 			menu.addStyleName(smallType.styleName);
 		}
 
-		private void removeAllSmallTypes(Menu menu)
-		{
-			for(SmallType type : SmallType.values())
-			{
-				menu.removeStyleName(type.styleName);
-			}
-		}
+//		private void removeAllSmallTypes(Menu menu)
+//		{
+//			for(SmallType type : SmallType.values())
+//			{
+//				menu.removeStyleName(type.styleName);
+//			}
+//		}
 	}
 }

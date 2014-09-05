@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-MessageBox";
+	public static final String DEFAULT_STYLE_NAMES = "faces-MessageBox faces-popup";
 
 	public static enum MessageType
 	{
@@ -55,7 +55,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public MessageBox()
 	{
-		this(true, true, true, false, DEFAULT_STYLE_NAME);
+		this(true, true, true, false, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type)
 	{
-		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, null);
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAMES, null);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type, DialogAnimation animation)
 	{
-		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, animation);
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAMES, animation);
 	}
 	
 	/**
@@ -238,7 +238,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	private Widget createMessagePanel() 
 	{
 		FlowPanel contents = new FlowPanel();
-		contents.setStyleName("messageBoxContents");
+		contents.setStyleName("faces-popup-content");
 		
 		msgLabel = new HTML();
 		contents.add(msgLabel);

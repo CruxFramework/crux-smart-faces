@@ -1,9 +1,8 @@
-package org.cruxframework.crux.smartfaces.rebind.disposal.leftmenudisposallayout;
+package org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal;
 
 import java.util.LinkedList;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
-import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -17,30 +16,32 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
-import org.cruxframework.crux.smartfaces.client.disposal.leftmenudisposallayout.LeftMenuDisposalLayout;
+import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal;
+import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal.TopDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.disposal.leftmenudisposallayout.LeftMenuDisposalLayoutFactory.DisposalLayoutContext;
+import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDisposalFactory.DisposalLayoutContext;
 
 import com.google.gwt.core.client.GWT;
 
 
-@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="leftMenuDisposalLayout",targetWidget=LeftMenuDisposalLayout.class)
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration("defaultView")
-})
+@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",targetWidget=TopMenuDisposal.class, description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
+@TagAttributesDeclaration(
+		@TagAttributeDeclaration(value="historyControlPrefix",defaultValue="view")
+		)
 @TagChildren({
-	@TagChild(LeftMenuDisposalLayoutFactory.LayoutSmallHeaderProcessor.class),
-	@TagChild(LeftMenuDisposalLayoutFactory.LayoutHeaderProcessor.class),
-	@TagChild(LeftMenuDisposalLayoutFactory.LayoutFooterProcessor.class),
-	@TagChild(LeftMenuDisposalLayoutFactory.MenuProcessor.class)
+	@TagChild(TopMenuDisposalFactory.ViewProcessor.class),
+	@TagChild(TopMenuDisposalFactory.LayoutSmallHeaderProcessor.class),
+	@TagChild(TopMenuDisposalFactory.LayoutHeaderProcessor.class),
+	@TagChild(TopMenuDisposalFactory.LayoutFooterProcessor.class),
+	@TagChild(TopMenuDisposalFactory.MenuProcessor.class)
 })
-public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutContext> 
+public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> 
 {
 	@Override
 	public DisposalLayoutContext instantiateContext()
@@ -48,46 +49,75 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 		return new DisposalLayoutContext();
 	}
 	
+	@TagConstraints(minOccurs="0", maxOccurs="1", tagName="view")
+    @TagAttributesDeclaration({
+    	@TagAttributeDeclaration(value="name", required=true)
+    })
+    public static class ViewProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+    {
+    	@Override
+    	public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+    	{
+    		out.println(context.getWidget()+".showView("+EscapeUtils.quote(context.readChildProperty("name"))+");");
+    	}
+    }
+		
+	
+	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="header")
+	@TagChildren({
+		@TagChild(value=TopMenuDisposalFactory.HeaderProcessor.class)
+	})
+	public static class LayoutHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+	}
+	
 	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="smallHeader")
 	@TagChildren({
-		@TagChild(value=LeftMenuDisposalLayoutFactory.SmallHeaderProcessor.class)
+		@TagChild(value=TopMenuDisposalFactory.SmallHeaderProcessor.class)
 	})
 	public static class LayoutSmallHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 	}
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="header")
-	@TagChildren({
-		@TagChild(value=LeftMenuDisposalLayoutFactory.HeaderProcessor.class)
-	})
-	public static class LayoutHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
-	{
-	}
 	
     @Override
 	public void instantiateWidget(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 	{
     	String className = getWidgetClassName();
     	out.println("final "+className + " " + context.getWidget()+" = "+GWT.class.getCanonicalName()+".create("+className+".class);");
-    	String defView = context.readChildProperty("defaultView");
-    	context.defaultView = defView;
+    	out.print(context.getWidget()+".setHistoryControlPrefix("+EscapeUtils.quote(context.readChildProperty("historyControlPrefix"))+");");
 	}
 	
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
-	@TagChildren({
-		@TagChild(LeftMenuDisposalLayoutFactory.MenuItemProcessor.class)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
 	})
-	public static class MenuProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	@TagChildren({
+		@TagChild(TopMenuDisposalFactory.MenuItemProcessor.class)
+	})
+	public static class MenuProcessor extends WidgetChildProcessor<DisposalLayoutContext> implements HasPostProcessor<DisposalLayoutContext>
 	{
 		@Override
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
 			String menu = getWidgetCreator().createVariableName("menuWidget");
-			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+".VERTICAL_DROPDOWN,"+ SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
+			String menuType = context.readChildProperty("menuType");
+			
+			if(menuType.isEmpty())
+			{
+				menuType = "HORIZONTAL_DROPDOWN";
+			}
+			
+			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
 			context.menu = menu;
-			out.println(context.getWidget()+".setMenu("+menu+");");
 			context.itemStack.addFirst(menu);
 			
+		}
+
+		@Override
+		public void postProcessChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+		{
+			out.println(context.getWidget()+".setMenu("+context.menu +");");			
 		}
 	}
 	
@@ -98,7 +128,7 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 		@TagAttributeDeclaration(value="label", required=true,description="Defines the label that will be displayed")
 	})
 	@TagChildren({
-		@TagChild(LeftMenuDisposalLayoutFactory.MenuItemProcessor.class)
+		@TagChild(TopMenuDisposalFactory.MenuItemProcessor.class)
 	})
 	public static class MenuItemProcessor extends WidgetChildProcessor<DisposalLayoutContext> implements HasPostProcessor<DisposalLayoutContext>
 	{
@@ -124,7 +154,7 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 			if(!view.isEmpty() && !view.equals("\"\""))
 			{
 				out.println(menuItem+".addSelectHandler(new " + SelectHandler.class.getCanonicalName() + "(){public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
-				out.println(context.getWidget()+".showView("+view+",true);} });");
+				out.println(context.getWidget()+".showView("+view+");} });");
 			}
 		}
 		
@@ -137,10 +167,21 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 	
 	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="footer")
 	@TagChildren({
-		@TagChild(value=LeftMenuDisposalLayoutFactory.FooterProcessor.class)
+		@TagChild(value=TopMenuDisposalFactory.FooterProcessor.class)
 	})
 	public static class LayoutFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
+	}
+	
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	public static class HeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+		{
+			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+			out.println(context.getWidget()+".addHeaderContent("+widget+");");
+		}
 	}
 	
 	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
@@ -151,18 +192,6 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 		{
 			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
 			out.println(context.getWidget()+".addSmallHeaderContent("+widget+");");
-		}
-	}
-	
-	
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
-	public static class HeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
-	{
-		@Override
-		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
-		{
-			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
-			out.println(context.getWidget()+".addHeaderContent("+widget+");");
 		}
 	}
 	
@@ -179,22 +208,8 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 	
 	class DisposalLayoutContext extends WidgetCreatorContext
     {
-		String defaultView;
     	String menu;
     	String currentItem;
     	LinkedList<String> itemStack = new LinkedList<String>();
     }
-	
-    @Override
-    public void postProcess(SourcePrinter out, DisposalLayoutContext context)
-    		throws CruxGeneratorException 
-	{
-    	String defaultView = context.defaultView;
-		if(!StringUtils.isEmpty(defaultView))
-		{
-			out.println(context.getWidget() + ".setDefaultView(" + EscapeUtils.quote(defaultView) + ");");
-		}
-    }
-
-
 }

@@ -17,10 +17,18 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.css.FacesResources;
+import org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -34,124 +42,58 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Menu extends Composite implements HasAnimation, HasEnabled 
+public class Menu extends Composite implements HasAnimation, HasEnabled, HasSelectionHandlers<MenuItem>
 {
-	private static final String SPACE = " ";
-	private static final String CLEARFIX = "cf";
-	
-	public static enum LargeType
-	{
-		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE + SPACE + CLEARFIX),
-//		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE + SPACE + CLEARFIX),
-		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION + SPACE + CLEARFIX),
-		VERTICAL_DROPDOWN("VerticalDropdown", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_DROPDOWN + SPACE + CLEARFIX),
-		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION + SPACE + CLEARFIX),
-		HORIZONTAL_DROPDOWN("HorizontalDropdown", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_DROPDOWN + SPACE + CLEARFIX);
-		
-		String friendlyName;
-		String styleName;
-		LargeType(String friendlyName, String styleName)
-		{
-			this.friendlyName = friendlyName;
-			this.styleName = styleName;	
-		}
-		
-		@Override
-		public String toString() 
-		{
-			return friendlyName;
-		}
-		
-		public static LargeType getByName(String friendlyName)
-		{
-			for(LargeType type : LargeType.values())
-			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
-				{
-					return type;
-				}
-			}
-			return null;
-		}
-		
-		public boolean isTree()
-		{
-			return this.equals(LargeType.VERTICAL_TREE);	
-		}
-	}
-	
-	public static enum SmallType
-	{
-		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
-//		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
-		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
-		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION);
-		
-		String friendlyName;
-		String styleName;
-		SmallType(String friendlyName, String styleName)
-		{
-			this.friendlyName = friendlyName;
-			this.styleName = styleName;
-		}
-		
-		@Override
-		public String toString() 
-		{
-			return friendlyName;
-		}
-		
-		public static SmallType getByName(String friendlyName)
-		{
-			for(SmallType type : SmallType.values())
-			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
-				{
-					return type;
-				}
-			}
-			return null;
-		}
-		
-		public boolean isTree()
-		{
-			return this.equals(SmallType.VERTICAL_TREE);	
-		}
-	}
-	
-	public    static final String STYLE_FACES_MENU = "facesMenu";
-	protected static final String STYLE_FACES_SLIDE = "facesMenu-slide";
-	protected static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
-	protected static final String STYLE_FACES_TREE = "facesMenu-tree";
-	protected static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
-	protected static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
-	protected static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
-	protected static final String STYLE_FACES_OPEN = "facesMenu-open";
-	protected static final String STYLE_FACES_HAS_CHILDREN = "facesMenu-hasChildren";
-	protected static final String STYLE_FACES_DISABLED = "facesMenu-disabled";
-	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
-	protected static final String STYLE_FACES_LI = "facesMenu-li";
-	protected static final String STYLE_FACES_UL = "facesMenu-ul";
-	protected static final String STYLE_AUX_DIV = "facesMenu-openCloseTriggerHelper";
+	public    static final String STYLE_FACES_MENU = "faces-Menu";
+	protected static final String SPACE = " ";
+	protected static final String CLEARFIX = "faces--clearfix";
+	protected static final String STYLE_FACES_SLIDE = "faces-Menu-slide";
+	protected static final String STYLE_FACES_DROPDOWN = "faces-Menu-dropdown";
+	protected static final String STYLE_FACES_TREE = "faces-Menu-tree";
+	protected static final String STYLE_FACES_ACCORDION = "faces-Menu-accordion";
+	protected static final String STYLE_FACES_HORIZONTAL = "faces-Menu-horizontal";
+	protected static final String STYLE_FACES_VERTICAL = "faces-Menu-vertical";
+	protected static final String STYLE_FACES_OPEN = "faces-Menu-open";
+	protected static final String STYLE_FACES_HAS_CHILDREN = "faces-Menu-hasChildren";
+	protected static final String STYLE_FACES_DISABLED = "faces-Menu-disabled";
+	protected static final String STYLE_FACES_EMPTY = "faces-Menu-empty";
+	protected static final String STYLE_FACES_LI = "faces-Menu-li";
+	protected static final String STYLE_FACES_UL = "faces-Menu-ul";
+	protected static final String STYLE_AUX_OPEN_CLOSE_TRIGGER_HELPER = "faces-Menu-openCloseTriggerHelper";
+	protected static final String STYLE_AUX_CLOSE_TRIGGER_SLIDER_HELPER = "faces-Menu-closeTriggerSliderHelper";
 	
 	private boolean enabled = true;
 	private MenuItem root;
 	private MenuPanel menuPanel = new MenuPanel();
-	protected SmallType currentSmallType = null;
-	protected LargeType currentLargeType = null;
+	protected Type currentType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
+		FacesResources.INSTANCE.css().ensureInjected();
 		initWidget(menuPanel);
 		root = new MenuItem(null);
 		menuPanel.add(root);
 		root.setMenu(this);
-		setStyleName(getBaseStyleName());
 		
-		this.currentLargeType = largeType;
-		this.currentSmallType = smallType;
+		setStyleName(getBaseStyleName());
+		injectBackboneCss();
+		
+		if(menuRenderer instanceof LargeMenuRenderer)
+		{
+			this.currentType = largeType;	
+		} 
+		else
+		{
+			this.currentType = smallType;	
+		}
+		
 		menuRenderer.render(this, largeType, smallType);
+	}
+	
+	private void injectBackboneCss()
+	{
+		menuPanel.addStyleName(FacesResources.INSTANCE.css().facesMenu());
 	}
 
 	public Menu(LargeType largeType)
@@ -169,6 +111,12 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		return STYLE_FACES_MENU;
 	}
 
+	@Override
+	public HandlerRegistration addSelectionHandler(SelectionHandler<MenuItem> handler)
+	{
+		return addHandler(handler, SelectionEvent.getType());
+	}
+	
 	@Override
 	public boolean isAnimationEnabled() 
 	{
@@ -202,6 +150,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		}
 	}
 
+	/**
+	 * Remove all menuItems contained into this menu
+	 */
 	public void clear() 
 	{
 		if(this.root != null)
@@ -327,6 +278,16 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuItem.close();
 	}
 
+	protected boolean isSlider()
+	{
+		return currentType.isSlider();
+	}
+	
+	protected boolean isTree()
+	{
+		return currentType.isTree();
+	}
+	
 	protected void adopt(MenuItem item, Button button)
 	{
 		menuPanel.adopt(item, button);
@@ -342,6 +303,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuPanel.orphan(item);
 	}
 	
+	/**
+	 * Internal Panel mapped to a nav element around the menu
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
 	protected static class MenuPanel extends BasePanel
 	{
 		protected MenuPanel()

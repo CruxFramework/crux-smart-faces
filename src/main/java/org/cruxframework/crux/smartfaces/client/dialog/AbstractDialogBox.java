@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
+	public static final String DEFAULT_STYLE_NAMES = "faces-DialogBox faces-popup";
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
 	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
@@ -64,7 +64,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	 */
 	public AbstractDialogBox()
 	{
-		this(true, true, true, false, DEFAULT_STYLE_NAME);
+		this(true, true, true, false, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	 */
 	public AbstractDialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
 	{
-		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAME);
+		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -90,14 +90,14 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	{
 		super(false, modal);
 		setStyleName(baseStyleName);
-		setGlassStyleName("dialogGlass");
+		setGlassStyleName("faces-overlay");
 
 		FlowPanel topBar = prepareTopBar(movable, closable);
 		
-		body.setStyleName("dialogBody");
+		body.setStyleName("faces-popup-body");
 
 		FlowPanel split = new FlowPanel();
-		split.setStyleName("dialogTitleBodySplit");
+		split.setStyleName("faces-popup-split");
 		split.add(topBar);
 		split.add(body);
 		
@@ -138,7 +138,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private Label prepareResizer() 
 	{
 		Label resizer = new Label();
-		resizer.setStyleName("dialogResizer");
+		resizer.setStyleName("faces-popup-resizer");
 		return resizer;
 	}
 
@@ -151,15 +151,15 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private FlowPanel prepareTopBar(boolean movable, boolean closable) 
 	{
 		FlowPanel topBar = new FlowPanel();
-		topBar.setStyleName("dialogTopBar");
+		topBar.setStyleName("faces-popup-header");
 		
-		title.setStyleName("dialogTitle");
+		title.setStyleName("faces-popup-title");
 		topBar.add(title);
 		
 		if(movable)
 		{
 			moveHandle = new Label();
-			moveHandle.setStyleName("dialogTopBarDragHandle");
+			moveHandle.setStyleName("faces-popup-dragger");
 			topBar.add(moveHandle);
 		}		
 		
@@ -167,7 +167,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		{
 			if(closable)
 			{
-				closeBtn.setStyleName("dialogCloseButton");
+				closeBtn.setStyleName("faces-popup-close");
 				closeBtn.addSelectHandler(new SelectHandler() 
 				{
 					@Override

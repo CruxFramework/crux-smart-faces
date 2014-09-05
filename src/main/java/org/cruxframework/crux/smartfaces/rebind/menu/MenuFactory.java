@@ -26,6 +26,7 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasSelectionHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.TextChildProcessor;
@@ -43,9 +44,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDec
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ class MenuContext extends WidgetCreatorContext
 @TagChildren({
 	@TagChild(MenuFactory.MenuItemProcessor.class)
 })
-public class MenuFactory extends WidgetCreator<MenuContext>
+public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelectionHandlersFactory<WidgetCreatorContext>
 {
 	
 	protected static Logger logger = Logger.getLogger(MenuFactory.class.getName());
@@ -114,12 +115,14 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		context.itemStack.add(context.getWidget());
 	}
 	
-	@TagConstraints(tagName="item", minOccurs="0", maxOccurs="unbounded")
+	@TagConstraints(tagName="item", minOccurs="0", maxOccurs="unbounded", description="The menu item.")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="open", type=Boolean.class),
-		@TagAttributeDeclaration(value="style"),
-		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false"),
-		@TagAttributeDeclaration(value="styleName", supportsResources=true)
+		@TagAttributeDeclaration(value="open", type=Boolean.class, description="open or close an item."),
+		@TagAttributeDeclaration(value="style", description="the item style."),
+		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false", description="indicate if the item should be disabled or not."),
+		@TagAttributeDeclaration(value="styleName", supportsResources=true, description="the item style name."),
+		@TagAttributeDeclaration(value="id", description="The component id."),
+		@TagAttributeDeclaration(value="value", description="Any value that will be associated with this menu item.")
 	})
 	@TagEventsDeclaration({
 		@TagEventDeclaration("onSelect")
@@ -156,6 +159,12 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 				out.println(item + ".open();");					
 			}
 			
+			String id = context.readChildProperty("id");
+			if(!StringUtils.isEmpty(id))
+			{
+				out.println(item + ".setId("+ EscapeUtils.quote(id) +");");					
+			}
+			
 			if(context.readBooleanChildProperty("disabled", false))
 			{
 				out.println(item + ".setEnabled(false);");	
@@ -176,6 +185,11 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			{
 				styleName = getWidgetCreator().getResourceAccessExpression(styleName);
 				out.println(item + ".addClassName(" + EscapeUtils.quote(styleName) + ");");
+			}
+			String itemValue = context.readChildProperty("value");
+			if (!StringUtils.isEmpty(itemValue))
+			{
+				out.println(item + ".setValue(" + EscapeUtils.quote(itemValue) + ");");
 			}
 		}			
 		
@@ -210,7 +224,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 	}
 	
-	@TagConstraints(tagName="itemLabel", type=String.class)
+	@TagConstraints(tagName="itemLabel", type=String.class, description="Create an item with a simple Label.")
 	public static class ItemLabelProcessor extends WidgetChildProcessor<MenuContext>
 	{
 		@Override
@@ -219,13 +233,18 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			JSONObject jsonLabel = context.getChildElement();
 			String label = "";
 			try {
-				label = EscapeUtils.quote(jsonLabel.getString("_text"));
+				label = jsonLabel.getString("_text");
 			} catch (JSONException e) 
 			{
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 			
 			String itemClassName = MenuItem.class.getCanonicalName();
+			
+			if(label != null && label.length() > 0)
+			{
+				label = getWidgetCreator().getDeclaredMessage(label);
+			}
 			
 			if(context.itemStack.size() == 1)
 			{
@@ -241,7 +260,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		}
 	}
 	
-	@TagConstraints(tagName="itemHtml")
+	@TagConstraints(tagName="itemHtml", description="Create an item with a HTML body.")
 	@TagChildren({
 		@TagChild(HTMLProcessor.class)
 	})
@@ -282,7 +301,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, description="The widget inserted into the item.")
 	public static class WidgetProcessor extends WidgetChildProcessor<MenuContext>
 	{
 		@Override
