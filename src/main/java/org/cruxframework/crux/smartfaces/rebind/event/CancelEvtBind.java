@@ -15,10 +15,10 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.event;
 
+import org.cruxframework.crux.core.client.event.CancelEvent;
+import org.cruxframework.crux.core.client.event.CancelHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
-import org.cruxframework.crux.smartfaces.client.event.CancelEvent;
-import org.cruxframework.crux.smartfaces.client.event.CancelHandler;
 
 
 public class CancelEvtBind extends EvtProcessor
