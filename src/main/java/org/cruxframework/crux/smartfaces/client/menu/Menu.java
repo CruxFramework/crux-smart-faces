@@ -93,7 +93,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	
 	private void injectBackboneCss()
 	{
-		menuPanel.addStyleName(FacesResources.INSTANCE.css().facesMenu());
+		menuPanel.addStyleName(FacesResources.INSTANCE.css().facesBackboneMenu());
 	}
 
 	public Menu(LargeType largeType)
