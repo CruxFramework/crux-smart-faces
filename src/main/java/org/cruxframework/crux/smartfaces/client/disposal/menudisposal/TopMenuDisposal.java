@@ -155,7 +155,12 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		void buildLayout(BaseMenuDisposal disposal);
 		SizeDisposal getDeviceSize();
 	}
-	
+
+	@Override
+	public void setHistoryControlPrefix(String historyControlPrefix)
+	{
+		super.setHistoryControlPrefix(historyControlPrefix);
+	}
 	
 
 }
