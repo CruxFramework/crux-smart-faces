@@ -19,6 +19,7 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -99,6 +100,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 			Button menuButton = new Button();
 			menuButton.setStyleName(TOP_MENU_DISPOSAL_MENU_BUTTON);
 			menuButtonPanel.add(menuButton);
+			disposal.smallHeaderPanel = new HeaderPanel();
+			disposal.smallHeaderPanel.setStyleName(disposal.getSmallHeaderStyleName());
+			
 			menuButton.addSelectHandler(new SelectHandler(){
 				
 				@Override
@@ -135,7 +139,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		{
 			FlowPanel splitPanel = new FlowPanel();
 			
-			splitPanel.add(disposal.headerPanel);
+			disposal.largeHeaderPanel = new HeaderPanel();
+			disposal.largeHeaderPanel.setStyleName(disposal.getHeaderStyleName());
+			disposal.bodyPanel.add(disposal.largeHeaderPanel);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);
 			splitPanel.add(disposal.footerPanel);

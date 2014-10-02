@@ -24,7 +24,6 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
-import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.Window;
@@ -40,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 {
 	protected Panel menuPanel;
-	protected Panel headerPanel;
+	protected Panel largeHeaderPanel;
 	protected Panel smallHeaderPanel;
 	protected Panel footerPanel;
 	protected Panel bodyPanel;
@@ -57,9 +56,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		bodyPanel = getMainWidget();
 		viewContentPanel = new FlowPanel();
 		menuPanel = new NavPanel();
-		headerPanel = new HeaderPanel();
 		footerPanel = new FooterPanel();
-		smallHeaderPanel = new HeaderPanel();
 		buildLayout();
 		
 		setStyles();
@@ -68,11 +65,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	public View getView()
 	{
 		return innerView;
-	}
-
-	public void addHeaderContent(Widget header)
-	{
-		this.headerPanel.add(header);
 	}
 
 	public void addFooterContent(Widget footer)
@@ -171,13 +163,8 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	private void setStyles()
 	{
 		footerPanel.setStyleName(getFooterStyleName());
-		headerPanel.setStyleName(getHeaderStyleName());
 		menuPanel.setStyleName(getMenuPanelStyleName());
 		viewContentPanel.setStyleName(getContentStyleName());
-		if(smallHeaderPanel != null)
-		{
-			smallHeaderPanel.setStyleName(getSmallHeaderStyleName());
-		}
 	}
 	
 	@Override
@@ -232,11 +219,11 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	    }
 	}
 	
-	public void addSmallHeaderContent(Widget w)
+	public void addSmallHeaderContent(Widget widget)
 	{
-		if(w != null)
+		if(widget != null && smallHeaderPanel != null)
 		{
-			smallHeaderPanel.add(w);
+			smallHeaderPanel.add(widget);
 		}
 	}
 
@@ -273,5 +260,13 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	public String getCurrentHistoryItem()
 	{
 		return Screen.getCurrentHistoryItem();
+	}
+	
+	public void addLargeHeaderContent(Widget header)
+	{
+		if(largeHeaderPanel != null)
+		{
+			largeHeaderPanel.add(header);
+		}
 	}
 }

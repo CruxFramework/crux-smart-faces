@@ -18,10 +18,10 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * @author wesley.diniz
@@ -129,14 +129,14 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		{ 
 			FlowPanel mainPanel = new FlowPanel();
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
-			disposal.headerPanel = new SimplePanel();
+			disposal.largeHeaderPanel = new HeaderPanel();
 			FlowPanel splitPanel = new FlowPanel();
 			splitPanel.addStyleName(CF);
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);
 			
-			mainPanel.add(disposal.headerPanel);
+			mainPanel.add(disposal.largeHeaderPanel);
 			mainPanel.add(splitPanel);
 			mainPanel.add(disposal.footerPanel);
 			disposal.bodyPanel.add(mainPanel);
