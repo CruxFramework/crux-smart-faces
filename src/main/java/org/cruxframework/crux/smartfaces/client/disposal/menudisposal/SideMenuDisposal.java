@@ -120,18 +120,19 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	
 	static class LargeLayoutBuilder implements LayoutBuilder
 	{
-		private static final String CF = "cf";
-		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-SplitPanel";
-		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-LayoutWrapperPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
 
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
 		{ 
 			FlowPanel mainPanel = new FlowPanel();
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
+			
 			disposal.largeHeaderPanel = new HeaderPanel();
+			disposal.largeHeaderPanel.setStyleName(disposal.getHeaderStyleName());
+			
 			FlowPanel splitPanel = new FlowPanel();
-			splitPanel.addStyleName(CF);
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);

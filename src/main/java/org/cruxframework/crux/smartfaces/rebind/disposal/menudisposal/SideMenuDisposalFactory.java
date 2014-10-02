@@ -134,7 +134,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 			
 			if(menuType.isEmpty())
 			{
-				menuType = "HORIZONTAL_DROPDOWN";
+				menuType = "VERTICAL_DROPDOWN";
 			}
 			
 			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
@@ -255,4 +255,6 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
     	String currentItem;
     	LinkedList<String> itemStack = new LinkedList<String>();
     }
+
+
 }
