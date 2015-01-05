@@ -18,7 +18,7 @@ package org.cruxframework.crux.smartfaces.client;
 import com.google.gwt.i18n.client.Messages;
 
 /**
- * Default messages for smart faces library widgets
+ * Default messages for smart  faces library widgets
  * @author Thiago da Rosa de Bustamante
  *
  */
