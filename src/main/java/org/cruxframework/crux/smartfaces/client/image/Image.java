@@ -17,7 +17,9 @@ package org.cruxframework.crux.smartfaces.client.image;
 
 import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.HasErrorHandlers;
 import com.google.gwt.event.dom.client.HasLoadHandlers;
@@ -183,7 +185,8 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 	 */
 	private abstract class GWTFixImage
 	{
-		public GWTFixImage() {
+		public GWTFixImage() 
+		{
 			setVisibleRect();
 		}
 		
@@ -191,14 +194,19 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		
 		public void setVisibleRect()
 		{
-			boolean oldStyleHasDisplayNone = image.getElement().getAttribute("style").contains("display: none");
 			String title = image.getElement().getTitle();
 			String styleName = image.getStyleName();
 			callHowToImplementInnerSetVisibleRect();
-			image.setVisible(!oldStyleHasDisplayNone);
+			Style style = image.getElement().getStyle();
+			setStyle(image.getElement(), style);
 			image.setTitle(title);
 			image.setStyleName(styleName);
 		}
+		
+		private native void setStyle(Element element, Style style) /*-{
+			element.style = style;
+		}-*/;
+		
 	}
 	
 	@Override
