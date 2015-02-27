@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.client.screen.views.HasChangeViewHandlers;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnimationCallback;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -34,7 +35,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * @author bruno.rafael
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer implements HasChangeViewHandlers
 {
 	/**
@@ -341,17 +345,5 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	public void setAnimationBackward(SwapAnimation animationBackward)
 	{
 		this.animationBackward = animationBackward;
-	}
-	
-	/**
-	 * Set an animation to this component.
-	 * @param animation the animation itself.
-	 */
-	public void setAnimation(SwapAnimation animation)
-	{
-		if (swapPanel != null)
-		{
-			swapPanel.setAnimation(animation);
-		}
 	}
 }

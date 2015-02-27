@@ -24,6 +24,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.HasPagedDataProv
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.list.WidgetList;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONArray;
@@ -35,10 +36,13 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * 
  * @author Thiago da Rosa de Bustamante
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@DeclarativeFactory(id="widgetList", library=Constants.LIBRARY_NAME, targetWidget=WidgetList.class, 
-					description="A list of widgets that use a DataProvider to provide data and a widgetFactory "
-							+ "to bound the data to a widget. This list can be paged by a Pager.")
+@Experimental
+//@DeclarativeFactory(id="widgetList", library=Constants.LIBRARY_NAME, targetWidget=WidgetList.class, 
+//					description="A list of widgets that use a DataProvider to provide data and a widgetFactory "
+//							+ "to bound the data to a widget. This list can be paged by a Pager.")
 @TagChildren({
 	@TagChild(PagedDataProviderChildren.class),
 	@TagChild(value=WidgetListFactory.WidgetListChildCreator.class, autoProcess=false)

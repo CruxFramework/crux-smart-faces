@@ -129,6 +129,15 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
+	 */
+	public void transitTo(final Widget widget) 
+	{
+		transitTo(widget, animation, this.animationEnabled, null);
+	}
+
+	/**
+	 * Changes the widget being shown on this widget.
+	 * @param widget - the widget will be insert in the swapPanel
 	 * @param animation - type of animation
 	 */
 	public void transitTo(final Widget widget, SwapAnimation animation) 
