@@ -25,6 +25,11 @@
 	-ms-flex-positive: 1;
 }
 
+.facesBackboneMenu.faces-Menu--grow > .faces-Menu-ul .faces-Menu-ul
+{
+	z-index:5;
+}
+
 
 /*************************
  Basic for all
@@ -71,11 +76,6 @@
 	cursor:pointer;
 }
 
-.facesBackboneMenu .faces-Menu-ul .faces-Menu-li .faces-Menu-li
-{
-	border-bottom:1px solid #ddd;
-}
-
 .facesBackboneMenu.faces-Menu-tree .faces-Menu-ul .faces-Menu-li .faces-Menu-li
 {
 	border-bottom:none;
@@ -84,7 +84,6 @@
 .facesBackboneMenu .faces-Menu-ul .faces-Menu-li .faces-SelectablePanel
 {
 	padding:DEFAULT_PADDING;
-	text-align:left;
 }
 
 .facesBackboneMenu.faces-Menu-tree .faces-Menu-ul .faces-Menu-li .faces-SelectablePanel
@@ -127,7 +126,7 @@
 
 .facesBackboneMenu.faces-Menu-vertical.faces-Menu-dropdown
 {
-	width:200px;
+	width:100%;
 }
 
 .facesBackboneMenu.faces-Menu-vertical.faces-Menu-dropdown > .faces-Menu-ul .faces-Menu-ul
