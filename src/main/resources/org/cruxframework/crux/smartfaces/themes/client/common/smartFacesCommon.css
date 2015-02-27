@@ -163,6 +163,12 @@ body
 	z-index:2;
 }
 
+.faces-Menu .faces-Menu-ul .faces-Menu-li .faces-Menu-li
+{
+	border-bottom:1px solid #ddd;
+}
+
+
 /* === Dropdown General === */
 
 .faces-Menu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
@@ -425,12 +431,6 @@ body
 {
 	padding:10px 5px;
 	text-align:left;
-}
-
-.faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li .faces-Menu-ul .faces-Label
-{
-	border-bottom:1px solid rgba(0, 0, 0, 0.13);
-	padding:5px;
 }
 
 .faces-Menu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul
@@ -1125,6 +1125,16 @@ td > div > .faces--group
 	background-color: #4496c6;
 	color: #ff0000 !important;
 }
+
+
+/* ------------ SwapPanel ---------------- */
+.faces-SwapPanel .faces-SwapPanel-currentPanel,
+.faces-SwapPanel .faces-SwapPanel-nextPanel
+{
+	width:100%;
+}
+
+
 
 @-webkit-keyframes faces-ProgressUndefined
 {
