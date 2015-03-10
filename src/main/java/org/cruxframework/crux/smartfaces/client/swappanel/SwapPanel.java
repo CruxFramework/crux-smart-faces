@@ -25,9 +25,8 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnim
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author bruno.rafael
  *
  */
-public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimation
+public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimation
 {
 	/**
 	 * Default css style of the component.
@@ -60,6 +59,7 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 	 */
 	public static final String NEXT_STYLE_NAME = "faces-SwapPanel-nextPanel";
 	
+	private FlowPanel contentPanel;
 	private SimplePanel currentPanel = new SimplePanel();
 	private SimplePanel nextPanel = new SimplePanel();
 	
@@ -74,12 +74,15 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
     {	
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		
+		contentPanel = new FlowPanel();
+		initWidget(contentPanel);
+		
 		setStyleName(DEFAULT_STYLE_NAME);
 		currentPanel.setStyleName(CURRENT_STYLE_NAME);
 		nextPanel.setStyleName(NEXT_STYLE_NAME);
 		
-		add(currentPanel);
-		add(nextPanel);
+		contentPanel.add(currentPanel);
+		contentPanel.add(nextPanel);
     }
 	
 	/**
@@ -108,9 +111,7 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 	 */
 	public void setCurrentWidget(final Widget widget) 
 	{
-		if (widget != null) 
-		{
-			setPanelHeightOnWidgetAttached(widget);
+		if (widget != null) {
 			this.currentPanel.clear();
 			this.currentPanel.add(widget);
 		}
@@ -144,21 +145,6 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 		transitTo(widget, animation, this.animationEnabled, null);
 	}
 	
-	private void setPanelHeightOnWidgetAttached(final Widget widget)
-	{
-		widget.addAttachHandler(new Handler() 
-		{
-			@Override
-			public void onAttachOrDetach(AttachEvent event) 
-			{
-				if (event.isAttached())
-				{
-					SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
-				}
-			}
-		});
-	}
-	
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -169,12 +155,9 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 	{
 		if (!animating)
 		{
-			setPanelHeightOnWidgetAttached(widget);
-			
 			animating = true;
 			nextPanel.clear();
 			nextPanel.add(widget);
-
 			if (animationEnabled && animation != null)
 			{
 				animation.animate(nextPanel, currentPanel, new SwapAnimationHandler()
