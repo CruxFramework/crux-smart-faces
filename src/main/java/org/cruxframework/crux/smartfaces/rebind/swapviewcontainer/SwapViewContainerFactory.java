@@ -48,7 +48,7 @@ class SwapContainerContext extends WidgetCreatorContext
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-@DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
+//@DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
 @TagChildren({
 	@TagChild(SwapViewContainerFactory.ViewProcessor.class)
 })
