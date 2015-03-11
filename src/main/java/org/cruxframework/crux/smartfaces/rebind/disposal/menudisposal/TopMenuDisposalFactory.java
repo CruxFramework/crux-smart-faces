@@ -47,10 +47,12 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDisposalFactory.DisposalLayoutContext;
 
 
-@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",targetWidget=TopMenuDisposal.class, 
+@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",
+					targetWidget=TopMenuDisposal.class, 
 					description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
 @TagAttributes(
-		@TagAttribute(value="historyControlPrefix",defaultValue="view")
+		@TagAttribute(value="historyControlPrefix",defaultValue="view", 
+					  description="The name of the token to be used to identify the history state. This token will be used as part of the URL to the view showed by this panel.")
 		)
 @TagChildren({
 	@TagChild(TopMenuDisposalFactory.DisposalChildrenProcessor.class)
@@ -73,9 +75,11 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	})
 	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<DisposalLayoutContext>{}
 	
-	@TagConstraints(minOccurs="1", maxOccurs="1", tagName="view")
+	@TagConstraints(minOccurs="1", maxOccurs="1", tagName="view", 
+					description="A view to be rendered into this view container.")
     @TagAttributesDeclaration({
-    	@TagAttributeDeclaration(value="name", required=true)
+    	@TagAttributeDeclaration(value="name", required=true, 
+    							 description="The name of the view.")
     })
     public static class ViewProcessor extends WidgetChildProcessor<DisposalLayoutContext>
     {
@@ -105,9 +109,11 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	
 	static enum TopDisposalMenuType { HORIZONTAL_ACCORDION, HORIZONTAL_DROPDOWN }
 
-	@TagConstraints(maxOccurs="1",minOccurs="1",tagName="mainMenu")
+	@TagConstraints(maxOccurs="1",minOccurs="1",tagName="mainMenu", 
+					description="The menu section of this component.")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
+		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN", 
+					description="The type of the menu to be displayed.")
 	})
 	@TagChildren({
 		@TagChild(TopMenuDisposalFactory.MenuItemProcessor.class)
@@ -138,7 +144,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 	
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0",tagName="menuItem")
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0",tagName="menuItem", description="A menu item.")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="targetView",required=false,description="Defines the target view that will be displayed on clicking it"),
 		@TagAttributeDeclaration(value="label", required=true, description="Defines the label that will be displayed", supportsI18N=true)
@@ -191,7 +197,8 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 	
-	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="footer")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="footer", 
+					description="The footer section of this container.")
 	@TagChildren({
 		@TagChild(value=TopMenuDisposalFactory.FooterProcessor.class)
 	})

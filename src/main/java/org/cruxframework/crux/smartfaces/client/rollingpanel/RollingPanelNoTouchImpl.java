@@ -68,6 +68,8 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 
 	public RollingPanelNoTouchImpl()
 	{
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
+		
 		this.layoutPanel = new FlowPanel();
 
         createPreviousButton();

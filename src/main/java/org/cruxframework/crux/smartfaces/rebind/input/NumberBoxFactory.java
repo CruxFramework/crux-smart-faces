@@ -41,7 +41,7 @@ import org.cruxframework.crux.smartfaces.client.input.NumberBox.FormatterOptions
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
- * A Factory for TextBox widgets
+ * A Factory for NumberBox widgets
  * @author Thiago da Rosa de Bustamante
  */
 @DeclarativeFactory(id="numberBox", library=Constants.LIBRARY_NAME, targetWidget=NumberBox.class, 

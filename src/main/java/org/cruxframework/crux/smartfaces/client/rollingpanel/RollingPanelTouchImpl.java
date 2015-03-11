@@ -15,87 +15,42 @@
  */
 package org.cruxframework.crux.smartfaces.client.rollingpanel;
 
-import java.util.ArrayList;
+import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @author Samuel Almeida Cardoso
  *
  */
-class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImplementation
+class RollingPanelTouchImpl extends Composite implements RollingPanel.PanelImplementation
 {
-	static final String DEFAULT_ITEM_STYLE_NAME = "faces-itemRollingPanel";
-	static final String DEFAULT_ITEM_WRAPPER_STYLE_NAME = "faces-itemWrapperRollingPanel";
+	private ScrollPanel itemsScrollPanel;
+	protected FlowPanel itemsPanel;
 	
-	private static class WrappedWidget
-	{
-		protected Widget widget;
-		protected FlowPanel wrappedWidget;
-		
-		public WrappedWidget(Widget widget, FlowPanel wrappedWidget)
-		{
-			this.widget = widget;
-			this.wrappedWidget = wrappedWidget;
-		}
-
-		@Override
-		public int hashCode() 
-		{
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((widget == null) ? 0 : widget.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) 
-		{
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			WrappedWidget other = (WrappedWidget) obj;
-			if (widget == null) {
-				if (other.widget != null)
-					return false;
-			} else if (!widget.equals(other.widget))
-				return false;
-			return true;
-		}
-	}
-	
-	private ArrayList<WrappedWidget> items = new ArrayList<WrappedWidget>();
-	private FlowPanel itemsContainer = new FlowPanel();
 	private boolean scrollToAddedWidgets = false;
 
 	public RollingPanelTouchImpl()
     {
-		itemsContainer.setStyleName(DEFAULT_ITEM_WRAPPER_STYLE_NAME);
-		super.add(itemsContainer);
+		FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
+
+		itemsScrollPanel = new ScrollPanel();
+		itemsPanel = new FlowPanel();
+		itemsPanel.setStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneRollingPanelBody());
+		itemsScrollPanel.add(this.itemsPanel);
+		
+		initWidget(itemsScrollPanel);
     }
-	
-	private FlowPanel createItem(Widget child)
-	{
-		FlowPanel wrapper = new FlowPanel();
-		wrapper.setStyleName(DEFAULT_ITEM_STYLE_NAME);
-		wrapper.add(child);
-		items.add(new WrappedWidget(child, wrapper));
-		return wrapper;
-	}
 	
 	@Override
 	public void add(final Widget child)
 	{
-		itemsContainer.add(createItem(child));
+		this.itemsPanel.add(child);
 		if (scrollToAddedWidgets)
 		{
 			Scheduler.get().scheduleDeferred(new ScheduledCommand()
@@ -109,15 +64,39 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	}
 
 	@Override
+	public void clear()
+	{
+		this.itemsPanel.clear();
+	}
+
+	@Override
 	public int getScrollPosition()
 	{
-		return getElement().getScrollLeft();
+		return itemsScrollPanel.getElement().getScrollLeft();
 	}
+
+	@Override
+	public Widget getWidget(int i)
+    {
+	    return itemsPanel.getWidget(i);
+    }
+
+	@Override
+	public int getWidgetCount()
+    {
+	    return itemsPanel.getWidgetCount();
+    }
+
+	@Override
+	public int getWidgetIndex(Widget child)
+    {
+	    return itemsPanel.getWidgetIndex(child);
+    }
 
 	@Override
 	public void insert(final Widget widget, int i)
     {
-		itemsContainer.insert(createItem(widget), i);
+	    itemsPanel.insert(widget, i);
 		if (scrollToAddedWidgets)
 		{
 			Scheduler.get().scheduleDeferred(new ScheduledCommand()
@@ -139,27 +118,26 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	@Override
 	public boolean remove(int index)
     {
-		items.remove(index);
-		return itemsContainer.remove(index);
+	    boolean ret = itemsPanel.remove(index);
+		return ret;
     }
 	
 	@Override
-	public boolean remove(Widget w) 
-	{
-		items.remove(w);
-		return itemsContainer.remove(w);
-	}
+	public boolean remove(Widget toRemove)
+    {
+		return itemsPanel.remove(toRemove);
+    }
 	
 	@Override
 	public void scrollToWidget(Widget widget)
 	{
-		ensureVisible(items.get(items.indexOf(widget)).wrappedWidget);
+		itemsScrollPanel.ensureVisible(widget);
 	}
 	
 	@Override
 	public void setScrollPosition(int position)
 	{
-		setHorizontalScrollPosition(position);
+		itemsScrollPanel.setHorizontalScrollPosition(position);
 	}
 
 	@Override
@@ -167,22 +145,4 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
     {
     	this.scrollToAddedWidgets = scrollToAddedWidgets;
     }
-
-	@Override
-	public Widget getWidget(int index) 
-	{
-		return items.get(index).widget;
-	}
-
-	@Override
-	public int getWidgetCount() 
-	{
-		return items.size();
-	}
-
-	@Override
-	public int getWidgetIndex(Widget child) 
-	{
-		return items.indexOf(child);
-	}
 }

@@ -41,13 +41,17 @@ import com.google.gwt.resources.client.ImageResource;
  * @authorThiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="image", targetWidget=Image.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="image", targetWidget=Image.class, 
+					description="An image component that support google fast buttons to simulate clicks on touch devices.")
 
 @TagAttributes({
-	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false"),
-	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true),
-	@TagAttribute(value="altText"),
-	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class)
+	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
+				 description="If true, the html will call preventDefault on all touch events."),
+	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true, 
+				  description="The URL of the image to be displayed."),
+	@TagAttribute(value="altText", description="The alternate text of the image for user agents that can't render the image."),
+	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class, 
+				  description="Visibility rectangle of an image.")
 })	
 @TagEvents({
 	@TagEvent(LoadEvtBind.class),

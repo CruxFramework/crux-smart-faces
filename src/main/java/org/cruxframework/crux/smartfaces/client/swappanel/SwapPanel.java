@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A panel that allows animated swap between  widgets.
+ * A panel that allows animated swap between widgets.
  * 
  * @author bruno.rafael
  *
