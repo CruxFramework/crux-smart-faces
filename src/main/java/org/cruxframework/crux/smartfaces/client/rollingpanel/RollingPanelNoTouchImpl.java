@@ -87,7 +87,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalInlineContainer());
 		}
 	}
 	
@@ -95,7 +95,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalInlineContainer());
 	}
 	
 	/**
