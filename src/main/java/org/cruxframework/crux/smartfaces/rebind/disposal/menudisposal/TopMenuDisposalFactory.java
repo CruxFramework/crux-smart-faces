@@ -78,16 +78,23 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	@TagConstraints(minOccurs="1", maxOccurs="1", tagName="view", 
 					description="A view to be rendered into this view container.")
     @TagAttributesDeclaration({
-    	@TagAttributeDeclaration(value="name", required=true, 
-    							 description="The name of the view.")
+		@TagAttributeDeclaration(value="id", description="The view identifier."),
+    	@TagAttributeDeclaration(value="name", required=true, description="The name of the view.")
     })
     public static class ViewProcessor extends WidgetChildProcessor<DisposalLayoutContext>
     {
     	@Override
     	public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
     	{
+    		String viewId = context.readChildProperty("id");
+    		String viewName = context.readChildProperty("name");
+    		
+    		if (StringUtils.isEmpty(viewId))
+    		{
+    			viewId = viewName;
+    		}
     		out.println("if(!"+context.getWidget()+".getCurrentHistoryItem().contains(\"!\"))");
-    		out.println(context.getWidget()+".showView("+EscapeUtils.quote(context.readChildProperty("name"))+");");
+    		out.println(context.getWidget()+".showView("+EscapeUtils.quote(viewName)+", "+EscapeUtils.quote(viewId)+");");
     	}
     }
 		
