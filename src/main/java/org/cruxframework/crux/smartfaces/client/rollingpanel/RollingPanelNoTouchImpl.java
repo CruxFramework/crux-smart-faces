@@ -294,7 +294,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
     {
 	    itemsScrollPanel = new ScrollPanel();
 		itemsScrollPanel.setStyleName(BODY_STYLE_NAME);
-		itemsScrollPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().rollingPanelBody());
+		itemsScrollPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneRollingPanelBody());
 		itemsPanel = new FlowPanel();
 		itemsPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxInlineContainer());
 		itemsScrollPanel.add(itemsPanel);

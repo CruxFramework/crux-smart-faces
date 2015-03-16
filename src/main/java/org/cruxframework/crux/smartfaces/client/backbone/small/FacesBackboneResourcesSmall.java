@@ -27,8 +27,7 @@ public interface FacesBackboneResourcesSmall extends ClientBundle
 	
 	@Source({
 		"facesBackboneSideMenuDisposalSmall.css",
-		"facesBackboneTopMenuDisposalSmall.css", 
-		"facesBackboneRollingPanelSmall.css" 
+		"facesBackboneTopMenuDisposalSmall.css" 
 		})
 	FacesBackboneCSSSmall css();
 }

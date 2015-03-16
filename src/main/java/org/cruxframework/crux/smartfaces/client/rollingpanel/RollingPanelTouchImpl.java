@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.rollingpanel;
 
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 
 import com.google.gwt.core.client.Scheduler;
@@ -41,7 +42,7 @@ class RollingPanelTouchImpl extends Composite implements RollingPanel.PanelImple
 
 		itemsScrollPanel = new ScrollPanel();
 		itemsPanel = new FlowPanel();
-		itemsPanel.setStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneRollingPanelBody());
+		itemsPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxInlineContainer());
 		itemsScrollPanel.add(this.itemsPanel);
 		
 		initWidget(itemsScrollPanel);

@@ -28,7 +28,4 @@ public interface FacesBackboneCSSSmall extends CssResource
 	
 	//TopMenuDisposal
 	String facesBackboneTopMenuDisposal();
-	
-	//RollingPanel
-	String facesBackboneRollingPanelBody();
 }
