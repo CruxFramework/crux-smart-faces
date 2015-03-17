@@ -16,13 +16,20 @@
 package org.cruxframework.crux.smartfaces.client.image;
 
 import org.cruxframework.crux.core.client.image.GWTFixImage;
-import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
+import org.cruxframework.crux.core.client.select.SelectableWidget;
 
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.HasErrorHandlers;
 import com.google.gwt.event.dom.client.HasLoadHandlers;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -215,5 +222,29 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		{
 			super(element);
 		}
+	}
+
+	@Override
+	protected HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
+	{
+		return image.addHandler(handler, TouchEndEvent.getType());
+	}
+
+	@Override
+	protected HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
+	{
+		return image.addHandler(handler, TouchMoveEvent.getType());
+	}
+
+	@Override
+	protected HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
+	{
+		return image.addHandler(handler, TouchStartEvent.getType());
+	}
+	
+	@Override
+	protected HandlerRegistration addClickHandler(ClickHandler handler)
+	{
+	    return image.addClickHandler(handler);
 	}
 }
