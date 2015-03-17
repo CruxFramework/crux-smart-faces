@@ -1,3 +1,5 @@
+@external faces-*;
+
 /****************     RollingPanel     *************************/
 .facesBackboneRollingPanelBody {
 	-webkit-box-flex: 1;      		/* OLD - iOS 6-, Safari 3.1-6 */
@@ -18,4 +20,12 @@
 	-webkit-order: 2;               /* NEW - Chrome */
 	order: 2;                       /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
+
+
+.facesBackboneRollingPanelBody.faces-RollingPanel-body 
+{
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+
 
