@@ -20,7 +20,7 @@
 
 .facesBackboneSideMenuDisposal .faces-SideMenuDisposal-splitPanel
 {
-	flex:1;
+	flex:0 1 auto;
 	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
 	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
@@ -39,7 +39,7 @@
 .facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
 {
 	order:2;
-	flex:1;
+	flex:0 1 auto;
 }
 
 .facesBackboneSideMenuDisposal.faces-SideMenuDisposal--right .faces-SideMenuDisposal-contentPanel
