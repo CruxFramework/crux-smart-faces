@@ -10,7 +10,7 @@
 
 	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
-	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
+	display: -ms-flexbox;		   	/* TWEENER - IE 10 */
 	display: -webkit-inline-flex;	/* NEW - Chrome */
 	display: inline-flex;      		/* NEW, Spec - Opera 12.1, Firefox 20+ */
 
@@ -20,7 +20,6 @@
 	-webkit-order: 2;               /* NEW - Chrome */
 	order: 2;                       /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
-
 
 .facesBackboneRollingPanelBody.faces-RollingPanel-body 
 {

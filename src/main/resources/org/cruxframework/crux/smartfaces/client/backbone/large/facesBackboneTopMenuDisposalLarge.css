@@ -7,7 +7,7 @@
 	display: -ms-flexbox !important;   	/* TWEENER - IE 10 */
 	display: flexbox !important;		/* TWEENER - IE 10 */
 	display: -webkit-flex;	/* NEW - Chrome */
-	display: inline-flex; 	/* NEW, Spec - Opera 12.1, Firefox 20+ */
+	display: flex; 	/* NEW, Spec - Opera 12.1, Firefox 20+ */
 /*	display:flex; */
 	min-height:100vh;
 	flex-direction:column;
