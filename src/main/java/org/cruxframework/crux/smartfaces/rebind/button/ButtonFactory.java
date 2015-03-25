@@ -44,7 +44,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 					description="A simple button that can handle touch events properly")
 
 @TagAttributes({
-	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false")
+	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
+			description="If true, the component will call preventDefault on all touch events.")
 })
 @TagEvents({
 	@TagEvent(SelectEvtBind.class)

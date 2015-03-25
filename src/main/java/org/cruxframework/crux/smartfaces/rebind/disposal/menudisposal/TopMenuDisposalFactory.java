@@ -93,7 +93,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
     		{
     			viewId = viewName;
     		}
-    		out.println("if(!"+context.getWidget()+".getCurrentHistoryItem().contains(\"!\"))");
+    		out.println("if(!"+context.getWidget()+".isHistoryTarget())");
     		out.println(context.getWidget()+".showView("+EscapeUtils.quote(viewName)+", "+EscapeUtils.quote(viewId)+");");
     	}
     }
