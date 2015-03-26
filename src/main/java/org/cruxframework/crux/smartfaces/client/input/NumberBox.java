@@ -128,6 +128,10 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	
 	private Number minValue;
 	
+	private String localeGroupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
+	
+	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
+
 	private static final String DEFAULT_STYLE_NAME = "faces-NumberBox";
 
 	public NumberBox()
@@ -414,7 +418,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			pattern.insert(0, "#,");
 			if (StringUtils.isEmpty(formatterOptions.groupSeparator))
 			{
-				formatterOptions.groupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
+				formatterOptions.groupSeparator = localeGroupSeparator;
 			}
 
 		}
@@ -428,7 +432,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 			if (StringUtils.isEmpty(formatterOptions.decimalSeparator))
 			{
-				formatterOptions.decimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
+				formatterOptions.decimalSeparator = localeDecimalSeparator;
 			}
 
 		}
@@ -830,9 +834,9 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		private String changeText(String text, boolean toString)
 		{
 			boolean needsDecimalReplacement = (numberBox.formatterOptions.fractionDigits > 0 && 
-												!StringUtils.unsafeEquals(numberBox.formatterOptions.decimalSeparator, "."));
+												!StringUtils.unsafeEquals(numberBox.formatterOptions.decimalSeparator, numberBox.localeDecimalSeparator));
 			boolean needsSeparatorReplacement = (numberBox.formatterOptions.showGroupSeparators && 
-												!StringUtils.unsafeEquals(numberBox.formatterOptions.groupSeparator, ","));
+												!StringUtils.unsafeEquals(numberBox.formatterOptions.groupSeparator, numberBox.localeGroupSeparator));
 			if (needsDecimalReplacement)
 			{
 				if (toString)
