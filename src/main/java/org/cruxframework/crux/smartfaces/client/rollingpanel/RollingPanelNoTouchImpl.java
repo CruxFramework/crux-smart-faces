@@ -77,8 +77,22 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		createNextButton();
 	
 		initWidget(layoutPanel);
+		
+		dynamicFixHeight();
 		handleWindowResize();
 		maybeShowNavigationButtons();
+	}
+
+	private void dynamicFixHeight() 
+	{
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+		{
+			@Override
+			public void execute() 
+			{
+				layoutPanel.setHeight("100%");
+			}
+		});
 	}
 	
 	@Override
