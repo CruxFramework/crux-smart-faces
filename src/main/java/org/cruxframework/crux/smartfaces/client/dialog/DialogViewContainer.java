@@ -24,6 +24,8 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -223,6 +225,20 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	}
 	
 	/**
+	 * @param handler the close handler itself.
+	 * @return the registered handler.
+	 */
+	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
+	{
+		if (dialog != null)
+		{
+			return dialog.addCloseHandler(handler);
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Constructor.
 	 * 
 	 * @param movable if true, the window can be dragged
@@ -240,6 +256,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 		contentPanel = new FlowPanel();
 		contentPanel.setWidth("100%");
 		dialog.setWidget(contentPanel);
+		
 		dialog.addAttachHandler(new Handler()
 		{
 			@Override

@@ -77,6 +77,18 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 * @param title the text to be displayed as the caption of the confirm 
 	 * @param message the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
+	 */
+	public static Confirm show(String title, String message, OkHandler okHandler)
+	{
+		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
+				okHandler, null, DEFAULT_STYLE_NAMES, null);
+	}
+	
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
 	 */
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
