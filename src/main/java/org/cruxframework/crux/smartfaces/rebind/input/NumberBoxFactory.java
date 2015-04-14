@@ -30,6 +30,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDirectionFact
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDoubleClickHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasNameFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueChangeHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
@@ -73,7 +74,8 @@ implements FocusableFactory<WidgetCreatorContext>, HasAllMouseHandlersFactory<Wi
 		   HasAllFocusHandlersFactory<WidgetCreatorContext>, HasAllTouchHandlersFactory<WidgetCreatorContext>, 
 		   HasEnabledFactory<WidgetCreatorContext>, HasValueFactory<WidgetCreatorContext>, HasNameFactory<WidgetCreatorContext>,
 		   HasDirectionEstimatorFactory<WidgetCreatorContext>, HasDirectionFactory<WidgetCreatorContext>,
-		   HasClickHandlersFactory<WidgetCreatorContext>, HasDoubleClickHandlersFactory<WidgetCreatorContext>
+		   HasClickHandlersFactory<WidgetCreatorContext>, HasDoubleClickHandlersFactory<WidgetCreatorContext>, 
+		   HasValueChangeHandlersFactory<WidgetCreatorContext>
 {	
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
