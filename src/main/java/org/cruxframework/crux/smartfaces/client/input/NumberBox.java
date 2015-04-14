@@ -26,8 +26,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -116,23 +114,25 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 										HasAllFocusHandlers, HasAllGestureHandlers,
 									    HasAllMouseHandlers, HasAllTouchHandlers
 {
+	private static final String DEFAULT_STYLE_NAME = "faces-NumberBox";
+
 	private Box box;
 
-	private NumberRenderer renderer;
+	private Number enterValue = null;
 
 	private FormatterOptions formatterOptions;
 
-	private boolean valueChangeHandlerInitialized;
-
-	private Number maxValue;
-	
-	private Number minValue;
+	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
 	
 	private String localeGroupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
 	
-	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
+	private Number maxValue;
+	
+	private Number minValue;
 
-	private static final String DEFAULT_STYLE_NAME = "faces-NumberBox";
+	private NumberRenderer renderer;
+
+	private boolean valueChangeHandlerInitialized = false;
 
 	public NumberBox()
 	{
@@ -150,6 +150,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		box.addKeyUpHandler(eventsHandler);
 		box.addBlurHandler(eventsHandler);
 		box.addPasteHandler(eventsHandler);
+		box.addFocusHandler(eventsHandler);
 
 		initWidget(box);
 		setFormatterOptions(formatterOptions);
@@ -160,11 +161,6 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
 		return addDomHandler(handler, BlurEvent.getType());
-	}
-
-	public HandlerRegistration addChangeHandler(ChangeHandler handler)
-	{
-		return addDomHandler(handler, ChangeEvent.getType());
 	}
 
 	@Override
@@ -312,11 +308,18 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		if (!valueChangeHandlerInitialized)
 		{
 			valueChangeHandlerInitialized = true;
-			addChangeHandler(new ChangeHandler()
+			addBlurHandler(new BlurHandler()
 			{
-				public void onChange(ChangeEvent event)
+				public void onBlur(BlurEvent event)
 				{
-					ValueChangeEvent.fire(NumberBox.this, getValue());
+					Number value = getValue();
+					if (value != enterValue)
+					{
+						if (value == null || enterValue == null || !enterValue.equals(value))
+						{
+							ValueChangeEvent.fire(NumberBox.this, value);
+						}
+					}
 				}
 			});
 		}
@@ -488,6 +491,11 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		setValue(value, fireEvents, true);
 	}
 
+	private void saveEnterValue()
+    {
+		this.enterValue  = getValue();
+    }
+
 	private void setValue(Number value, boolean fireEvents, boolean ensureValueConstraints)
     {
 	    if (ensureValueConstraints)
@@ -507,17 +515,17 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 	public static class FormatterOptions
 	{
-		public static final int DEFAULT_FRACTION_DIGITS = 0;
 		public static final boolean DEFAULT_ALLOW_NEGATIVES = true;
-		public static final boolean DEFAULT_SHOW_GROUP_SEPARATOR = true;
+		public static final int DEFAULT_FRACTION_DIGITS = 0;
 		public static final int DEFAULT_GROUP_SIZE = 3;
+		public static final boolean DEFAULT_SHOW_GROUP_SEPARATOR = true;
 
-		private int fractionDigits = DEFAULT_FRACTION_DIGITS;
 		private boolean allowNegatives = DEFAULT_ALLOW_NEGATIVES;
-		private boolean showGroupSeparators = DEFAULT_SHOW_GROUP_SEPARATOR;
-		private int groupSize = DEFAULT_GROUP_SIZE;
-		private String groupSeparator = null;
 		private String decimalSeparator = null;
+		private int fractionDigits = DEFAULT_FRACTION_DIGITS;
+		private String groupSeparator = null;
+		private int groupSize = DEFAULT_GROUP_SIZE;
+		private boolean showGroupSeparators = DEFAULT_SHOW_GROUP_SEPARATOR;
 
 		public FormatterOptions()
 		{
@@ -600,13 +608,13 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	    }
 	}
 
-	static class EventsHandler implements KeyDownHandler, KeyPressHandler, KeyUpHandler, BlurHandler, PasteHandler
+	static class EventsHandler implements KeyDownHandler, KeyPressHandler, KeyUpHandler, BlurHandler, FocusHandler, PasteHandler
 	{
 		private static final int DASH = 189;
-		private NumberBox numberBox;
-		private boolean isControlChar;
-		private String text;
 		private boolean ignored;
+		private boolean isControlChar;
+		private NumberBox numberBox;
+		private String text;
 
 		public EventsHandler(NumberBox numberBox)
 		{
@@ -632,6 +640,12 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			}
 		}
 		
+		@Override
+        public void onFocus(FocusEvent event)
+        {
+	        numberBox.saveEnterValue();
+        }
+
 		@Override
 		public void onKeyDown(KeyDownEvent event)
 		{
