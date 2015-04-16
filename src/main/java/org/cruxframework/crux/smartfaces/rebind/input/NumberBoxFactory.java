@@ -62,7 +62,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 							description="The string to be used to separe decimal digits. If none is provided, Crux discover it by the user Locale.")
 })
 @TagAttributes({
-	@TagAttribute(value="value", type=Double.class,
+	@TagAttribute(value="value", type=Double.class, dataBindingTargetsAttributes=false,
 				description="The value of the box."),
 	@TagAttribute(value="maxValue", type=Double.class,
 				description="The maximum value accepted by this box."),
