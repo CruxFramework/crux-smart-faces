@@ -26,6 +26,8 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -57,6 +59,7 @@ import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasAllGestureHandlers;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.HasAllTouchHandlers;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -96,6 +99,7 @@ import com.google.gwt.i18n.shared.DirectionEstimator;
 import com.google.gwt.i18n.shared.HasDirectionEstimator;
 import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.text.shared.Parser;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -112,7 +116,8 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 										HasDirectionEstimator, HasDirection,  HasClickHandlers, 
 										HasDoubleClickHandlers, HasAllDragAndDropHandlers, 
 										HasAllFocusHandlers, HasAllGestureHandlers,
-									    HasAllMouseHandlers, HasAllTouchHandlers
+									    HasAllMouseHandlers, HasAllTouchHandlers, 
+									    HasChangeHandlers
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-NumberBox";
 
@@ -121,17 +126,17 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	private Number enterValue = null;
 
 	private FormatterOptions formatterOptions;
-
+	
 	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
 	
 	private String localeGroupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
 	
 	private Number maxValue;
-	
+
 	private Number minValue;
 
 	private NumberRenderer renderer;
-
+	
 	private boolean valueChangeHandlerInitialized = false;
 
 	public NumberBox()
@@ -155,12 +160,19 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		initWidget(box);
 		setFormatterOptions(formatterOptions);
 		setStyleName(DEFAULT_STYLE_NAME);
+		fixChangeEvents();
 	}
 
 	@Override
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
 		return addDomHandler(handler, BlurEvent.getType());
+	}
+
+	@Override
+    public HandlerRegistration addChangeHandler(ChangeHandler handler)
+    {
+		return addDomHandler(handler, ChangeEvent.getType());
 	}
 
 	@Override
@@ -308,36 +320,31 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		if (!valueChangeHandlerInitialized)
 		{
 			valueChangeHandlerInitialized = true;
-			addBlurHandler(new BlurHandler()
+			addChangeHandler(new ChangeHandler()
 			{
-				public void onBlur(BlurEvent event)
+				public void onChange(ChangeEvent event)
 				{
-					Number value = getValue();
-					if (value != enterValue)
-					{
-						if (value == null || enterValue == null || !enterValue.equals(value))
-						{
-							ValueChangeEvent.fire(NumberBox.this, value);
-						}
-					}
+					ValueChangeEvent.fire(NumberBox.this, getValue());
 				}
 			});
 		}
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
+
 	@Override
     public Direction getDirection()
     {
 	    return box.getDirection();
     }
-
+	
+	
 	@Override
     public DirectionEstimator getDirectionEstimator()
     {
 	    return box.getDirectionEstimator();
     }
-
+	
 	public Number getMaxValue()
 	{
 		return maxValue;
@@ -401,7 +408,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	{
 		box.setEnabled(enabled);
 	}
-	
+
 	@Override
 	public void setFocus(boolean focused)
 	{
@@ -446,7 +453,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		renderer.setNumberFormat(numberFormat);
 		this.formatterOptions = formatterOptions;
 	}
-
+	
 	public void setMaxValue(Number maxValue)
 	{
 		this.maxValue = maxValue;
@@ -490,6 +497,34 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	{
 		setValue(value, fireEvents, true);
 	}
+
+	private void fireChangeEvent()
+	{
+		Event changeEvent = Document.get().createChangeEvent().cast();
+		getElement().dispatchEvent(changeEvent);
+	}
+
+	/**
+	 * The key events handling performed by this widget prevents the browser to call the change event.
+	 * So we need to force its call when blur event occurs.
+	 */
+	private void fixChangeEvents()
+    {
+	    addBlurHandler(new BlurHandler()
+		{
+			public void onBlur(BlurEvent event)
+			{
+				Number value = getValue();
+				if (value != enterValue)
+				{
+					if (value == null || enterValue == null || !enterValue.equals(value))
+					{
+						fireChangeEvent();
+					}
+				}
+			}
+		});
+    }
 
 	private void saveEnterValue()
     {
