@@ -38,7 +38,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 					description="A progress box that can display messages inside a dialog window with one loading component.")
 @TagAttributes({
 	@TagAttribute(value="message", supportsI18N=true, description="Message to be presented on this box."),
-	@TagAttribute(value="value", type=Integer.class, description="The progress value"),
+	@TagAttribute(value="value", dataBindingTargetsAttributes=false, type=Integer.class, description="The progress value"),
 	@TagAttribute(value="max", type=Integer.class, description="The progress maximum possible value")
 })
 @TagAttributesDeclaration({

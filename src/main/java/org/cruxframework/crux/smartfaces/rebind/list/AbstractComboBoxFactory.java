@@ -179,7 +179,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreat
 	private String getExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, String labelAttr, Set<String> converterDeclarations)
     {
 	    String labelExpression = null;
-		PropertyBindInfo binding = getObjectDataBinding(labelAttr, null);
+		PropertyBindInfo binding = getObjectDataBinding(labelAttr, null, true);
 		if (binding != null)
 		{
 			labelExpression = binding.getDataObjectReadExpression(dataObjectVariable);
