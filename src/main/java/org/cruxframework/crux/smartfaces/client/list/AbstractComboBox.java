@@ -17,7 +17,6 @@ package org.cruxframework.crux.smartfaces.client.list;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
@@ -214,11 +213,17 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setPageSize(pageSize);
 	}
 
-	public void setSelectedIndex(int index)
+	public void setSelectedIndex(final int index)
 	{
 		DataProvider<T> dataProvider = getDataProvider();
-		T obj = dataProvider.get(index);
-		selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj), index);
+		dataProvider.read(index, new DataProvider.DataReader<T>()
+		{
+			@Override
+            public void read(T object)
+            {
+				selectItem(optionsRenderer.getLabel(object), optionsRenderer.getValue(object), index);
+            }
+		});
 	}
 
 	@Override
@@ -365,18 +370,18 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}
 
 		@Override
-		protected AbstractPageable.Renderer<T> getRenderer()
+		protected DataProvider.DataReader<T> getDataReader()
 		{
-			return new Renderer<T>()
+			return new DataProvider.DataReader<T>()
 			{
 				@SuppressWarnings("unchecked")
 				@Override
-				public void render(T value)
+				public void read(T value)
 				{
 					IsWidget widget = widgetFactory.createWidget(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(value));
-					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));
+					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));//TODO retirar esse casting daqui
 					int widgetIndex = contentPanel.getWidgetCount();
 					if (pager != null && !pager.supportsInfiniteScroll())
 					{
