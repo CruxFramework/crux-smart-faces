@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.shared.Experimental;
@@ -104,12 +105,12 @@ public class WidgetList<T> extends AbstractPageable<T>
 	}
 	
 	@Override
-	protected AbstractPageable.Renderer<T> getRenderer()
+	protected DataProvider.DataReader<T> getDataReader()
 	{
-	    return new AbstractPageable.Renderer<T>()
+	    return new DataProvider.DataReader<T>()
 	    {
 			@Override
-            public void render(T value)
+            public void read(T value)
             {
 				IsWidget widget = widgetFactory.createWidget(value);
 				contentPanel.add(widget);
