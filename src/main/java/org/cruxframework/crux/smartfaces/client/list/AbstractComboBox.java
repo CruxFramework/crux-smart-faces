@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
@@ -380,13 +381,13 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}
 
 		@Override
-		protected AbstractPageable.Renderer<T> getRenderer()
+		protected DataProvider.DataReader<T> getDataReader()
 		{
-			return new Renderer<T>()
+			return new DataProvider.DataReader<T>()
 			{
 				@SuppressWarnings("unchecked")
 				@Override
-				public void render(T value)
+				public void read(T value)
 				{
 					IsWidget widget = widgetFactory.createData(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
