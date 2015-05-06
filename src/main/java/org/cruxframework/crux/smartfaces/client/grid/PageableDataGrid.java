@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
@@ -258,12 +259,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
     }
 	
 	@Override
-	protected AbstractPageable.Renderer<T> getRenderer()
+	protected DataProvider.DataReader<T> getDataReader()
 	{
-	    return new Renderer<T>()
+	    return new DataProvider.DataReader<T>()
 		{
 			@Override
-			public void render(T dataObject)
+			public void read(T dataObject)
 			{
 				for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
 				{
