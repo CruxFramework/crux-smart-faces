@@ -110,7 +110,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 	    return new DataProvider.DataReader<T>()
 	    {
 			@Override
-            public void read(T value)
+            public void read(T value, int index)
             {
 				IsWidget widget = widgetFactory.createWidget(value);
 				contentPanel.add(widget);
