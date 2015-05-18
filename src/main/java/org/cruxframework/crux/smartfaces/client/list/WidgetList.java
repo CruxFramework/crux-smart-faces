@@ -51,13 +51,6 @@ public class WidgetList<T> extends AbstractPageable<T>
 		setStyleName(DEFAULT_STYLE_NAME);
     }
 	
-	@Override
-	public void reset(boolean reloadData)
-	{
-		clear();
-		super.reset(reloadData);
-	}
-	
 	/**
 	 * Retrieve the dataObject that is bound to the given widget
 	 * @param w
@@ -78,7 +71,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Retrieve the widget index
 	 * @param w
@@ -87,6 +80,13 @@ public class WidgetList<T> extends AbstractPageable<T>
 	public int getWidgetIndex(Widget w)
 	{
 		return contentPanel.getWidgetIndex(w);
+	}
+
+	@Override
+	public void reset(boolean reloadData)
+	{
+		clear();
+		super.reset(reloadData);
 	}
 	
 	@Override
