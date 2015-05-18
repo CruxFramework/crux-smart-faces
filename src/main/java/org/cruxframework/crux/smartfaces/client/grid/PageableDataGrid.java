@@ -36,6 +36,7 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,11 +56,11 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	 */
 	public static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
 	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
-	
+
 	private DivTable table = new DivTable();
 	private Array<Column<?>> columns = CollectionFactory.createArray();
 	private Array<Row> rows = CollectionFactory.createArray();
-	
+
 	/**
 	 * @param dataProvider the dataprovider.
 	 * @param autoLoadData if true, the data must be loaded after the constructor has been invoked.
@@ -70,7 +71,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		initWidget(table);
 		setDataProvider(dataProvider, autoLoadData);
-		
+
 		dataProvider.addDataLoadedHandler(new DataLoadedHandler() 
 		{
 			@Override
@@ -87,23 +88,23 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			}
 		});
 	}
-	
+
 	@Override
 	protected void refreshPage(int startRecord) 
 	{
 	}
-	
+
 	@Override
-    protected void clear()
-    {
+	protected void clear()
+	{
 		for (int index = 0; index < getColumns().size(); index++)
 		{
 			PageableDataGrid<T>.Column<?> dataGridColumn = getColumns().get(index);
 			dataGridColumn.clear();
 		}
-	    table.clear();
-    }
-	
+		table.clear();
+	}
+
 	@Override
 	protected void clearRange(int pageStart)
 	{
@@ -112,15 +113,37 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			table.removeRow(pageStart);
 		}
 	}
-	
+
 	/**
 	 * @param column the column to be added.
 	 */
 	public void addColumn(Column<?> column)
-    {
+	{
 		columns.add(column);
-    }
+	}
 	
+	@Override
+	public void commit() 
+	{
+		super.commit();
+
+		for(int i=0; i<rows.size();i++)
+		{
+			rows.get(i).commit();
+		}
+	}
+
+	@Override
+	public void rollback() 
+	{
+		super.rollback();
+		
+		for(int i=0; i<rows.size();i++)
+		{
+			rows.get(i).rollback();
+		}
+	}
+
 	/**
 	 * @author samuel.cardoso
 	 *
@@ -135,29 +158,29 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		 * The default constructor.
 		 */
 		public CellEditor()
-        {
-        }
-		
+		{
+		}
+
 		/**
 		 * @param autoRefreshRow if true, the row will be refreshed when changed.
 		 */
 		public CellEditor(boolean autoRefreshRow)
-        {
-	        this.autoRefreshRow = autoRefreshRow;
-        }
+		{
+			this.autoRefreshRow = autoRefreshRow;
+		}
 
 		/**
 		 * @param dataObject the dataObject.
 		 * @return the widget to be rendered when in edition mode.
 		 */
 		public abstract HasValue<K> getWidget(T dataObject);
-		
+
 		/**
 		 * @param dataObject the dataObject. 
 		 * @param newValue the new value to be inserted in the dataObject. 
 		 */
 		public abstract void setProperty(T dataObject, K newValue);
-		
+
 		/**
 		 * @param grid
 		 * @param rowIndex
@@ -166,101 +189,103 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		 * @param row 
 		 */
 		public void render(
-			final PageableDataGrid<T> grid, 
-			final int rowIndex, 
-			final int columnIndex, 
-			final T dataObject 
-		)
+				final PageableDataGrid<T> grid, 
+				final int rowIndex, 
+				final int columnIndex, 
+				final T dataObject 
+				)
 		{
 			final HasValue<K> widget = CellEditor.this.getWidget(dataObject);
 			assert(widget != null): "widget cannot be null";
-			
-			grid.getTable().setWidget(rowIndex, columnIndex, (Widget) widget);
-			
+
+			drawCell(grid, rowIndex, columnIndex, (Widget) widget);
+
 			widget.addValueChangeHandler(new ValueChangeHandler<K>()
 			{
 				@Override
-                public void onValueChange(ValueChangeEvent<K> event)
-                {
+				public void onValueChange(ValueChangeEvent<K> event)
+				{
 					CellEditor.this.setProperty(dataObject, event.getValue());
 					if(autoRefreshRow)
 					{
 						grid.rows.get(rowIndex).refresh();
-						
-						Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
-						{
-							@Override
-							public boolean execute()
-							{
-//								grid.rows.get(rowIndex).rollback();
-								grid.rows.get(rowIndex).commit();
-								return false;
-							}
-						}, 3000);
+						testCommitAndRollback(grid, rowIndex);
 					}
-                }
+				}
+
+				private void testCommitAndRollback(final PageableDataGrid<T> grid, final int rowIndex) 
+				{
+					Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+					{
+						@Override
+						public boolean execute()
+						{
+//							grid.rows.get(rowIndex).rollback();
+							grid.rows.get(rowIndex).commit();
+							return false;
+						}
+					}, 3000);
+				}
 			});
 		}
 	}
-	
+
 	public class Row
 	{
 		private T dataObject;
+		private T oldDataObject;
 		private int rowIndex;
 		private boolean editing;
-		
+
 		public Row(T dataObject, int rowIndex)
 		{
 			this.dataObject = dataObject;
+			this.oldDataObject = dataObject;
 			this.rowIndex = rowIndex;
 		}
-		
+
 		public boolean isEditing() 
 		{
 			return editing;
 		}
 
-		void setDataObject(T dataObject) 
-		{
-			this.dataObject = dataObject;
-		}
-		
 		public int getRowIndex() 
 		{
 			return rowIndex;
 		}
-		
-		T getDataObject() 
-		{
-			return dataObject;
-		}
 
 		public void rollback()
 		{
-			getDataProvider().rollback();
+			dataObject = oldDataObject;
+			dataProvider.set(rowIndex, dataObject);
 			editing = false;
 			refresh();
 		}
-		
+
 		public void commit()
 		{
-			getDataProvider().commit();
+			oldDataObject = dataObject;
 			editing = false;
 			refresh();
 		}
-		
+
 		public void edit()
 		{
-			editing = true;
-			refresh();
+			if(!editing)
+			{
+				dataObject = dataProvider.get(rowIndex);
+				dataProvider.set(rowIndex, dataObject);
+				editing = true;
+				refresh();
+			}
 		}
-		
+
 		public void refresh()
 		{
 			drawColumns(this);
 		}
 	}
-	
+
 	public class Column<V>
 	{
 		private int columnIndex = 0;
@@ -275,22 +300,22 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		private CellEditor<T, ?> editableCell;
 
 		public Column(DataFactory<V, T> dataFactory)
-        {
+		{
 			assert(dataFactory != null): "dataFactory must not be null";
-	        this.dataFactory = dataFactory;
-	        this.columnIndex = columns != null ? columns.size() : 0;
-        }
-		
+			this.dataFactory = dataFactory;
+			this.columnIndex = columns != null ? columns.size() : 0;
+		}
+
 		public void clear()
 		{
 			row = null;
 		}
-		
+
 		public Column<V> setHeader(String header)
-	    {
+		{
 			this.header = header;
-		    return this;
-	    }
+			return this;
+		}
 
 		public Row getRow() 
 		{
@@ -298,16 +323,16 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		}
 
 		public Column<V> setComparator(Comparator<T> comparator)
-	    {
-		    this.comparator = comparator;
-		    return this;
-	    }
+		{
+			this.comparator = comparator;
+			return this;
+		}
 
 		public Column<V> setDataFactory(DataFactory<V, T> dataFactory)
-        {
-	        this.dataFactory = dataFactory;
-	        return this;
-        }
+		{
+			this.dataFactory = dataFactory;
+			return this;
+		}
 
 		public DataFactory<V, T> getDataFactory()
 		{
@@ -327,21 +352,20 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 
 		private void renderToView() 
 		{
-			
 			getDataProvider().read(row.rowIndex, new DataReader<T>() 
 			{
 				@Override
 				public void read(T dataObject, int index) 
 				{
 					V value = dataFactory.createData(dataObject);
-					
+
 					IsWidget widget = null;
-					
+
 					if(value == null)
 					{
 						return;
 					}
-					
+
 					if(value instanceof IsWidget)
 					{
 						widget = (IsWidget) value;
@@ -350,8 +374,8 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 					{
 						widget = new Label(value.toString());
 					}
-					
-					table.setWidget(row.rowIndex, columnIndex, widget);		
+
+					drawCell(PageableDataGrid.this, row.rowIndex, columnIndex, widget);
 				}
 			});
 		}
@@ -373,7 +397,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			}
 		}
 	}
-	
+
 	/**
 	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 *
@@ -382,11 +406,11 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	public class DataGridColumnGroup
 	{
 		private Array<Column<?>> columns;
-		
+
 		public void addColumn(Column<?> widgetColumn)
-	    {
+		{
 			columns.add(widgetColumn);
-	    }
+		}
 	}
 
 	public SelectStrategy getSelectStrategy()
@@ -414,17 +438,17 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		int rowIndex = getDataProvider().indexOf(boundObject);
 		return rows.get(rowIndex);
 	}
-	
+
 	public Array<Row> getRows()
 	{
 		return rows;
 	}
-	
+
 	@Override
 	protected DataReader<T> getDataReader() 
 	{
 		return new DataReader<T>() 
-		{
+				{
 			@Override
 			public void read(T dataObject, int rowIndex) 
 			{
@@ -438,28 +462,26 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 				{
 					row = rows.get(rowIndex);
 				}
-				
 				drawColumns(row);
 			}
 		};
 	}
-	
+
 	private void drawColumns(Row row)
 	{
-		if(row.isEditing())
-		{
-			T clonedDataObject = dataProvider.get(row.rowIndex);
-			row.setDataObject(clonedDataObject);
-			dataProvider.set(row.rowIndex, clonedDataObject);
-		}
-				
 		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
 		{
 			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
-			
+
 			column.setRow(row);
 			column.render();
 		}
 	}
-}
 	
+	private static <T> void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget)
+	{
+		Window.alert("" + grid.getPageSize());
+		
+		grid.getTable().setWidget(rowIndex % grid.getPageSize(), columnIndex, widget);		
+	}
+}
