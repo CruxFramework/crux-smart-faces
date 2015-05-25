@@ -85,6 +85,13 @@ public class ScrollablePager extends AbstractPager
     }
 
 	@Override
+	public void setEnabled(boolean enabled) 
+	{
+		super.setEnabled(enabled);
+		scrollable.setTouchScrollingDisabled(!enabled);
+	}
+	
+	@Override
 	public void setPageable(Pageable<?> pageable)
 	{
 	    super.setPageable(pageable);
