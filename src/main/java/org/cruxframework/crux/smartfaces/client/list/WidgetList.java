@@ -68,6 +68,12 @@ public class WidgetList<T> extends AbstractPageable<T>
 		int widgetIndex = contentPanel.getWidgetIndex(w);
 		if (widgetIndex >= 0)
 		{
+			if (pager != null && !pager.supportsInfiniteScroll())
+			{
+				int numPreviousPage = getDataProvider().getCurrentPage() - 1;
+				widgetIndex += (numPreviousPage*getPageSize());
+			}
+			
 			return getDataProvider().get(widgetIndex);
 		}
 		return null;
