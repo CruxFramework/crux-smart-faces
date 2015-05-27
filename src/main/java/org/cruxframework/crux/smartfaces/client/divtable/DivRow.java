@@ -15,36 +15,54 @@
  */
 package org.cruxframework.crux.smartfaces.client.divtable;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
+
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.UIObject;
 
-/**
- * A panel that shows its items as an ordered list (using {@code <ol> and <li>} tags)
- * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- */
-public class DivRow extends FlowPanel// extends AbstractDivRow 
+public class DivRow extends FlowPanel 
 {
+	private static Array<String> columnClasses = CollectionFactory.createArray();
+	
 	public DivRow()
 	{
 		setStyleName("row");
 	}
 	
-	public void add(IsWidget widget) 
+	public FlowPanel add(IsWidget widget, int columnIndex) 
 	{
 		FlowPanel column = new FlowPanel();
 		column.add(widget);
 		add(column);
-		setStyleProperties(widget, column);
+		return column;
 	}
 	
-	private void setStyleProperties(final IsWidget widget, final FlowPanel column)
+	private void setStyleProperties(final FlowPanel column, int columnIndex)
     {
-		((UIObject) widget).getElement().getStyle().setProperty("width", "100%");
+		Element element = column.getElement();
+		element.addClassName("column");
 		
-//		column.getElement().getStyle().setProperty("order", String.valueOf(getWidgetIndex(widget)));
-		column.getElement().setClassName("column");
+		String columnName = "column_" + columnIndex;
+		int columnClassesIndex = columnClasses.indexOf(columnName);
+		if(columnClassesIndex >= 0)
+		{
+			element.addClassName(columnClasses.get(columnClassesIndex));
+		} else
+		{
+			setClassContent(columnName, "order: " + String.valueOf(columnIndex));
+			element.addClassName(columnName);
+			columnClasses.insert(columnIndex, columnName);
+		}
     }
+	
+	public static native void setClassContent(String className, String classContent) /*-{
+		var style = document.createElement('style');
+		style.type = 'text/css';
+		style.innerHTML = '.' + className +' { '+ classContent +' }';
+		$doc.getElementsByTagName('head')[0].appendChild(style);
+	}-*/;
 
 	public void insert(IsWidget widget, int columnIndex) 
 	{
@@ -54,30 +72,11 @@ public class DivRow extends FlowPanel// extends AbstractDivRow
 			column = (FlowPanel) getWidget(columnIndex);
 			column.clear();
 			column.add(widget);
+			setStyleProperties(column, columnIndex);
 		} catch (IndexOutOfBoundsException e)
 		{
-			add(widget);
+			column = add(widget, columnIndex);
+			setStyleProperties(column, columnIndex);
 		}
 	}	
-	
-//	public DivRow()
-//    {
-//    }
-//
-//	public DivRow(String styleName)
-//	{
-//		super(styleName);
-//	}
-//
-//	@Override
-//	protected Element createElement() 
-//	{
-//		return DOM.createElement("div");	
-//	}
-//
-//	@Override
-//	protected String getDefaultClassName() 
-//	{
-//		return "row";
-//	}
 }

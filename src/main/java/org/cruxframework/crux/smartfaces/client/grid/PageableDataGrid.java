@@ -47,7 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
  * - EXPERIMENTAL - 
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-//TODO Ver os indices quando a grid esta' paginada
 @Experimental
 public class PageableDataGrid<T> extends AbstractPageable<T>
 {
@@ -71,6 +70,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		initWidget(table);
 		setDataProvider(dataProvider, autoLoadData);
+		setAllowRefreshAfterDataChange(false);
 
 		dataProvider.addDataLoadedHandler(new DataLoadedHandler() 
 		{
@@ -85,14 +85,18 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 						PageableDataGrid.super.refreshPage(dataProvider.getCurrentPageStartRecord());		
 					}
 				});
-			}
-		});
-		dataProvider.addPageChangeHandler(new PageChangeHandler() 
-		{
-			@Override
-			public void onPageChanged(PageChangeEvent event) 
-			{
-				rows.clear();
+				
+				dataProvider.addPageChangeHandler(new PageChangeHandler() 
+				{
+					@Override
+					public void onPageChanged(PageChangeEvent event) 
+					{
+						if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
+						{
+							rows.clear();
+						}
+					}
+				});
 			}
 		});
 	}
@@ -101,7 +105,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	protected void refreshPage(int startRecord) 
 	{
 	}
-
+	
 	@Override
 	protected void clear()
 	{
@@ -217,23 +221,8 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 					if(autoRefreshRow)
 					{
 						grid.rows.get(rowIndex).makeChanges();
-//						testCommitAndRollback(grid, rowIndex);
 					}
 				}
-
-//				private void testCommitAndRollback(final PageableDataGrid<T> grid, final int rowIndex) 
-//				{
-//					Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
-//					{
-//						@Override
-//						public boolean execute()
-//						{
-////							grid.rows.get(rowIndex).undoChanges();
-//							grid.rows.get(rowIndex).makeChanges();
-//							return false;
-//						}
-//					}, 3000);
-//				}
 			});
 		}
 	}
@@ -300,15 +289,21 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	{
 		private int columnIndex = 0;
 		private Row row;
-		@SuppressWarnings("unused")
-		private Label label;
-		@SuppressWarnings("unused")
-		private String header;
-		@SuppressWarnings("unused")
-		private Comparator<T> comparator;
 		private DataFactory<V, T> dataFactory;
 		private CellEditor<T, ?> editableCell;
 
+		@SuppressWarnings("unused")
+		private Label label;
+		
+		@SuppressWarnings("unused")
+		private boolean sortable = false;
+		
+		@SuppressWarnings("unused")
+		private String header;
+		
+		@SuppressWarnings("unused")
+		private Comparator<T> comparator;
+		
 		public Column(DataFactory<V, T> dataFactory)
 		{
 			assert(dataFactory != null): "dataFactory must not be null";
@@ -321,21 +316,9 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			row = null;
 		}
 
-		public Column<V> setHeader(String header)
-		{
-			this.header = header;
-			return this;
-		}
-
 		public Row getRow() 
 		{
 			return row;
-		}
-
-		public Column<V> setComparator(Comparator<T> comparator)
-		{
-			this.comparator = comparator;
-			return this;
 		}
 
 		public Column<V> setDataFactory(DataFactory<V, T> dataFactory)
@@ -429,7 +412,16 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			@Override
 			public void read(T dataObject, int dataProviderRowIndex) 
 			{
-				int gridRowIndex = dataProviderRowIndex % dataProvider.getPageSize(); 
+				int gridRowIndex = 0;
+				if(PageableDataGrid.this.pager != null && PageableDataGrid.this.pager.supportsInfiniteScroll())
+				{
+					gridRowIndex = dataProviderRowIndex;					
+				} 
+				else
+				{
+					gridRowIndex = dataProviderRowIndex % dataProvider.getPageSize();
+				}
+				
 				Row row = null;
 				if(rows.size() <= gridRowIndex)
 				{
