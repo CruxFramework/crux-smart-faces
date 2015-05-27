@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.shared.Experimental;
+import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.ui.Label;
@@ -33,6 +34,8 @@ public class SequentialPager extends NavigationButtonsPager
 	private static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
 	private NavPanel panel;
 	private SimplePanel infoPanel;
+	private Button previousButton = createPreviousButton();
+	private Button nextButton = createNextButton();
 	
 	/**
 	 * Constructor
@@ -45,9 +48,9 @@ public class SequentialPager extends NavigationButtonsPager
 		this.infoPanel = new SimplePanel();
 		this.infoPanel.setWidget(createCurrentPageLabel("" + 0));
 		
-		this.panel.add(createPreviousButton());
+		this.panel.add(previousButton);
 		this.panel.add(infoPanel);
-		this.panel.add(createNextButton());		
+		this.panel.add(nextButton);		
 		
 		this.panel.setStyleName(DEFAULT_STYLE_NAME);
 		
@@ -62,6 +65,14 @@ public class SequentialPager extends NavigationButtonsPager
 		this.infoPanel.add(currentPageLabel);
 	}
 
+	@Override
+	public void setEnabled(boolean enabled) 
+	{
+		super.setEnabled(enabled);
+		previousButton.setEnabled(enabled);
+		nextButton.setEnabled(enabled);
+	}
+	
 	/**
 	 * @see org.cruxframework.crux.widgets.client.paging.AbstractPager#showLoading()
 	 */
