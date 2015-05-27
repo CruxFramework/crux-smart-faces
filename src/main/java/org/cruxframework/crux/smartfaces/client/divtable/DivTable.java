@@ -43,13 +43,14 @@ public class DivTable extends Composite
 	
 	public void clear()
 	{
-		rows = new ArrayList<DivRow>();
+		rows.clear();
 		table.clear();
 	}
 
-	public void removeRow(int row)
+	public void removeRow(int rowIndex)
 	{
-		table.remove(row);
+		rows.remove(rowIndex);
+		table.remove(rowIndex);
 	}
 
 	public void setWidget(int row, int column, IsWidget widget)
