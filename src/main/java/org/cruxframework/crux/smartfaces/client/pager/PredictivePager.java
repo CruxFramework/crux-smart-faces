@@ -92,6 +92,13 @@ public class PredictivePager extends NavigationButtonsPager
 		listBox.setEnabled(true);		
 	}
 	
+	@Override
+	public final void setEnabled(boolean enabled) 
+	{
+		super.setEnabled(enabled);
+		listBox.setEnabled(enabled);
+	}
+	
 	/**
 	 * Creates a list box with page numbers
 	 * @return

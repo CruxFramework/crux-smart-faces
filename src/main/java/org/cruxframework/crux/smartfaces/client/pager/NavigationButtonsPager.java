@@ -218,6 +218,16 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		return label;
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) 
+	{
+		super.setEnabled(enabled);
+		previousButton.setEnabled(enabled);
+		nextButton.setEnabled(enabled);
+		firstButton.setEnabled(enabled);
+		lastButton.setEnabled(enabled);
+	}
+	
 	/**
 	 * Creates a generic navigation button
 	 * @param styleName
