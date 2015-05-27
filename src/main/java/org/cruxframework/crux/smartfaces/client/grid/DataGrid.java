@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectHandler;
@@ -33,6 +34,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.IsWidget;
 
 //CHECKSTYLE:OFF
 /**
@@ -127,7 +129,17 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandl
 	    return null;
     }
 
-	public <V> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
+	public class DataGridColumnGroup
+	{
+		private Array<Column<?>> columns;
+
+		public void addColumn(Column<?> widgetColumn)
+		{
+			columns.add(widgetColumn);
+		}
+	}
+	
+	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
     {
 	    PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
 	    addColumn(column);
