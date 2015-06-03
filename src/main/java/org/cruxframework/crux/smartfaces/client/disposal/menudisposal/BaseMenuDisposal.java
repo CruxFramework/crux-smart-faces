@@ -16,7 +16,6 @@
 package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 
-import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -50,7 +49,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	protected Panel bodyPanel;
 	protected Panel viewContentPanel;
 	protected Menu menu;
-	private View innerView;	
 	private BaseMenuHandler handler = GWT.create(BaseMenuHandler.class);
 	
 	protected BaseMenuDisposal()
@@ -69,7 +67,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 
 	public View getView()
 	{
-		return innerView;
+		return getActiveView();
 	}
 
 	public void addFooterContent(Widget footer)
@@ -116,6 +114,11 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	protected abstract void buildLayout();
 	
 	/**
+	 * Must be overridden to specify default stylename
+	 * @return styteName
+	 */
+	protected abstract String getDefaultStyleName();
+	/**
 	 * Must be overridden to specify footer's stylename
 	 * @return styteName
 	 */
@@ -144,6 +147,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		footerPanel.setStyleName(getFooterStyleName());
 		menuPanel.setStyleName(getMenuPanelStyleName());
 		viewContentPanel.setStyleName(getContentStyleName());
+		setStyleName(getDefaultStyleName());
 	}
 	
 	@Override
@@ -156,32 +160,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		}
 		return activated;
 	}
-	
-	@Override
-	protected boolean doAdd(View view, boolean lazy, Object parameter)
-	{
-	    assert(views.isEmpty()):"Disposal can not contain more then one view";
-	    innerView = view;
-	    boolean added = super.doAdd(view, lazy, parameter);
-	    if (!added)
-	    {//During view creation, a widget can make a reference to Screen static methods... So, it is better to 
-	     // set rootView reference before widgets creation...	
-	    	innerView = null;
-	    }
-		return added;
-	}
-	
-	@Override
-	protected boolean doRemove(View view, boolean skipEvents)
-	{
-	    boolean removed = super.doRemove(view, skipEvents);
-	    if (removed)
-	    {
-	    	innerView = null;
-	    }
-		return removed;
-	}
-	
+		
 	@Override
 	protected void showView(String viewName, String viewId, Object parameter)
 	{
