@@ -46,8 +46,13 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	protected void buildLayout()
 	{
 		getLayoutBuilder().buildLayout(this);
-		setStyleName(DEFAULT_STYLE_NAME);
 	}
+
+	@Override
+	protected String getDefaultStyleName()
+    {
+	    return DEFAULT_STYLE_NAME;
+    }
 	
 	@Override
 	protected String getFooterStyleName()
