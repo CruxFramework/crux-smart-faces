@@ -34,52 +34,23 @@ public class TopMenuDisposal extends BaseMenuDisposal
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-TopMenuDisposal";
 
-	private static final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-menuPanel";
-	private static final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-headerPanel";
-	private static final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-footerPanel";
 	private static final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-contentPanel";
+	private static final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-footerPanel";
+	private static final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-headerPanel";
+	private static final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-menuPanel";
 	private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
 
 	private LayoutBuilder layoutBuilder = null;
 
 	@Override
-	protected void buildLayout()
+	public void setStyleName(String style)
 	{
-		getLayoutBuilder().buildLayout(this);
-		setStyleName(DEFAULT_STYLE_NAME);
+	    super.setStyleName(style);
+
+	    getLayoutBuilder().setStyleName(this);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 	}
 
-	@Override
-	protected String getFooterStyleName()
-	{
-		return FOOTER_PANEL_STYLE;
-	}
-
-	@Override
-	protected String getHeaderStyleName()
-	{
-		return HEADER_PANEL_STYLE;
-	}
-
-	@Override
-	protected String getMenuPanelStyleName()
-	{
-		return MENU_PANEL_STYLE;
-	}
-
-	@Override
-	protected String getContentStyleName()
-	{
-		
-		return CONTENT_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getSmallHeaderStyleName()
-	{
-		return TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL;
-	}
-	
 	@Override
 	public void setStyleName(String style, boolean add)
 	{
@@ -90,22 +61,93 @@ public class TopMenuDisposal extends BaseMenuDisposal
 			getLayoutBuilder().setStyleName(this);
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 		}
+	}	
+
+	@Override
+	protected void buildLayout()
+	{
+		getLayoutBuilder().buildLayout(this);
+	}
+
+	@Override
+	protected String getContentStyleName()
+	{
+		
+		return CONTENT_PANEL_STYLE;
+	}
+
+	@Override
+	protected String getDefaultStyleName()
+	{
+		return DEFAULT_STYLE_NAME;
+	}
+
+	@Override
+	protected String getFooterStyleName()
+	{
+		return FOOTER_PANEL_STYLE;
 	}
 	
 	@Override
-	public void setStyleName(String style)
+	protected String getHeaderStyleName()
 	{
-	    super.setStyleName(style);
+		return HEADER_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getMenuPanelStyleName()
+	{
+		return MENU_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getSmallHeaderStyleName()
+	{
+		return TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL;
+	}
+	
+	private LayoutBuilder getLayoutBuilder()
+	{
+		if(layoutBuilder == null)
+		{
+			layoutBuilder = GWT.create(LayoutBuilder.class);
+		}
+		
+		return layoutBuilder;
+	}
+	
+	static class LargeLayoutBuilder implements LayoutBuilder
+	{
+		@Override
+		public void buildLayout(BaseMenuDisposal disposal)
+		{
+			FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
 
-	    getLayoutBuilder().setStyleName(this);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
+			disposal.headerPanel.setStyleName(disposal.getHeaderStyleName());
+			disposal.bodyPanel.add(disposal.headerPanel);
+			disposal.bodyPanel.add(disposal.menuPanel);
+			disposal.bodyPanel.add(disposal.viewContentPanel);
+			disposal.bodyPanel.add(disposal.footerPanel);
+		}
+
+		@Override
+        public void setStyleName(BaseMenuDisposal disposal)
+        {
+			disposal.addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneTopMenuDisposal());
+        }
+	}
+	
+	static interface LayoutBuilder
+	{
+		void buildLayout(BaseMenuDisposal disposal);
+		void setStyleName(BaseMenuDisposal disposal);
 	}
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
-		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-smallHeaderWrapper";
 		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "faces-TopMenuDisposal-menuButton";
 		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-TopMenuDisposal-menuButtonContainer";
+		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-smallHeaderWrapper";
 
 
 		@Override
@@ -145,42 +187,5 @@ public class TopMenuDisposal extends BaseMenuDisposal
         {
 			disposal.addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneTopMenuDisposal());
         }
-	}
-	
-	static class LargeLayoutBuilder implements LayoutBuilder
-	{
-		@Override
-		public void buildLayout(BaseMenuDisposal disposal)
-		{
-			FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
-
-			disposal.headerPanel.setStyleName(disposal.getHeaderStyleName());
-			disposal.bodyPanel.add(disposal.headerPanel);
-			disposal.bodyPanel.add(disposal.menuPanel);
-			disposal.bodyPanel.add(disposal.viewContentPanel);
-			disposal.bodyPanel.add(disposal.footerPanel);
-		}
-
-		@Override
-        public void setStyleName(BaseMenuDisposal disposal)
-        {
-			disposal.addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneTopMenuDisposal());
-        }
-	}
-	
-	static interface LayoutBuilder
-	{
-		void buildLayout(BaseMenuDisposal disposal);
-		void setStyleName(BaseMenuDisposal disposal);
-	}
-	
-	private LayoutBuilder getLayoutBuilder()
-	{
-		if(layoutBuilder == null)
-		{
-			layoutBuilder = GWT.create(LayoutBuilder.class);
-		}
-		
-		return layoutBuilder;
 	}
 }
