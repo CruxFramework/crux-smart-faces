@@ -33,68 +33,14 @@ public class SideMenuDisposal extends BaseMenuDisposal
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
 	
-	private static final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
-	private static final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
-	private static final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
 	private static final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
-	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
+	private static final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
+	private static final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
+	private static final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
 	private static final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
+	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
 	
 	private LayoutBuilder layoutBuilder = null;
-	
-	@Override
-	protected void buildLayout()
-	{
-		getLayoutBuilder().buildLayout(this);
-		setStyleName(DEFAULT_STYLE_NAME);
-	}
-	
-	@Override
-	protected String getFooterStyleName()
-	{
-		return FOOTER_PANEL_STYLE;
-	}
-	@Override
-	protected String getHeaderStyleName()
-	{
-		return HEADER_PANEL_STYLE;
-	}
-	@Override
-	protected String getMenuPanelStyleName()
-	{
-		return MENU_PANEL_STYLE;
-	}
-	@Override
-	protected String getContentStyleName()
-	{
-		return CONTENT_MENU_STYLE;
-	}
-	
-	@Override
-	protected String getSmallHeaderStyleName()
-	{
-		return SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL;
-	}
-	
-	@Override
-	public void setStyleName(String style, boolean add)
-	{
-		super.setStyleName(style, add);
-		
-		if (!add)
-		{
-			getLayoutBuilder().setStyleName(this);
-		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
-		}
-	}
-	
-	@Override
-	public void setStyleName(String style)
-	{
-	    super.setStyleName(style);
-	    getLayoutBuilder().setStyleName(this);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
-	}
 	
 	public void setMenuPositioning(MenuPosition position)
 	{
@@ -106,6 +52,118 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		{
 			removeStyleName(RIGHT_MENU_POSITION);
 		}
+	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    getLayoutBuilder().setStyleName(this);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
+	}	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		
+		if (!add)
+		{
+			getLayoutBuilder().setStyleName(this);
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
+		}
+	}
+	@Override
+	protected void buildLayout()
+	{
+		getLayoutBuilder().buildLayout(this);
+	}
+	@Override
+	protected String getContentStyleName()
+	{
+		return CONTENT_MENU_STYLE;
+	}
+	@Override
+	protected String getDefaultStyleName()
+	{
+		return DEFAULT_STYLE_NAME;
+	}
+	
+	@Override
+	protected String getFooterStyleName()
+	{
+		return FOOTER_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getHeaderStyleName()
+	{
+		return HEADER_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getMenuPanelStyleName()
+	{
+		return MENU_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getSmallHeaderStyleName()
+	{
+		return SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL;
+	}
+	
+	private LayoutBuilder getLayoutBuilder()
+	{
+		if(layoutBuilder == null)
+		{
+			layoutBuilder = GWT.create(LayoutBuilder.class);
+		}
+		
+		return layoutBuilder;
+	}
+	
+	public static enum MenuPosition
+	{
+		LEFT,RIGHT;
+	}
+	
+	static class LargeLayoutBuilder implements LayoutBuilder
+	{
+		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
+
+		@Override
+		public void buildLayout(final BaseMenuDisposal disposal)
+		{ 
+			FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
+
+			FlowPanel mainPanel = new FlowPanel();
+			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
+			
+			disposal.headerPanel.setStyleName(disposal.getHeaderStyleName());
+			
+			FlowPanel splitPanel = new FlowPanel();
+			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
+			splitPanel.add(disposal.menuPanel);
+			splitPanel.add(disposal.viewContentPanel);
+			
+			mainPanel.add(disposal.headerPanel);
+			mainPanel.add(splitPanel);
+			mainPanel.add(disposal.footerPanel);
+			disposal.bodyPanel.add(mainPanel);
+		}
+
+		@Override
+        public void setStyleName(BaseMenuDisposal disposal)
+        {
+			disposal.addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
+        }
+	}
+	
+	static interface LayoutBuilder
+	{
+		void buildLayout(BaseMenuDisposal disposal);
+		void setStyleName(BaseMenuDisposal disposal);
 	}
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
@@ -152,59 +210,5 @@ public class SideMenuDisposal extends BaseMenuDisposal
         {
 			disposal.addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
         }
-	}
-	
-	static class LargeLayoutBuilder implements LayoutBuilder
-	{
-		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
-		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
-
-		@Override
-		public void buildLayout(final BaseMenuDisposal disposal)
-		{ 
-			FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
-
-			FlowPanel mainPanel = new FlowPanel();
-			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
-			
-			disposal.headerPanel.setStyleName(disposal.getHeaderStyleName());
-			
-			FlowPanel splitPanel = new FlowPanel();
-			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
-			splitPanel.add(disposal.menuPanel);
-			splitPanel.add(disposal.viewContentPanel);
-			
-			mainPanel.add(disposal.headerPanel);
-			mainPanel.add(splitPanel);
-			mainPanel.add(disposal.footerPanel);
-			disposal.bodyPanel.add(mainPanel);
-		}
-
-		@Override
-        public void setStyleName(BaseMenuDisposal disposal)
-        {
-			disposal.addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
-        }
-	}
-	
-	public static enum MenuPosition
-	{
-		LEFT,RIGHT;
-	}
-	
-	static interface LayoutBuilder
-	{
-		void buildLayout(BaseMenuDisposal disposal);
-		void setStyleName(BaseMenuDisposal disposal);
-	}
-	
-	private LayoutBuilder getLayoutBuilder()
-	{
-		if(layoutBuilder == null)
-		{
-			layoutBuilder = GWT.create(LayoutBuilder.class);
-		}
-		
-		return layoutBuilder;
 	}		
 }
