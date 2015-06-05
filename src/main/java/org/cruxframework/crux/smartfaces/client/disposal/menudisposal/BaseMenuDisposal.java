@@ -16,6 +16,8 @@
 package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
+import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -24,7 +26,6 @@ import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
 import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
-import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -47,7 +48,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	protected FooterPanel footerPanel;
 	protected HeaderPanel headerPanel;
 	protected Menu menu;
-	protected NavPanel menuPanel;
+	protected Panel menuPanel;
 	protected Panel viewContentPanel;
 	private BaseMenuHandler handler = GWT.create(BaseMenuHandler.class);
 
@@ -56,13 +57,8 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		super(new FlowPanel(), true);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();//TODO remover isso e usar heranca nos css
 		setHistoryControlEnabled(true);
-		bodyPanel = getMainWidget();
-		viewContentPanel = new FlowPanel();
-		headerPanel = new HeaderPanel();
-		menuPanel = new NavPanel();
-		footerPanel = new FooterPanel();
+		createChildWidgets();
 		buildLayout();
-		setStyles();
 	}
 
 	public void addFooterContent(Widget footer)
@@ -70,14 +66,41 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		this.footerPanel.add(footer);
 	}
 
+	public void addHeaderContent(Widget header)
+	{
+		headerPanel.add(header);
+	}
+
+	public void addLargeFooterContent(Widget footer)
+	{
+		if (Screen.getCurrentDevice().getSize().equals(Size.large))
+		{
+			addFooterContent(footer);
+		}
+	}
+
 	public void addLargeHeaderContent(Widget header)
 	{
-		handler.addLargeHeaderContent(this, header);
+		if (Screen.getCurrentDevice().getSize().equals(Size.large))
+		{
+			addHeaderContent(header);
+		}
+	}
+	
+	public void addSmallFooterContent(Widget footer)
+	{
+		if (Screen.getCurrentDevice().getSize().equals(Size.small))
+		{
+			addFooterContent(footer);
+		}
 	}
 
 	public void addSmallHeaderContent(Widget header)
 	{
-		handler.addSmallHeaderContent(this, header);
+		if (Screen.getCurrentDevice().getSize().equals(Size.small))
+		{
+			addHeaderContent(header);
+		}
 	}
 
 	public Menu getMenu()
@@ -111,6 +134,19 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	 * Must be overridden to create all the internal widgets
 	 */
 	protected abstract void buildLayout();
+
+	protected void createChildWidgets()
+    {
+	    bodyPanel = getMainWidget();
+		viewContentPanel = new FlowPanel();
+		headerPanel = new HeaderPanel();
+		menuPanel = new FlowPanel();
+		footerPanel = new FooterPanel();
+		footerPanel.setStyleName(getFooterStyleName());
+		menuPanel.setStyleName(getMenuPanelStyleName());
+		viewContentPanel.setStyleName(getContentStyleName());
+		setStyleName(getDefaultStyleName());		
+    }
 
 	@Override
 	protected Panel getContainerPanel(View view)
@@ -154,14 +190,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		Window.setTitle(title);
 	}
 
-	protected void setStyles()
-	{
-		footerPanel.setStyleName(getFooterStyleName());
-		menuPanel.setStyleName(getMenuPanelStyleName());
-		viewContentPanel.setStyleName(getContentStyleName());
-		setStyleName(getDefaultStyleName());
-	}
-
 	protected void showSmallMenu()
 	{
 		handler.showSmallMenu(this);
@@ -185,23 +213,12 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 
 	static interface BaseMenuHandler
 	{
-		void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header);
-		void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header);
 		void setMenu(BaseMenuDisposal disposal, Menu menu);
 		void showSmallMenu(BaseMenuDisposal disposal);
 	}
 
 	static class LargeBaseMenuHandler implements BaseMenuHandler
 	{
-		@Override
-		public void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header)
-		{
-			disposal.headerPanel.add(header);
-		}
-
-		@Override
-		public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header) {}
-
 		@Override
 		public void setMenu(final BaseMenuDisposal disposal, Menu menu)
 		{
@@ -226,15 +243,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 
 	static class SmallBaseMenuHandler implements BaseMenuHandler
 	{
-		@Override
-		public void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header) {}
-
-		@Override
-		public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header)
-		{
-			disposal.headerPanel.add(header);
-		}
-
 		@Override
 		public void setMenu(final BaseMenuDisposal disposal, final Menu menu)
 		{

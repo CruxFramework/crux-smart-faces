@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal;
 
 import java.util.LinkedList;
 
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
@@ -63,12 +64,15 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		return new DisposalLayoutContext();
 	}
 	
-	@TagConstraints(minOccurs="5", maxOccurs="5")
+	@TagConstraints(minOccurs="0")
 	@TagChildren({
 		@TagChild(ViewProcessor.class),
+		@TagChild(LayoutHeaderProcessor.class),
 		@TagChild(LayoutSmallHeaderProcessor.class),
 		@TagChild(LayoutLargeHeaderProcessor.class),
 		@TagChild(LayoutFooterProcessor.class),
+		@TagChild(LayoutSmallFooterProcessor.class),
+		@TagChild(LayoutLargeFooterProcessor.class),
 		@TagChild(MenuProcessor.class)
 	})
 	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<DisposalLayoutContext>{}
@@ -103,6 +107,14 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	{
 	}
 	
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="header",description="Header panel used")
+	@TagChildren({
+		@TagChild(value=TopMenuDisposalFactory.HeaderProcessor.class)
+	})
+	public static class LayoutHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+	}
+
 	static enum TopDisposalMenuType { HORIZONTAL_ACCORDION, HORIZONTAL_DROPDOWN }
 
 	@TagConstraints(maxOccurs="1",minOccurs="1",tagName="mainMenu")
@@ -199,14 +211,33 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	{
 	}
 	
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="largeFooter")
+	@TagChildren({
+		@TagChild(value=TopMenuDisposalFactory.LargeFooterProcessor.class)
+	})
+	public static class LayoutLargeFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+	}
+	
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="smallFooter")
+	@TagChildren({
+		@TagChild(value=TopMenuDisposalFactory.SmallFooterProcessor.class)
+	})
+	public static class LayoutSmallFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+	}
+	
 	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
 	public static class LargeHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
-			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
-			out.println(context.getWidget()+".addLargeHeaderContent("+widget+");");
+			if (getWidgetCreator().getDevice().getSize().equals(Size.large))
+			{
+				String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+				out.println(context.getWidget()+".addLargeHeaderContent("+widget+");");
+			}
 		}
 	}
 	
@@ -216,11 +247,53 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		@Override
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
-			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
-			out.println(context.getWidget()+".addSmallHeaderContent("+widget+");");
+			if (getWidgetCreator().getDevice().getSize().equals(Size.small))
+			{
+				String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+				out.println(context.getWidget()+".addSmallHeaderContent("+widget+");");
+			}
 		}
 	}
 	
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	public static class HeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+		{
+			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+			out.println(context.getWidget()+".addHeaderContent("+widget+");");
+		}
+	}
+
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	public static class LargeFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+		{
+			if (getWidgetCreator().getDevice().getSize().equals(Size.large))
+			{
+				String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+				out.println(context.getWidget()+".addLargeFooterContent("+widget+");");
+			}
+		}
+	}
+
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	public static class SmallFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
+		{
+			if (getWidgetCreator().getDevice().getSize().equals(Size.small))
+			{
+				String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+				out.println(context.getWidget()+".addSmallFooterContent("+widget+");");
+			}
+		}
+	}
+
 	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
 	public static class FooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
