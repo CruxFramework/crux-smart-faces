@@ -56,13 +56,8 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		super(new FlowPanel(), true);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();//TODO remover isso e usar heranca nos css
 		setHistoryControlEnabled(true);
-		bodyPanel = getMainWidget();
-		viewContentPanel = new FlowPanel();
-		headerPanel = new HeaderPanel();
-		menuPanel = new NavPanel();
-		footerPanel = new FooterPanel();
+		createChildWidgets();
 		buildLayout();
-		setStyles();
 	}
 
 	public View getView()
@@ -75,6 +70,21 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		this.footerPanel.add(footer);
 	}
 	
+	public void addSmallFooterContent(Widget footer)
+	{
+		this.handler.addSmallFooterContent(this, footer);
+	}
+
+	public void addLargeFooterContent(Widget footer)
+	{
+		this.handler.addLargeFooterContent(this, footer);
+	}
+
+	public void addHeaderContent(Widget header)
+	{
+		headerPanel.add(header);
+	}
+
 	public void addSmallHeaderContent(Widget header)
 	{
 		handler.addSmallHeaderContent(this, header);
@@ -96,6 +106,19 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		return this.menu;
 	}
 	
+	protected void createChildWidgets()
+    {
+	    bodyPanel = getMainWidget();
+		viewContentPanel = new FlowPanel();
+		headerPanel = new HeaderPanel();
+		menuPanel = new NavPanel();
+		footerPanel = new FooterPanel();
+		footerPanel.setStyleName(getFooterStyleName());
+		menuPanel.setStyleName(getMenuPanelStyleName());
+		viewContentPanel.setStyleName(getContentStyleName());
+		setStyleName(getDefaultStyleName());
+    }
+
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
@@ -142,14 +165,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	
 	protected abstract String getSmallHeaderStyleName();
 	
-	protected void setStyles()
-	{
-		footerPanel.setStyleName(getFooterStyleName());
-		menuPanel.setStyleName(getMenuPanelStyleName());
-		viewContentPanel.setStyleName(getContentStyleName());
-		setStyleName(getDefaultStyleName());
-	}
-	
 	@Override
 	protected boolean activate(View view, Panel containerPanel, Object parameter)
 	{
@@ -185,6 +200,8 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	static interface BaseMenuHandler
 	{
 		void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header);
+		void addSmallFooterContent(BaseMenuDisposal baseMenuDisposal, Widget footer);
+		void addLargeFooterContent(BaseMenuDisposal baseMenuDisposal, Widget footer);
 		void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header);
 		void setMenu(BaseMenuDisposal disposal, Menu menu);
 		void showSmallMenu(BaseMenuDisposal disposal);
@@ -199,7 +216,15 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
         }
 
 		@Override
+        public void addLargeFooterContent(BaseMenuDisposal disposal, Widget footer)
+        {
+			disposal.footerPanel.add(footer);
+        }
+
+		@Override
         public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header) {}
+		@Override
+        public void addSmallFooterContent(BaseMenuDisposal baseMenuDisposal, Widget footer) {}
 
 		@Override
         public void setMenu(final BaseMenuDisposal disposal, Menu menu)
@@ -226,12 +251,20 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	static class SmallBaseMenuHandler implements BaseMenuHandler
 	{
 		@Override
+        public void addLargeFooterContent(BaseMenuDisposal baseMenuDisposal, Widget footer){}
+		@Override
         public void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header) {}
 
 		@Override
         public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header)
         {
 			disposal.headerPanel.add(header);
+        }
+
+		@Override
+        public void addSmallFooterContent(BaseMenuDisposal disposal, Widget footer)
+        {
+			disposal.footerPanel.add(footer);
         }
 
 		@Override
