@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.event.focusblur.BeforeBlurEvent;
 import org.cruxframework.crux.core.client.event.focusblur.BeforeFocusEvent;
 import org.cruxframework.crux.core.client.screen.views.MultipleViewsContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
 import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -60,7 +61,7 @@ public class TabContainer extends MultipleViewsContainer
 	 */
 	public boolean add(View view, boolean lazy, boolean closeable)
 	{
-		if (doAdd(view, lazy, closeable))
+		if (doAdd(view, lazy, closeable, null))
 		{
 			adoptView(view);
 			return true;
@@ -87,7 +88,48 @@ public class TabContainer extends MultipleViewsContainer
 		}
 		return false;
     }
-    
+	
+	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param closeable if true, allow user to close the tab
+	 * @return
+	 */
+	public boolean addLazy(String viewName, final boolean closeable)
+	{
+		return addLazy(viewName, viewName, closeable);
+	}
+	
+    /**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param viewId ID of the View to be added
+	 * @param closeable if true, allow user to close the tab
+	 * @return
+	 */
+	public boolean addLazy(String viewName, String viewId, final boolean closeable)
+	{
+		createView(viewName, viewId, new CreateCallback()
+		{
+			@Override
+            public void onViewCreated(View view)
+            {
+				add(view, true, closeable);
+            }
+		});
+		return true;
+	}
+	
+    /**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param view View to be added
+	 * @return
+	 */
+	public boolean addLazy(View view, final boolean closeable)
+	{
+		return add(view, true, closeable);
+	}
+
 	/** Closes the tab, skipping any Unload event.
 	 * @param viewId - the viewId that will be closed
 	 */
@@ -95,7 +137,7 @@ public class TabContainer extends MultipleViewsContainer
 	{
 		closeView(viewId, true);
 	}
-
+	
 	/**
 	 * @param viewId - The viewId that will be closed
 	 * @param skipEvents - skipping any Unload event.
@@ -108,6 +150,7 @@ public class TabContainer extends MultipleViewsContainer
 			remove(view, skipEvents);
 		}
 	}
+
 	
 	/**
 	 * @param viewId - The viewId that will be focus
@@ -116,14 +159,14 @@ public class TabContainer extends MultipleViewsContainer
 	{
 		this.tabPanel.selectTab(getIndex(viewId));
 	}
-
+    
 	/**
 	 * @return int 
 	 */
 	public int getFocusedViewIndex()
 	{
 		return tabPanel.getSelectedTab();
-	}	
+	}
 
 	/**
 	 * @param viewId 
@@ -142,7 +185,16 @@ public class TabContainer extends MultipleViewsContainer
 	{
 		return getIndex(view.getId());
 	}
-	
+
+	/**
+	 * @param viewId
+	 * @return
+	 */
+	public Tab getTab(String viewId)
+	{
+		return tabs.get(viewId);
+	}	
+
 	/**
 	 * @param tabIndex
 	 * @return
@@ -153,18 +205,47 @@ public class TabContainer extends MultipleViewsContainer
 	}
 	
 	/**
-	 * @param viewId
-	 * @return
-	 */
-	public Tab getTab(String viewId)
+     * Render the requested view into the container.
+     * @param viewName View name
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+     */
+	public void showView(String viewName, boolean closeable)
 	{
-		return tabs.get(viewId);
+		showView(viewName, closeable, null);
 	}
-
-	@Override
-	protected boolean doAdd(View view, boolean lazy, Object parameter)
+	
+	/**
+     * Render the requested view into the container.
+     * @param viewName View name
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+     */
+	public void showView(String viewName, boolean closeable, Object parameter)
 	{
-		return doAdd(view, lazy, true, parameter);
+		showView(viewName, viewName, closeable, parameter);
+	}
+	
+	/**
+     * Render the requested view into the container.
+     * @param viewName View name
+     * @param viewId View identifier
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+	 */
+	public void showView(String viewName, String viewId, final boolean closeable, final Object parameter)
+	{
+		createView(viewName, viewId, new CreateCallback()
+		{
+			@Override
+            public void onViewCreated(View view)
+            {
+				if (add(view, false, closeable))
+				{
+					renderView(view, parameter);
+				}
+            }
+		});
 	}
 
 	protected boolean doAdd(View view, boolean lazy, boolean closeable, Object parameter)
@@ -179,16 +260,28 @@ public class TabContainer extends MultipleViewsContainer
 	    		Tab tab = new Tab(flap, tabId);
 	    		this.tabs.put(tabId, tab);			
 	    		tabPanel.add(tab, flap);
-	    		focusView(tabId);
+	    		if (!lazy)
+	    		{
+	    			focusView(tabId);
+	    		}
 	    	}
 	    	return doAdd;
 	    }
 	    else
 	    {
-	    	focusView(tabId);
+    		if (!lazy)
+    		{
+    			focusView(tabId);
+    		}
 	    }
 	    return false;
     }
+
+	@Override
+	protected boolean doAdd(View view, boolean lazy, Object parameter)
+	{
+		return doAdd(view, lazy, true, parameter);
+	}
 	
 	@Override
 	protected boolean doRemove(View view, boolean skipEvent)
@@ -201,6 +294,13 @@ public class TabContainer extends MultipleViewsContainer
 		return doRemove;
 	}
 	
+	@Override
+    protected Panel getContainerPanel(View view)
+    {
+		Tab tab = getTab(view.getId());
+	    return tab.getContainerPanel();
+    }
+
 	/**
 	 * @return
 	 */
@@ -217,13 +317,6 @@ public class TabContainer extends MultipleViewsContainer
 	}
 
 	@Override
-    protected Panel getContainerPanel(View view)
-    {
-		Tab tab = getTab(view.getId());
-	    return tab.getContainerPanel();
-    }
-
-	@Override
     protected void handleViewTitle(String title, Panel containerPanel, String viewId)
     {
 		Tab tab = getTab(viewId);
@@ -233,22 +326,6 @@ public class TabContainer extends MultipleViewsContainer
 		}
     }
 
-	/**
-	 * @param tabId
-	 */
-	private void doCloseTab(String tabId)
-	{
-		int index = getIndex(tabId);
-		this.tabPanel.remove(index);
-		this.tabs.remove(tabId);
-		
-		if (this.tabPanel.getWidgetCount() > 0)
-		{
-			int indexToFocus = index == 0 ? 0 : index - 1;
-			this.tabPanel.selectTab(indexToFocus);
-		}
-	}	
-	
 	/**
 	 * @param tabId
 	 */
@@ -272,11 +349,33 @@ public class TabContainer extends MultipleViewsContainer
 					canceled = canceled || evt.isCanceled();
 				}
 
+				View view = getView(tabId);
+				if (view != null && !view.isLoaded())
+				{
+					renderView(view, null);//TODO selectedTab.getparameter()... e passar o parameter no addLazy
+				}
+				
 				if (canceled)
 				{
 					event.cancel();
 				}
 			}			
 		};
+	}	
+	
+	/**
+	 * @param tabId
+	 */
+	private void doCloseTab(String tabId)
+	{
+		int index = getIndex(tabId);
+		this.tabPanel.remove(index);
+		this.tabs.remove(tabId);
+		
+		if (this.tabPanel.getWidgetCount() > 0)
+		{
+			int indexToFocus = index == 0 ? 0 : index - 1;
+			this.tabPanel.selectTab(indexToFocus);
+		}
 	}
 }
