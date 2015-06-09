@@ -51,12 +51,16 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.SideMenuDi
 
 @DeclarativeFactory(library=Constants.LIBRARY_NAME,id="sideMenuDisposal", 
 					targetWidget=SideMenuDisposal.class, 
-					description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
+					description="A component to define the page's layout. It contains a header, "
+						+ "a interactive menu, a content panel and a footer.")
 @TagAttributes({
 	@TagAttribute(value="menuPositioning", type=MenuPosition.class, defaultValue="LEFT", 
 				  description="The position where the menu will be placed"),
 	@TagAttribute(value="historyControlPrefix",defaultValue="view", 
-				  description="The name of the token to be used to identify the history state. This token will be used as part of the URL to the view showed by this panel.")
+				  description="The name of the token to be used to identify the history state. "
+				  	+ "This token will be used as part of the URL to the view showed by this panel."),
+	@TagAttribute(value="historyControlEnabled",defaultValue="true", type=Boolean.class,  
+				  description="Enable or disable the history management by the container.")				  	
 })
 @TagChildren({
 	@TagChild(SideMenuDisposalFactory.DisposalChildrenProcessor.class)
