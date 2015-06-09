@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.event.focusblur.BeforeBlurEvent;
 import org.cruxframework.crux.core.client.event.focusblur.BeforeFocusEvent;
 import org.cruxframework.crux.core.client.screen.views.MultipleCrawlableViewsContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
 import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -64,7 +65,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 */
 	public boolean add(View view, boolean lazy, boolean closeable)
 	{
-		if (doAdd(view, lazy, closeable))
+		if (doAdd(view, lazy, closeable, null))
 		{
 			adoptView(view);
 			return true;
@@ -93,6 +94,47 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param closeable if true, allow user to close the tab
+	 * @return
+	 */
+	public boolean addLazy(String viewName, final boolean closeable)
+	{
+		return addLazy(viewName, viewName, closeable);
+	}
+	
+    /**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param viewId ID of the View to be added
+	 * @param closeable if true, allow user to close the tab
+	 * @return
+	 */
+	public boolean addLazy(String viewName, String viewId, final boolean closeable)
+	{
+		createView(viewName, viewId, new CreateCallback()
+		{
+			@Override
+            public void onViewCreated(View view)
+            {
+				add(view, true, closeable);
+            }
+		});
+		return true;
+	}
+	
+    /**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param view View to be added
+	 * @return
+	 */
+	public boolean addLazy(View view, final boolean closeable)
+	{
+		return add(view, true, closeable);
+	}
+
+	/**
 	 * Closes the tab, skipping any Unload event.
 	 * 
 	 * @param viewId - the viewId that will be closed
@@ -115,34 +157,6 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		}
 	}
 
-	private BeforeSelectionHandler<Integer> createBeforeSelectionHandler()
-	{
-		return new BeforeSelectionHandler<Integer>()
-		{
-			public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
-			{
-				Tab selectedTab = getFocusedTab();
-				String tabId = getViewId(event.getItem());
-				boolean canceled = false;
-				if (selectedTab != null && !selectedTab.getViewId().equals(tabId))
-				{
-					BeforeBlurEvent evt = BeforeBlurEvent.fire(selectedTab.getFlap());
-					canceled = evt.isCanceled();
-				}
-				if ((!canceled) && (selectedTab == null || !selectedTab.getViewId().equals(tabId)))
-				{
-					BeforeFocusEvent evt = BeforeFocusEvent.fire(getTab(tabId));
-					canceled = canceled || evt.isCanceled();
-				}
-
-				if (canceled)
-				{
-					event.cancel();
-				}
-			}
-		};
-	}
-
 	/**
 	 * @param viewId - The viewId that will be focus
 	 */
@@ -156,40 +170,6 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		}
 	}
 
-	/**
-	 * @return Tab focused
-	 */
-	protected Tab getFocusedTab()
-	{
-		int index = tabPanel.getSelectedTab();
-
-		if (index >= 0)
-		{
-			return (Tab) tabPanel.getWidget(index);
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param tabIndex tab index
-	 * @return String view id
-	 */
-	public String getViewId(int tabIndex)
-	{
-		return ((Tab) tabPanel.getWidget(tabIndex)).getViewId();
-	}
-
-	/**
-	 * @param viewId view id
-	 * @return Tab - tab containing view
-	 */
-	public Tab getTab(String viewId)
-	{
-		return tabs.get(viewId);
-	}
-
-	
 	/** Return the index of view focused.
 	 * @return int - view focused index
 	 */
@@ -217,20 +197,147 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	/**
-	 * @param tabId - id of the tab will be closed
+	 * @param viewId view id
+	 * @return Tab - tab containing view
 	 */
-	private void doCloseTab(String tabId)
+	public Tab getTab(String viewId)
 	{
-		int index = getIndex(tabId);
-		this.tabPanel.remove(index);
-		this.tabs.remove(tabId);
-		
-		if (this.tabPanel.getWidgetCount() > 0)
+		return tabs.get(viewId);
+	}
+
+	
+	/**
+	 * @param tabIndex tab index
+	 * @return String view id
+	 */
+	public String getViewId(int tabIndex)
+	{
+		return ((Tab) tabPanel.getWidget(tabIndex)).getViewId();
+	}
+
+	/**
+     * Render the requested view into the container.
+     * @param viewName View name
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+     */
+	public void showView(String viewName, boolean closeable)
+	{
+		showView(viewName, closeable, null);
+	}
+	
+	/**
+     * Render the requested view into the container.
+     * @param viewName View name
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+     */
+	public void showView(String viewName, boolean closeable, Object parameter)
+	{
+		showView(viewName, viewName, closeable, parameter);
+	}
+	
+	/**
+     * Render the requested view into the container.
+     * @param viewName View name
+     * @param viewId View identifier
+	 * @param closeable if true, allow user to close the tab
+	 * @param parameter to be passed to view load and activate events. 
+	 */
+	public void showView(String viewName, String viewId, final boolean closeable, final Object parameter)
+	{
+		createView(viewName, viewId, new CreateCallback()
 		{
-			int indexToFocus = index == 0 ? 0 : index - 1;
-			this.tabPanel.selectTab(indexToFocus);
-		}
+			@Override
+            public void onViewCreated(View view)
+            {
+				if (add(view, false, closeable))
+				{
+					renderView(view, parameter);
+				}
+            }
+		});
+	}
+
+	protected boolean doAdd(View view, boolean lazy, boolean closeable, Object parameter)
+    {
+	    String tabId = view.getId();
+	    
+	    if (!views.containsKey(view.getId()))
+	    {
+	    	boolean doAdd = super.doAdd(view, lazy, parameter);
+	    	if (doAdd)
+	    	{
+	    		Flap flap = new Flap(this, view, closeable);
+	    		Tab tab = new Tab(flap, tabId);
+	    		this.tabs.put(tabId, tab);			
+	    		tabPanel.add(tab, flap);
+	    		if (!lazy)
+	    		{
+	    			focusView(tabId);
+	    		}
+	    		
+	    	}
+	    	return doAdd;
+	    }
+	    else
+	    {
+    		if (!lazy)
+    		{
+    			focusView(tabId);
+    		}
+	    }
+	    return false;
+    }
+
+	@Override
+	protected boolean doAdd(View view, boolean lazy, Object parameter)
+	{
+		return doAdd(view, lazy, true, parameter);
+	}
+
+	@Override
+	protected boolean doRemove(View view, boolean skipEvent)
+	{
+	    boolean doRemove = super.doRemove(view, skipEvent);
+	    if (doRemove)
+	    {
+	    	doCloseTab(view.getId());
+	    }
+		return doRemove;
 	}	
+	
+	@Override
+	protected Panel getContainerPanel(View view)
+	{
+		Tab tab = getTab(view.getId());
+		return tab.getContainerPanel();
+	}
+
+	/**
+	 * @return Tab focused
+	 */
+	protected Tab getFocusedTab()
+	{
+		int index = tabPanel.getSelectedTab();
+
+		if (index >= 0)
+		{
+			return (Tab) tabPanel.getWidget(index);
+		}
+
+		return null;
+	}
+
+	@Override
+	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
+	{
+		Tab tab = getTab(viewId);
+		if (tab != null)
+		{
+			tab.setLabel(title);
+		}
+	}
 	
 	/***********************************
 	 * Override Methods
@@ -247,65 +354,6 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		return false;
 	}
 
-	@Override
-	protected Panel getContainerPanel(View view)
-	{
-		Tab tab = getTab(view.getId());
-		return tab.getContainerPanel();
-	}
-
-	@Override
-	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
-	{
-		Tab tab = getTab(viewId);
-		if (tab != null)
-		{
-			tab.setLabel(title);
-		}
-	}
-	
-	@Override
-	protected boolean doAdd(View view, boolean lazy, Object parameter)
-	{
-		return doAdd(view, lazy, true, parameter);
-	}
-
-	protected boolean doAdd(View view, boolean lazy, boolean closeable, Object parameter)
-    {
-	    String tabId = view.getId();
-	    
-	    if (!views.containsKey(view.getId()))
-	    {
-	    	boolean doAdd = super.doAdd(view, lazy, parameter);
-	    	if (doAdd)
-	    	{
-	    		Flap flap = new Flap(this, view, closeable);
-	    		Tab tab = new Tab(flap, tabId);
-	    		this.tabs.put(tabId, tab);			
-	    		tabPanel.add(tab, flap);
-	    		focusView(tabId);
-	    		
-	    	}
-	    	return doAdd;
-	    }
-	    else
-	    {
-	    	focusView(tabId);
-	    }
-	    return false;
-    }
-
-	@Override
-	protected boolean doRemove(View view, boolean skipEvent)
-	{
-	    boolean doRemove = super.doRemove(view, skipEvent);
-	    if (doRemove)
-	    {
-	    	doCloseTab(view.getId());
-	    }
-		return doRemove;
-	}
-	
 	@Override
 	protected void showView(String viewName, String viewId, Object parameter)
 	{
@@ -324,6 +372,56 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		else
 		{
 			loadAndRenderView(viewName, viewId, parameter);
+		}
+	}
+
+	private BeforeSelectionHandler<Integer> createBeforeSelectionHandler()
+	{
+		return new BeforeSelectionHandler<Integer>()
+		{
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
+			{
+				Tab selectedTab = getFocusedTab();
+				String tabId = getViewId(event.getItem());
+				boolean canceled = false;
+				if (selectedTab != null && !selectedTab.getViewId().equals(tabId))
+				{
+					BeforeBlurEvent evt = BeforeBlurEvent.fire(selectedTab.getFlap());
+					canceled = evt.isCanceled();
+				}
+				if ((!canceled) && (selectedTab == null || !selectedTab.getViewId().equals(tabId)))
+				{
+					BeforeFocusEvent evt = BeforeFocusEvent.fire(getTab(tabId));
+					canceled = canceled || evt.isCanceled();
+				}
+
+				View view = getView(tabId);
+				if (view != null && !view.isLoaded())
+				{
+					renderView(view, null);//TODO selectedTab.getparameter()... e passar o parameter no addLazy
+				}
+
+				if (canceled)
+				{
+					event.cancel();
+				}
+			}
+		};
+	}
+	
+	/**
+	 * @param tabId - id of the tab will be closed
+	 */
+	private void doCloseTab(String tabId)
+	{
+		int index = getIndex(tabId);
+		this.tabPanel.remove(index);
+		this.tabs.remove(tabId);
+		
+		if (this.tabPanel.getWidgetCount() > 0)
+		{
+			int indexToFocus = index == 0 ? 0 : index - 1;
+			this.tabPanel.selectTab(indexToFocus);
 		}
 	}
 		

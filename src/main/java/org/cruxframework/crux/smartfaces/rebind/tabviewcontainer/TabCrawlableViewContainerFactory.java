@@ -18,6 +18,8 @@ package org.cruxframework.crux.smartfaces.rebind.tabviewcontainer;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.CrawlableViewContainerFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.smartfaces.client.tabviewcontainer.TabCrawlableViewContainer;
@@ -31,6 +33,13 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 					description="A view container that displays its views inside a tab on a tabPanel and supports ajax crawling.")
 @TagChildren({
 	@TagChild(TabCrawlableViewContainerFactory.TabsProcessor.class)
+})
+@TagAttributes({
+	@TagAttribute(value="historyControlPrefix",defaultValue="view", 
+				  description="The name of the token to be used to identify the history state. "
+				  	+ "This token will be used as part of the URL to the view showed by this panel."),
+	@TagAttribute(value="historyControlEnabled",defaultValue="true", type=Boolean.class,  
+	  description="Enable or disable the history management by the container.")
 })
 public class TabCrawlableViewContainerFactory extends TabContainerFactory implements CrawlableViewContainerFactory<WidgetCreatorContext>
 {
