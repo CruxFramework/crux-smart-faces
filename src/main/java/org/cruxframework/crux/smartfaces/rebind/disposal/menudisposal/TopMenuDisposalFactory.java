@@ -49,10 +49,15 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDis
 
 
 @DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",targetWidget=TopMenuDisposal.class, 
-					description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
-@TagAttributes(
-		@TagAttribute(value="historyControlPrefix",defaultValue="view")
-		)
+					description="A component to define the page's layout. It contains a header, "
+						+ "a interactive menu, a content panel and a footer.")
+@TagAttributes({
+		@TagAttribute(value="historyControlPrefix",defaultValue="view",
+					description="The name of the token to be used to identify the history state. "
+						+ "This token will be used as part of the URL to the view showed by this panel."),
+		@TagAttribute(value="historyControlEnabled",defaultValue="true", type=Boolean.class,  
+		  			description="Enable or disable the history management by the container.")				  	
+})
 @TagChildren({
 	@TagChild(TopMenuDisposalFactory.DisposalChildrenProcessor.class)
 })
