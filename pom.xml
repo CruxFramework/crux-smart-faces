@@ -6,22 +6,17 @@
 	<name>Crux Smart Faces</name>
 	<description>Crux widgets library</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.3.1-SNAPSHOT</cruxVersion>
-	</properties>
-
 	<parent>
 		<groupId>org.cruxframework</groupId>
 		<artifactId>crux-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.cruxframework</groupId>
 			<artifactId>crux-dev</artifactId>
-			<version>${cruxVersion}</version>
+			<version>5.3.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
