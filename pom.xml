@@ -12,12 +12,6 @@
 		<version>1.0.2</version>
 	</parent>
 
-	<scm>
-		<connection>scm:svn:http://crux-framework.googlecode.com/svn/trunk/crux-smart-faces/</connection>
-		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/trunk/crux-smart-faces</developerConnection>
-		<url>https://crux-framework.googlecode.com/svn/trunk/crux-smart-faces</url>
-	</scm>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.cruxframework</groupId>
@@ -25,4 +19,5 @@
 			<version>5.3.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+
 </project>
