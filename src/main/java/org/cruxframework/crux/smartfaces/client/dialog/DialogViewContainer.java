@@ -25,6 +25,7 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.Panel;
  * A View Container that render its views inside a floating dialog box.
  * @author Thiago da Rosa de Bustamante
  */
-public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation
+public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation, HasCloseHandlers<PopupPanel>
 {
 	private DialogBox dialog;
 	private FlowPanel contentPanel; 
@@ -42,34 +43,40 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
+	 * @return the dialog container
 	 */
-	public static void show(String viewName)
+	public static DialogViewContainer show(String viewName)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true);
 		container.center();
+		return container;
 	}
-
+	
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, Object parameter)
+	public static DialogViewContainer show(String viewName, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true, parameter);
 		container.center();
+		return container;
 	}
 
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
 	 * @param animation animates the dialog while showing or hiding
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, DialogAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true);
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -77,12 +84,14 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param viewName name of the view to be opened
 	 * @param animation animates the dialog while showing or hiding
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, DialogAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true, parameter);
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -90,11 +99,13 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param viewName name of the view to be opened
 	 * @param viewId ID to be used to identify the opened view
 	 * @param closable if true, a close button will be present at to top of dialog box
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean closable)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -103,11 +114,13 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param viewId ID to be used to identify the opened view
 	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean closable, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable, parameter);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -116,12 +129,14 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param viewId ID to be used to identify the opened view
 	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @param animation animates the dialog while showing or hiding
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean closable, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable, DialogAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable);
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -131,12 +146,14 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @param animation animates the dialog while showing or hiding
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean closable, DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable, DialogAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable, parameter);
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 
 	/**
@@ -148,12 +165,14 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-							boolean modal, String baseStyleName)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String baseStyleName)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, null);				
 		container.center();
+		return container;
 	}
 	
 	/**
@@ -166,14 +185,16 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-							boolean modal, String baseStyleName, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String baseStyleName, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, parameter);				
 		container.center();
+		return container;
 	}
-
+	
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
@@ -187,12 +208,16 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param top top position of the dialog box
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-							boolean modal, String width, String height, int left, int top, String baseStyleName, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String width, String height, int left, int top, String baseStyleName, 
+											DialogAnimation animation)
 	{
-		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, animation);
+		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, null);
+		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 	
 	/**
@@ -209,17 +234,18 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-							boolean modal, String width, String height, int left, int top, String baseStyleName, 
-							DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String width, String height, int left, int top, String baseStyleName, 
+											DialogAnimation animation, Object parameter)
 	{
-		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, 
-							baseStyleName, width, height, left, top, parameter);
+		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, parameter);
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
-
+	
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
@@ -230,13 +256,15 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
 	 * @param animation animates the dialog while showing or hiding
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, boolean modal, 
-							String baseStyleName, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String baseStyleName, DialogAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, null);				
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
 	
 	/**
@@ -250,15 +278,17 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param baseStyleName the dialog base CSS class name
 	 * @param animation animates the dialog while showing or hiding
 	 * @param parameter object to be passed to view when loaded.
+	 * @return the dialog container
 	 */
-	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, boolean modal, 
-							String baseStyleName, DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
+											boolean modal, String baseStyleName, DialogAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, parameter);				
 		container.setAnimation(animation);
 		container.center();
+		return container;
 	}
-
+	
 	/**
 	 * Create a new DialogViewContainer and load the given view into the container
 	 * @param viewName name of the view to be loaded
@@ -274,24 +304,24 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param viewName name of the view to be loaded
 	 * @param viewId ID to be used to identify the opened view
 	 * @param closable if true, a close button will be present at to top of dialog box
+	 * @param parameter any object you want to pass as parameter to the view's activate and load event
 	 * @return the container created
 	 */
-	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable)
+	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable, Object parameter)
 	{
-		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
+		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, parameter);
 	}
-
+	
 	/**
 	 * Create a new DialogViewContainer and load the given view into the container.
 	 * @param viewName name of the view to be loaded
 	 * @param viewId ID to be used to identify the opened view
 	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @return the container created
-	 * @param parameter object to be passed to view when loaded.
 	 */
-	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable, Object parameter)
+	public static DialogViewContainer createDialog(String viewName, String viewId, boolean closable)
 	{
-		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, parameter);
+		return createDialog(viewName, viewId, true, false, closable, true, DialogBox.DEFAULT_STYLE_NAMES, null, null, -1, -1, null);
 	}
 
 	/**
@@ -354,19 +384,11 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	{
 		this(true, true, true, true, DialogBox.DEFAULT_STYLE_NAMES);
 	}
-	
-	/**
-	 * @param handler the close handler itself.
-	 * @return the registered handler.
-	 */
+
+	@Override
 	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
 	{
-		if (dialog != null)
-		{
-			return dialog.addCloseHandler(handler);
-		}
-		
-		return null;
+		return dialog.addCloseHandler(handler);
 	}
 	
 	/**
@@ -387,7 +409,6 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 		contentPanel = new FlowPanel();
 		contentPanel.setWidth("100%");
 		dialog.setWidget(contentPanel);
-		
 		dialog.addAttachHandler(new Handler()
 		{
 			@Override
