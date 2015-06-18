@@ -24,6 +24,9 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -31,7 +34,7 @@ import com.google.gwt.user.client.ui.Panel;
  * A View Container that render its views inside a floating dialog box.
  * @author Thiago da Rosa de Bustamante
  */
-public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation
+public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation, HasCloseHandlers<PopupPanel>
 {
 	private DialogBox dialog;
 	private FlowPanel contentPanel; 
@@ -419,6 +422,12 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 		initWidget(new Label());
 	}
 
+	@Override
+	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
+	{
+		return dialog.addCloseHandler(handler);
+	}
+	
 	/**
 	 * Read the unloadViewOnClose property value. This property tells the container if it must unload the containing 
 	 * view when the dialog is closed. 
