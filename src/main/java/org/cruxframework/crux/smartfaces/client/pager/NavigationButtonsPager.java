@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base implementation for navigation-buttons-based pager
@@ -36,6 +37,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	private Button firstButton;
 	private Button lastButton;
 	private ButtonCreator buttonCreator = GWT.create(ButtonCreator.class);
+	protected Panel contentPanel;
 	
 	@Override
 	public void update(int currentPage, boolean isLastPage)
@@ -228,6 +230,20 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		lastButton.setEnabled(enabled);
 	}
 	
+	@Override
+    public void updatePagePanel(Panel pagePanel, boolean forward)
+    {
+		contentPanel.clear();
+		contentPanel.add(pagePanel);
+    }
+
+	@Override
+    public void initializeContentPanel(Panel contentPanel)
+    {
+		this.contentPanel = contentPanel;
+    }
+	
+
 	/**
 	 * Creates a generic navigation button
 	 * @param styleName

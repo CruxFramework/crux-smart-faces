@@ -39,6 +39,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -453,4 +454,18 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	{
 		grid.getTable().setWidget(rowIndex, columnIndex, widget);		
 	}
+
+	@Override
+    protected Panel initializePagePanel()
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
+
+	@Override
+    protected Panel getContentPanel()
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
 }
