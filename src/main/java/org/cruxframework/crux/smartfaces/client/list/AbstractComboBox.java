@@ -17,7 +17,6 @@ package org.cruxframework.crux.smartfaces.client.list;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
@@ -49,7 +48,6 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -381,21 +379,23 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		protected DataProvider.DataReader<T> getDataReader()
 		{
 			return new DataProvider.DataReader<T>()
 			{
-				@SuppressWarnings("unchecked")
+				OptionsRenderer<V, T> renderer = (OptionsRenderer<V, T>) widgetFactory;
+				
 				@Override
-				public void read(T value)
+				public void read(T value, int index)
 				{
-					IsWidget widget = widgetFactory.createData(value);
+					IsWidget widget = widgetFactory.createWidget(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
-					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(value));
-					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));
+					panel.setValue(renderer.getValue(value));
+					panel.setLabel(renderer.getLabel(value));
 					panel.add(widget);
 					
-					contentPanel.add(panel);
+					pagePanel.add(panel);
 				}
 			};
 		}

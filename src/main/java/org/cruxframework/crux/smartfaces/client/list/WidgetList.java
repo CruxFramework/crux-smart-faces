@@ -22,6 +22,8 @@ import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -35,8 +37,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetList<T> extends AbstractPageable<T>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WidgetList";
+	private static final String PAGE_PANEL_STYLE_NAME = "faces-WidgetList-Page";
 	
-	protected FlowPanel contentPanel = new FlowPanel();
+	protected SimplePanel contentPanel = new SimplePanel();
+	protected FlowPanel pagePanel;
 	protected final WidgetFactory<T> widgetFactory;
 
 	/**
@@ -47,6 +51,8 @@ public class WidgetList<T> extends AbstractPageable<T>
     {
 		assert(widgetFactory != null);
 		this.widgetFactory = widgetFactory;
+		initializePagePanel();
+		contentPanel.add(pagePanel);
 		initWidget(contentPanel);
 		setStyleName(DEFAULT_STYLE_NAME);
     }
@@ -65,7 +71,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public T getDataObject(Widget w)
 	{
-		int widgetIndex = contentPanel.getWidgetIndex(w);
+		int widgetIndex = pagePanel.getWidgetIndex(w);
 		if (widgetIndex >= 0)
 		{
 			if (pager != null && !pager.supportsInfiniteScroll())
@@ -86,21 +92,21 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public int getWidgetIndex(Widget w)
 	{
-		return contentPanel.getWidgetIndex(w);
+		return pagePanel.getWidgetIndex(w);
 	}
 	
 	@Override
 	protected void clear()
 	{
-		contentPanel.clear();
+		pagePanel.clear();
 	}
 	
 	@Override
 	protected void clearRange(int start)
 	{
-		while (contentPanel.getWidgetCount() > start)
+		while (pagePanel.getWidgetCount() > start)
 		{
-			contentPanel.remove(start);
+			pagePanel.remove(start);
 		}
 	}
 	
@@ -110,11 +116,30 @@ public class WidgetList<T> extends AbstractPageable<T>
 	    return new DataProvider.DataReader<T>()
 	    {
 			@Override
-            public void read(T value)
+            public void read(T value, int index)
             {
-				IsWidget widget = widgetFactory.createData(value);
-				contentPanel.add(widget);
+				IsWidget widget = widgetFactory.createWidget(value);
+				pagePanel.add(widget);
             }
 	    };
 	}
+
+	@Override
+    protected Panel initializePagePanel()
+    {
+		pagePanel = new FlowPanel();
+		pagePanel.setStyleName(getPagePanelStyleName());
+		return pagePanel;
+    }
+
+	protected String getPagePanelStyleName()
+    {
+	    return PAGE_PANEL_STYLE_NAME;
+    }
+
+	@Override
+    protected Panel getContentPanel()
+    {
+	    return contentPanel;
+    }
 }
