@@ -370,19 +370,21 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		protected DataProvider.DataReader<T> getDataReader()
 		{
 			return new DataProvider.DataReader<T>()
 			{
-				@SuppressWarnings("unchecked")
+				OptionsRenderer<V, T> renderer = (OptionsRenderer<V, T>) widgetFactory;
+
 				@Override
 				public void read(T value, int index)
 				{
 					IsWidget widget = widgetFactory.createWidget(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
-					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(value));
-					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));//TODO retirar esse casting daqui
-					int widgetIndex = contentPanel.getWidgetCount();
+					panel.setValue(renderer.getValue(value));
+					panel.setLabel(renderer.getLabel(value));
+					int widgetIndex = pagePanel.getWidgetCount();
 					if (pager != null && !pager.supportsInfiniteScroll())
 					{
 						int numPreviousPage = getDataProvider().getCurrentPage() - 1;
@@ -391,7 +393,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					panel.setIndex(widgetIndex);
 					panel.add(widget);
 					
-					contentPanel.add(panel);
+					pagePanel.add(panel);
 				}
 			};
 		}

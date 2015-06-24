@@ -20,16 +20,12 @@ import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A {@link Pager} that change pages from a {@link Pageable} when user scrolls down the pager.
@@ -97,33 +93,6 @@ public class ScrollablePager extends AbstractPager
 	}
 	
 	@Override
-	public void setPageable(Pageable<?> pageable)
-	{
-	    super.setPageable(pageable);
-	    scrollable.setWidget(pageable);
-	    
-	    final Widget widget = (Widget) pageable;
-		widget.addAttachHandler(new Handler() 
-		{
-			@Override
-			public void onAttachOrDetach(final AttachEvent event) 
-			{
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() 
-				{
-					@Override
-					public void execute() 
-					{
-						if(event.isAttached())
-						{
-							ScrollablePager.this.setHeight((widget.getElement().getClientHeight() - 1) + "px");
-						}
-					}
-				});
-			}
-		});
-	}
-	
-	@Override
 	public boolean supportsInfiniteScroll()
 	{
 	    return true;
@@ -163,4 +132,18 @@ public class ScrollablePager extends AbstractPager
 			loadingElement = null;
 		}
     }
+	
+
+	@Override
+    public void updatePagePanel(Panel pagePanel, boolean forward)
+    {
+		scrollable.setWidget(pagePanel);
+    }
+
+	@Override
+    public void initializeContentPanel(Panel contentPanel)
+    {
+		contentPanel.clear();
+		contentPanel.add(scrollable);
+    }	
 }
