@@ -16,41 +16,36 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
+import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
-import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base implementation for navigation-buttons-based pager
  * @author Thiago da Rosa de Bustamante
- * @author Gesse S. F. Dafe
  * - EXPERIMENTAL - 
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public abstract class NavigationButtonsPager extends AbstractPager implements Pager
+public abstract class NavigationButtonsPager<T> extends AbstractPager<T> implements HasPageable<T>
 {
 	private Button previousButton;
 	private Button nextButton;
 	private Button firstButton;
 	private Button lastButton;
-	private ButtonCreator buttonCreator = GWT.create(ButtonCreator.class);
 	protected Panel contentPanel;
 	
 	@Override
-	public void update(int currentPage, boolean isLastPage)
+	protected void onUpdate()
 	{
-		super.update(currentPage, isLastPage);
-		
 		if(this.previousButton != null)
 		{
-			if(this.getCurrentPage() <= 1 || !isEnabled())
+			if(!hasPreviousPage() || !isEnabled())
 			{
 				this.previousButton.addStyleDependentName(DISABLED);
 			}
@@ -62,7 +57,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		
 		if(this.nextButton != null)
 		{
-			if(isLastPage() || !isEnabled())
+			if(!hasNextPage() || !isEnabled())
 			{
 				this.nextButton.addStyleDependentName(DISABLED);
 			}
@@ -74,7 +69,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		
 		if(this.firstButton != null)
 		{
-			if(this.getCurrentPage() <= 1 || !isEnabled())
+			if(!hasPreviousPage() || !isEnabled())
 			{
 				this.firstButton.addStyleDependentName(DISABLED);
 			}
@@ -86,7 +81,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		
 		if(this.lastButton != null)
 		{
-			if(isLastPage() || !isEnabled())
+			if(!hasNextPage() || !isEnabled())
 			{
 				this.lastButton.addStyleDependentName(DISABLED);
 			}
@@ -103,7 +98,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	protected Button createPreviousButton()
 	{
-		final NavigationButtonsPager pager = this;
+		final NavigationButtonsPager<T> pager = this;
 		
 		Button panel = createNavigationButton("previousButton", 
 			new SelectHandler() 
@@ -136,7 +131,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	protected Button createNextButton()
 	{
-		final NavigationButtonsPager pager = this;
+		final NavigationButtonsPager<T> pager = this;
 		
 		Button panel = createNavigationButton("nextButton", 
 			new SelectHandler()
@@ -148,7 +143,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 						PageEvent pageEvent = PageEvent.fire(pager, getCurrentPage() + 1);
 						if(!pageEvent.isCanceled())
 						{
-							if(!isLastPage())
+							if(hasNextPage())
 							{
 								nextPage();
 							}
@@ -170,7 +165,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	protected Button createFirstPageButton()
 	{
-		final NavigationButtonsPager pager = this;
+		final NavigationButtonsPager<T> pager = this;
 		
 		Button panel = createNavigationButton("firstButton", 
 			new SelectHandler()
@@ -200,7 +195,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	protected Button createLastPageButton()
 	{
-		final NavigationButtonsPager pager = this;
+		final NavigationButtonsPager<T> pager = this;
 		
 		Button label = createNavigationButton("lastButton", 
 			new SelectHandler()
@@ -225,9 +220,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) 
+	public void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 		firstButton.setEnabled(enabled);
@@ -247,6 +242,12 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		this.contentPanel = contentPanel;
     }
 	
+	@Override
+	public boolean supportsInfiniteScroll()
+	{
+	    return false;
+	}
+	
 	/**
 	 * Creates a generic navigation button
 	 * @param styleName
@@ -255,30 +256,10 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	private Button createNavigationButton(String styleName, SelectHandler selectHandler)
 	{
-		Button button = buttonCreator.createButton();
+		Button button = new Button();
 		button.setStyleName(styleName);
 		button.addStyleDependentName(DISABLED);
 		button.addSelectHandler(selectHandler);
 		return button;
-	}
-	
-	
-	protected static class ButtonCreator
-	{
-		protected Button createButton()
-		{
-			Button label = new Button();
-			label.getElement().setTabIndex(0);//make it focusable
-			return label;
-		}
-	}
-	
-	protected static class TouchButtonCreator extends ButtonCreator
-	{
-		@Override
-		protected Button createButton()
-		{
-			return new Button();
-		}
 	}
 }
