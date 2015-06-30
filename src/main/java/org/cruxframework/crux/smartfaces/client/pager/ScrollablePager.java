@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -142,7 +143,7 @@ public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<
     }
 
 	@Override
-    public void updatePagePanel(Panel pagePanel, boolean forward)
+    public void updatePagePanel(IsWidget pagePanel, boolean forward)
     {
 		scrollable.setWidget(pagePanel);
     }

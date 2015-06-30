@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -230,7 +231,7 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T> impleme
 	}
 	
 	@Override
-    public void updatePagePanel(Panel pagePanel, boolean forward)
+    public void updatePagePanel(IsWidget pagePanel, boolean forward)
     {
 		contentPanel.clear();
 		contentPanel.add(pagePanel);
