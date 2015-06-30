@@ -25,9 +25,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * A pager which does not know the total number of pages. So, it can only move the cursor to next or to previous page.  
  * @author Gesse S. F. Dafe
  */
-public class SequentialPager extends NavigationButtonsPager
+public class SequentialPager<T> extends NavigationButtonsPager<T>
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
+	public static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
+	private static final String STYLE_CURRENT_PAGE_LABEL = "faces-SequentialPager-CurrentPageLabel";
+	
 	private NavPanel panel;
 	private SimplePanel infoPanel;
 	private Button previousButton = createPreviousButton();
@@ -62,9 +64,9 @@ public class SequentialPager extends NavigationButtonsPager
 	}
 
 	@Override
-	public void setEnabled(boolean enabled) 
+	protected void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 	}
@@ -96,7 +98,7 @@ public class SequentialPager extends NavigationButtonsPager
 	private Label createCurrentPageLabel(String currentPageNumber)
 	{
 		Label label = new Label(currentPageNumber);
-		label.setStyleName("currentPageLabel");
+		label.setStyleName(STYLE_CURRENT_PAGE_LABEL);
 		return label;
 	}
 }

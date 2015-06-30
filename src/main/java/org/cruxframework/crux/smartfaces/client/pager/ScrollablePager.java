@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
+import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
@@ -24,6 +25,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -32,10 +34,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public class ScrollablePager extends AbstractPager
+public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<T>
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";
+	public static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";
 
+	private static final String STYLE_SCROLLABLE_PAGER_PAGER_LOADING = "faces-ScrollablePager--pagerLoading";
+	
 	private DivElement loadingElement;
 	private int lastRequestedPage = 0;
 	private int lastScrollPos = 0;
@@ -67,7 +71,7 @@ public class ScrollablePager extends AbstractPager
 				int maxScrollTop = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
 				if (lastScrollPos >= maxScrollTop)
 				{
-					if (!isLastPage() && isEnabled())
+					if (hasNextPage() && isEnabled())
 					{
 						int nextRequestedPage = getCurrentPage() + 1;
 						if (lastRequestedPage != nextRequestedPage)
@@ -86,9 +90,9 @@ public class ScrollablePager extends AbstractPager
     }
 
 	@Override
-	public void setEnabled(boolean enabled) 
+	protected void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		scrollable.setTouchScrollingDisabled(!enabled);
 	}
 	
@@ -105,11 +109,12 @@ public class ScrollablePager extends AbstractPager
     }
 
 	@Override
-	public void prepareTransaction(int startRecord)
+	protected void onTransactionStarted(int startRecord)
 	{
-		int pageSize = getPageable().getPageSize();
+		super.onTransactionStarted(startRecord);
+		int pageSize = getDataProvider().getPageSize();
 		int index = startRecord + 1;
-		lastRequestedPage = (index / pageSize) + (index%pageSize==0?0:1);
+		lastRequestedPage = (index / pageSize) + (index%pageSize==0?0:1);	
 	}
 	
 	@Override
@@ -118,7 +123,7 @@ public class ScrollablePager extends AbstractPager
 		if (loadingElement == null)
 		{
 			loadingElement = Document.get().createDivElement();
-			loadingElement.setClassName("faces-ScollablePager--pagerLoading");
+			loadingElement.setClassName(STYLE_SCROLLABLE_PAGER_PAGER_LOADING);
 			Document.get().getBody().appendChild(loadingElement);
 		}
     }
@@ -135,7 +140,7 @@ public class ScrollablePager extends AbstractPager
 	
 
 	@Override
-    public void updatePagePanel(Panel pagePanel, boolean forward)
+    public void updatePagePanel(IsWidget pagePanel, boolean forward)
     {
 		scrollable.setWidget(pagePanel);
     }
@@ -144,6 +149,6 @@ public class ScrollablePager extends AbstractPager
     public void initializeContentPanel(Panel contentPanel)
     {
 		contentPanel.clear();
-		contentPanel.add(scrollable);
+		contentPanel.add(this);
     }	
 }

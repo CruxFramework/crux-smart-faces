@@ -77,6 +77,5 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
 	{
 		return addHandler(handler, ValueChangeEvent.getType());
-
 	}
 }
