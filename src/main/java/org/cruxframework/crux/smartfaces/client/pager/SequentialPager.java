@@ -29,9 +29,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class SequentialPager extends NavigationButtonsPager
+public class SequentialPager<T> extends NavigationButtonsPager<T>
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
+	public static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
+	private static final String STYLE_CURRENT_PAGE_LABEL = "faces-SequentialPager-CurrentPageLabel";
+
 	private NavPanel panel;
 	private SimplePanel infoPanel;
 	private Button previousButton = createPreviousButton();
@@ -66,9 +68,9 @@ public class SequentialPager extends NavigationButtonsPager
 	}
 
 	@Override
-	public void setEnabled(boolean enabled) 
+	public void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 	}
@@ -100,7 +102,7 @@ public class SequentialPager extends NavigationButtonsPager
 	private Label createCurrentPageLabel(String currentPageNumber)
 	{
 		Label label = new Label(currentPageNumber);
-		label.setStyleName("currentPageLabel");
+		label.setStyleName(STYLE_CURRENT_PAGE_LABEL);
 		return label;
 	}
 }

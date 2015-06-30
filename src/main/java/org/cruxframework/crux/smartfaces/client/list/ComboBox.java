@@ -76,5 +76,4 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	{
 		return null;
 	}
-	
 }

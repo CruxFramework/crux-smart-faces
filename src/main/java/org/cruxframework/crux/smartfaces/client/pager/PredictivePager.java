@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class PredictivePager extends NavigationButtonsPager
+public class PredictivePager<T> extends NavigationButtonsPager<T>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-PredictivePager";
 	private NavPanel panel;
@@ -67,7 +67,7 @@ public class PredictivePager extends NavigationButtonsPager
 			this.pageCount = getPageCount();
 			this.listBox.clear();
 			
-			for (int i = 1; i <= getPageCount(); i++)
+			for (int i = 1; i <= pageCount; i++)
 			{
 				String page = "" + i;
 				listBox.addItem(page, page);
@@ -97,9 +97,9 @@ public class PredictivePager extends NavigationButtonsPager
 	}
 	
 	@Override
-	public final void setEnabled(boolean enabled) 
+	public final void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		listBox.setEnabled(enabled);
 	}
 	

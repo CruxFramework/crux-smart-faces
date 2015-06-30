@@ -17,8 +17,8 @@ package org.cruxframework.crux.smartfaces.client.list;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
-import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
@@ -84,7 +84,7 @@ import com.google.gwt.user.client.ui.Widget;
  *            &lt;/faces:comboBox&gt;
  *            </p>
  */
-public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<PagedDataProvider<T>>, HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
+public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<T>, HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
 {
 	private static final String BODY_PANEL = "faces-ComboBox-bodyPanel";
 	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-Button";
@@ -313,7 +313,37 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	}
 
 	@Override
-	public void setPager(Pager pager)
+    public int getCurrentPage()
+    {
+	    return optionsList.getCurrentPage();
+    }
+
+	@Override
+    public boolean hasNextPage()
+    {
+	    return optionsList.hasNextPage();
+    }
+
+	@Override
+    public boolean hasPreviousPage()
+    {
+	    return optionsList.hasPreviousPage();
+    }
+
+	@Override
+    public void firstPage()
+    {
+		optionsList.firstPage();
+    }
+
+	@Override
+    public void lastPage()
+    {
+		optionsList.lastPage();
+    }	
+	
+	@Override
+	public void setPager(HasPageable<T> pager)
 	{
 		bodyPanel.add(pager);
 		optionsList.setPager(pager);
