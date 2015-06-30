@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * A pager which knows the total number of pages.  
  * @author Gesse S. F. Dafe
  */
-public class PredictivePager extends NavigationButtonsPager
+public class PredictivePager<T> extends NavigationButtonsPager<T>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-PredictivePager";
 	private NavPanel panel;
@@ -93,9 +93,9 @@ public class PredictivePager extends NavigationButtonsPager
 	}
 	
 	@Override
-	public final void setEnabled(boolean enabled) 
+	protected final void setInteractionEnabled(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.setInteractionEnabled(enabled);
 		listBox.setEnabled(enabled);
 	}
 	

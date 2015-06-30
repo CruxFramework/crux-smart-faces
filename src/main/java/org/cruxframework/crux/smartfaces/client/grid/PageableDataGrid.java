@@ -22,8 +22,8 @@ import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.DataReader;
-import org.cruxframework.crux.core.client.dataprovider.PageChangeEvent;
-import org.cruxframework.crux.core.client.dataprovider.PageChangeHandler;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.factory.DataFactory;
@@ -87,10 +87,10 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 					}
 				});
 				
-				dataProvider.addPageChangeHandler(new PageChangeHandler() 
+				dataProvider.addPageRequestedHandler(new PageRequestedHandler() 
 				{
 					@Override
-					public void onPageChanged(PageChangeEvent event) 
+					public void onPageRequested(PageRequestedEvent event) 
 					{
 						if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
 						{
@@ -258,7 +258,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		public void undoChanges()
 		{
 			dataObject = oldDataObject;
-			dataProvider.set(dataProviderRowIndex, dataObject);
+			getDataProvider().set(dataProviderRowIndex, dataObject);
 			editing = false;
 			refresh();
 		}
@@ -273,8 +273,8 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		{
 			if(!editing)
 			{
-				dataObject = dataProvider.get(dataProviderRowIndex);
-				dataProvider.set(dataProviderRowIndex, dataObject);
+				dataObject = getDataProvider().get(dataProviderRowIndex);
+				getDataProvider().set(dataProviderRowIndex, dataObject);
 				editing = true;
 				refresh();
 			}
@@ -420,7 +420,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 				} 
 				else
 				{
-					gridRowIndex = dataProviderRowIndex % dataProvider.getPageSize();
+					gridRowIndex = dataProviderRowIndex % getDataProvider().getPageSize();
 				}
 				
 				Row row = null;
