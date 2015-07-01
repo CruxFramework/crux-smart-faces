@@ -112,6 +112,12 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	public void setCurrentWidget(final Widget widget) 
 	{
 		if (widget != null) {
+			
+			if (isAnimating())
+			{
+				completedAnimation(null);
+			}
+			
 			this.currentPanel.clear();
 			this.currentPanel.add(widget);
 		}
@@ -191,32 +197,34 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					}
 				}, new SwapAnimationCallback()
 				{
-
 					@Override
 					public void onAnimationCompleted()
 					{
-						completedAnimation();
-						if (callback != null)
-						{
-							callback.onAnimationCompleted();
-						}
+						completedAnimation(callback);
 					}
 				});
 			}
 			else
 			{
-				completedAnimation();
+				completedAnimation(callback);
 			}
 		}
 	}
 
-    private void completedAnimation()
+    private void completedAnimation(final SwapAnimationCallback callback)
     {
-	    currentPanel.clear();
-	    currentPanel.add(nextPanel.getWidget());
-	    nextPanel.clear();
-	    animating = false;
-	    SwapEvent.fire(SwapPanel.this);
+	    if (animating)
+	    {
+	    	currentPanel.clear();
+	    	currentPanel.add(nextPanel.getWidget());
+	    	nextPanel.clear();
+	    	animating = false;
+	    	SwapEvent.fire(SwapPanel.this);
+	    	if (callback != null)
+	    	{
+	    		callback.onAnimationCompleted();
+	    	}
+	    }
     }	
     
 	/**
