@@ -1,3 +1,4 @@
++@external faces-*;
 /****************     facesBackboneSwapPanel     *************************/
 .facesBackboneSwapPanel {
 	position: relative;
@@ -10,12 +11,10 @@
 
 .facesBackboneSwapPanel .faces-SwapPanel-currentPanel{
 	width:100%;
-	position: absolute;
 }
 
 .facesBackboneSwapPanel .faces-SwapPanel-nextPanel{
 	width:100%;
-	position: absolute;
 	display:none;
 	overflow: hidden;
 }
