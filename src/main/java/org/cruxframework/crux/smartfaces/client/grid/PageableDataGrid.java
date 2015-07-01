@@ -468,4 +468,11 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	    // TODO Auto-generated method stub
 	    return null;
     }
+
+	@Override
+    protected IsWidget getPagePanel()
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
 }
