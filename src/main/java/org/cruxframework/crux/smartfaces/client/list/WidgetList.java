@@ -51,8 +51,6 @@ public class WidgetList<T> extends AbstractPageable<T>
     {
 		assert(widgetFactory != null);
 		this.widgetFactory = widgetFactory;
-		initializePagePanel();
-		contentPanel.add(pagePanel);
 		initWidget(contentPanel);
 		setStyleName(DEFAULT_STYLE_NAME);
     }
@@ -64,16 +62,19 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public T getDataObject(Widget w)
 	{
-		int widgetIndex = pagePanel.getWidgetIndex(w);
-		if (widgetIndex >= 0)
+		if (pagePanel != null)
 		{
-			if (pager != null && !pager.supportsInfiniteScroll())
+			int widgetIndex = pagePanel.getWidgetIndex(w);
+			if (widgetIndex >= 0)
 			{
+				if (pager != null && !pager.supportsInfiniteScroll())
+				{
 				int numPreviousPage = getDataProvider().getCurrentPage() - 1;
-				widgetIndex += (numPreviousPage*getPageSize());
+					widgetIndex += (numPreviousPage*getPageSize());
+				}
+					
+				return getDataProvider().get(widgetIndex);			
 			}
-			
-			return getDataProvider().get(widgetIndex);
 		}
 		return null;
 	}
@@ -85,7 +86,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public int getWidgetIndex(Widget w)
 	{
-		return pagePanel.getWidgetIndex(w);
+		return pagePanel != null ? pagePanel.getWidgetIndex(w) : -1;
 	}
 
 	@Override
@@ -98,15 +99,21 @@ public class WidgetList<T> extends AbstractPageable<T>
 	@Override
 	protected void clear()
 	{
-		pagePanel.clear();
+		if (pagePanel != null)
+		{
+			pagePanel.clear();
+		}
 	}
 	
 	@Override
 	protected void clearRange(int start)
 	{
-		while (pagePanel.getWidgetCount() > start)
+		if (pagePanel != null)
 		{
-			pagePanel.remove(start);
+			while (pagePanel.getWidgetCount() > start)
+			{
+				pagePanel.remove(start);
+			}
 		}
 	}
 	
@@ -131,6 +138,12 @@ public class WidgetList<T> extends AbstractPageable<T>
 		pagePanel.setStyleName(getPagePanelStyleName());
 		return pagePanel;
     }
+
+	@Override
+	protected IsWidget getPagePanel()
+	{
+	    return pagePanel;
+	}
 
 	protected String getPagePanelStyleName()
     {
