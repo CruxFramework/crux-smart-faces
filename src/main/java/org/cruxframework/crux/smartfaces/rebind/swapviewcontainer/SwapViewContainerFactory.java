@@ -22,6 +22,7 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.views.ChangeViewEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasViewHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -57,7 +58,7 @@ class SwapContainerContext extends WidgetCreatorContext
 @TagEvents({
 	@TagEvent(ChangeViewEvtBind.class)
 })
-public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext>
+public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext> implements HasViewHandlersFactory<SwapContainerContext>
 {
     @TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="view", 
     		description="A view to be rendered into this view container.")
@@ -88,7 +89,7 @@ public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext
     		{
     			if (context.hasActiveView)
     			{
-    				throw new CruxGeneratorException("HorizontalSwapContainer ["+context.getWidgetId()+"], declared on view ["+getWidgetCreator().getView().getId()+"], declares more than one active View. Only one active view is allowed form the container.");
+    				throw new CruxGeneratorException("SwapViewContainer ["+context.getWidgetId()+"], declared on view ["+getWidgetCreator().getView().getId()+"], declares more than one active View. Only one active view is allowed form the container.");
     			}
     			context.hasActiveView = true;
     		}

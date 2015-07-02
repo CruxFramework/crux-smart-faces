@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasViewHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -41,7 +42,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @TagChildren({
 	@TagChild(SimpleViewContainerFactory.ViewProcessor.class)
 })
-public class SimpleViewContainerFactory extends WidgetCreator<WidgetCreatorContext>
+public class SimpleViewContainerFactory extends WidgetCreator<WidgetCreatorContext> implements HasViewHandlersFactory<WidgetCreatorContext>
 {
     @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view",
     		description="A view to be rendered into this view container.")
