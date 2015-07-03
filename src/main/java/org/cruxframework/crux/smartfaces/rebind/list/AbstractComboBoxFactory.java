@@ -20,8 +20,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
-import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBindPathFactory;
@@ -130,10 +128,12 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreat
 		String valueAttr = optionRendererElement.optString("value");
 		Set<String> converterDeclarations = new HashSet<String>();
 		out.println("new " + comboBoxRendererClassName + "(){");
-		generateBindingContextDeclaration(out, bindingContextVariable);
+		generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
 		
-		String labelExpression = getExpression(dataObjectAlias, dataObjectVariable, bindingContextVariable, labelAttr, converterDeclarations);	
-		String valueExpression = getExpression(dataObjectAlias, dataObjectVariable, bindingContextVariable, valueAttr, converterDeclarations);	
+		String labelExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
+																bindingContextVariable, labelAttr, converterDeclarations);	
+		String valueExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
+																bindingContextVariable, valueAttr, converterDeclarations);	
 
 		if (child != null)
 		{
@@ -176,35 +176,6 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreat
 		return true;
 	}
 
-	private String getExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, String labelAttr, Set<String> converterDeclarations)
-    {
-	    String labelExpression = null;
-		PropertyBindInfo binding = getObjectDataBinding(labelAttr, null, true);
-		if (binding != null)
-		{
-			labelExpression = binding.getDataObjectReadExpression(dataObjectVariable);
-			String converterDeclaration = binding.getConverterDeclaration();
-			if (converterDeclaration != null)
-			{
-				converterDeclarations.add(converterDeclaration);
-			}
-		}
-		else
-		{
-			ExpressionDataBinding expressionBinding = getExpressionDataBinding(labelAttr, null);
-			if (expressionBinding != null)
-			{
-				labelExpression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
-				// TODO converters
-			}
-			else
-			{
-				labelExpression = getDeclaredMessage(labelAttr);
-			}
-		}
-		 return labelExpression;
-    }
-	
 	@TagConstraints(tagName = "options", minOccurs = "1", maxOccurs = "1")
 	@TagAttributesDeclaration({ 
 		@TagAttributeDeclaration(value="value", required=true), 
