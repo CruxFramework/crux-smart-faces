@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasViewHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -52,7 +53,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttributeDeclaration(value="modal", type=Boolean.class, defaultValue="true", 
 							description="If true, the content behind the dialog can not be changed when dialog is showing")
 })
-public class DialogViewContainerFactory extends WidgetCreator<WidgetCreatorContext> implements DialogFactory<WidgetCreatorContext>
+public class DialogViewContainerFactory extends WidgetCreator<WidgetCreatorContext> implements DialogFactory<WidgetCreatorContext>, 
+										HasViewHandlersFactory<WidgetCreatorContext>
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
