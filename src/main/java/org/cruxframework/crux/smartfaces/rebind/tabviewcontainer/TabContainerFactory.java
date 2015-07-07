@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.rebind.event.BeforeFocusEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasViewHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -47,7 +48,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @TagChildren({
 	@TagChild(TabContainerFactory.TabsProcessor.class)
 })
-public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext>
+public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext> implements HasViewHandlersFactory<WidgetCreatorContext>
 {
 	@TagConstraints(tagName="view", minOccurs="0", maxOccurs="unbounded", 
 					description="A view to be rendered into this view container.")
