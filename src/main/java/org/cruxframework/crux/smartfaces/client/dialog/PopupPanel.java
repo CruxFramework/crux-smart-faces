@@ -213,6 +213,16 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return showing;
 	}
+	
+	/**
+	 * Determines if the popup is animating or not
+	 * 
+	 * @return <code>true</code> if the popup is running a animation
+	 */
+	public boolean isAnimating() 
+	{
+		return animating;
+	}
 
 	/**
 	 * Shows the popup and attach it to the page. It must have a child widget
