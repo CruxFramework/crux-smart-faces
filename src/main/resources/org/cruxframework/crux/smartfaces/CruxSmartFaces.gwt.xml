@@ -34,32 +34,6 @@
 		</any>
 	</replace-with>
 	
-	<!-- NumberBox -->
-	<!-- http://www.wufoo.com/html5/attributes/23-inputmode.html -->
-	<replace-with class="org.cruxframework.crux.smartfaces.client.input.NumberBox.DesktopNumberBoxType">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.input.NumberBox.NumberBoxType" />
-		<any>
-			<when-property-is name="device.features" value="largeDisplayArrows" />
-			<when-property-is name="device.features" value="largeDisplayTouch" />
-			<when-property-is name="device.features" value="largeDisplayMouse" />
-		</any>
-	</replace-with>
-	<replace-with class="org.cruxframework.crux.smartfaces.client.input.NumberBox.HTML5NumberBoxType">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.input.NumberBox.NumberBoxType" />
-		<any>
-			<when-property-is name="device.features" value="smallDisplayArrows" />
-			<when-property-is name="device.features" value="smallDisplayTouch" />
-      		<when-property-is name="user.agent" value="gecko1_8" />
-		</any>
-	</replace-with>
-	<replace-with class="org.cruxframework.crux.smartfaces.client.input.NumberBox.OtherBrowsersNumberBoxType">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.input.NumberBox.NumberBoxType" />
-		<any>
-			<when-property-is name="device.features" value="smallDisplayArrows" />
-			<when-property-is name="device.features" value="smallDisplayTouch" />
-		</any>
-	</replace-with>
-	
 	<!-- BaseMenuDisposal -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.LargeBaseMenuHandler">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.BaseMenuHandler" />

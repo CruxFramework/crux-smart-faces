@@ -646,44 +646,11 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	    }
 	}
 	
-	public abstract static class NumberBoxType
+	public static class NumberBoxType
 	{
-		public abstract void handleType(Element element);
-	}
-	
-	public static class HTML5NumberBoxType extends NumberBoxType
-	{
-		public HTML5NumberBoxType()
-		{
-		}
-		
 		public void handleType(Element element)
 		{
 			element.setAttribute("inputmode", "numeric");
-		}
-	}
-	
-	public static class DesktopNumberBoxType extends NumberBoxType
-	{
-		public DesktopNumberBoxType()
-		{
-		}
-		
-		public void handleType(Element element)
-		{
-			element.setAttribute("type", "text");
-		}
-	}
-	
-	public static class OtherBrowsersNumberBoxType extends NumberBoxType
-	{
-		public OtherBrowsersNumberBoxType()
-		{
-		}
-		
-		public void handleType(Element element)
-		{
-			element.setAttribute("type", "tel");
 		}
 	}
 
