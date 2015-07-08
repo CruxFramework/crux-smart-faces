@@ -123,10 +123,12 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 			{
 				boolean isBindingExpression = false;
 				
-				String widgetPropertyPath = "item(\""+context.itemName+"\").text";
-				//TODO refatorar JCLassUtils.buildGetValueExpression e JClassUtils.buildSetValueExpression para aceitar isso.
+				String widgetPropertyPath = "text";
+				String getUiObjectExpression = "getItem(\""+context.itemName+"\")";
+				String uiObjectClassName = BreadcrumbItem.class.getCanonicalName();
 				
-				PropertyBindInfo binding = getWidgetCreator().getObjectDataBinding(text, widgetPropertyPath, true);
+				PropertyBindInfo binding = getWidgetCreator().getObjectDataBinding(text, getWidgetCreator().getWidgetClassName(), 
+																	widgetPropertyPath, true, uiObjectClassName, getUiObjectExpression);
 				if (binding != null)
 				{
 					context.registerObjectDataBinding(binding);
@@ -134,7 +136,8 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				}
 				else
 				{
-					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, widgetPropertyPath);
+					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, getWidgetCreator().getWidgetClassName(),
+														widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
