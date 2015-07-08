@@ -23,7 +23,9 @@ import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegisterFa
 import org.cruxframework.crux.core.client.event.paste.PasteHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -632,7 +634,8 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		public Box(NumberRenderer renderer)
 		{
 			super(Document.get().createTextInputElement(), renderer, renderer);
-			getElement().setAttribute("inputmode", "numeric");
+			NumberBoxType numberBoxType = GWT.create(NumberBoxType.class);
+			numberBoxType.handleType(getElement());
 			PasteEventSourceRegisterFactory.getRegister().registerPasteEventSource(this, getElement());
 		}
 		
@@ -641,6 +644,14 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	    {
 			return addHandler(handler, PasteEvent.getType());
 	    }
+	}
+	
+	public static class NumberBoxType
+	{
+		public void handleType(Element element)
+		{
+			element.setAttribute("inputmode", "numeric");
+		}
 	}
 
 	static class EventsHandler implements KeyDownHandler, KeyPressHandler, KeyUpHandler, BlurHandler, FocusHandler, PasteHandler
