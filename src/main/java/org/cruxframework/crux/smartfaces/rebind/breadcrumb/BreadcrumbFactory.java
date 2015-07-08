@@ -41,6 +41,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.Breadcrumb;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.BreadcrumbItem;
 import org.cruxframework.crux.smartfaces.client.image.Image;
@@ -49,7 +50,10 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 /**
  * 
  * @author Thiago da Rosa de Bustamante
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 @DeclarativeFactory(library = Constants.LIBRARY_NAME, id = "breadcrumb", targetWidget = Breadcrumb.class, 
 					description = "A Breadcrumb component. Help to guide the user navigation.")
 @TagAttributes({

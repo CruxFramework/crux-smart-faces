@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
@@ -35,7 +36,10 @@ import com.google.gwt.user.client.ui.HasEnabled;
 /**
  * A Breadcrumb component. Help to guide the user navigation. 
  * @author Thiago da Rosa de Bustamante
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class Breadcrumb extends Composite implements HasEnabled
 {
 	public static final String STYLE_BREADCRUMB_ITEM = "faces-Breadcrumb-Item";
