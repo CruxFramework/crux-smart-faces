@@ -266,7 +266,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	 */
 	public BreadcrumbItem setWidget(IsWidget itemWidget) 
 	{
-		itemPanel.add(itemWidget);
+		itemPanel.setWidget(itemWidget);
 		return this;
 	}
 
