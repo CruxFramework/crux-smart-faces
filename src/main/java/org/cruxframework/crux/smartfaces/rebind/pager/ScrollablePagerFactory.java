@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.pager;
 
-import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPagerFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractHasPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.smartfaces.client.pager.ScrollablePager;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
@@ -26,4 +27,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  */
 @DeclarativeFactory(id="scrollablePager", library=Constants.LIBRARY_NAME, targetWidget=ScrollablePager.class,
 					description="A pager widget that can predict the datasource size at the load instant and changes the page when the user scrolls down the widget.")
-public class ScrollablePagerFactory extends AbstractPagerFactory {}
+public class ScrollablePagerFactory extends AbstractHasPageableFactory<WidgetCreatorContext>
+{
+	@Override
+	public WidgetCreatorContext instantiateContext()
+	{
+		return new WidgetCreatorContext();
+	}
+}

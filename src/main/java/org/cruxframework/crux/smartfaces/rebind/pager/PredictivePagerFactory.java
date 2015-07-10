@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.pager;
 
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPagerFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.smartfaces.client.pager.PredictivePager;
@@ -26,4 +27,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  */
 @DeclarativeFactory(id="predictivePager", library=Constants.LIBRARY_NAME, targetWidget=PredictivePager.class,
 					description="A pager widget that can predict the datasource size at the load instant.")
-public class PredictivePagerFactory extends AbstractPagerFactory {}
+public class PredictivePagerFactory extends AbstractPagerFactory<WidgetCreatorContext> 
+{
+	@Override
+	public WidgetCreatorContext instantiateContext()
+	{
+		return new WidgetCreatorContext();
+	}
+}

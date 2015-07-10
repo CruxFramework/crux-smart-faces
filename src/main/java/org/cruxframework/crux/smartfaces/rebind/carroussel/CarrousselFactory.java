@@ -21,7 +21,6 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasPagedDataProviderFactory.PagedDataProviderChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.align.HorizontalAlignment;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.align.HorizontalAlignmentAttributeParser;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.align.VerticalAlignment;
@@ -34,7 +33,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.carroussel.Carroussel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -59,7 +57,6 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 	@TagAttribute(value="fixedHeight", type=Boolean.class, defaultValue="true") 
 })
 @TagChildren({
-	@TagChild(PagedDataProviderChildren.class),
 	@TagChild(value=CarrousselFactory.WidgetListChildCreator.class, autoProcess=false)
 })
 public class CarrousselFactory extends AbstractPageableFactory<WidgetCreatorContext>
@@ -73,23 +70,9 @@ public class CarrousselFactory extends AbstractPageableFactory<WidgetCreatorCont
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
-		JSONObject widgetCreatorChild = null;
-		JSONObject dataChild = null;
-		JSONArray children = ensureChildren(context.getWidgetElement(), false, context.getWidgetId());
-		for (int i=0; i< children.length(); i++)
-		{
-			JSONObject child = children.optJSONObject(i);
-			if (getChildName(child).startsWith("widget"))
-			{
-				widgetCreatorChild = child;
-			}
-			else
-			{
-				dataChild = child;
-			}
-		}
+		JSONObject widgetCreatorChild = ensureFirstChild(context.getWidgetElement(), false, context.getWidgetId());;
 		
-		JClassType dataObject = getDataObject(context.getWidgetId(), dataChild);
+		JClassType dataObject = getDataObject(context);
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String className = getWidgetClassName()+"<"+dataObjectName+">";
 

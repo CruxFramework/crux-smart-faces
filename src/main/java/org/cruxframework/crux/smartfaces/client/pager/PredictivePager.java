@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.ListBox;
 /**
  * A pager which knows the total number of pages.  
  * @author Gesse S. F. Dafe
+ * @author Thiago da Rosa de Bustamante
  */
 public class PredictivePager<T> extends NavigationButtonsPager<T>
 {
