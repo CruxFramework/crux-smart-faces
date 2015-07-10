@@ -415,7 +415,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					panel.setValue(renderer.getValue(value));
 					panel.setLabel(renderer.getLabel(value));
 					int widgetIndex = pagePanel.getWidgetCount();
-					if (pager != null && !pager.supportsInfiniteScroll())
+					if (hasPageable != null && !hasPageable.supportsInfiniteScroll())
 					{
 						int numPreviousPage = getDataProvider().getCurrentPage() - 1;
 						widgetIndex += (numPreviousPage*getPageSize());
