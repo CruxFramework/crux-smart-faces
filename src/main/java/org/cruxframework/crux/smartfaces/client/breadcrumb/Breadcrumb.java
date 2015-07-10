@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
 @Experimental
 public class Breadcrumb extends Composite implements HasEnabled
 {
+	public static final String DEFAULT_STYLE_NAME = "faces-Breadcrumb";
 	public static final String STYLE_BREADCRUMB_ITEM = "faces-Breadcrumb-Item";
 	public static final String STYLE_BREADCRUMB_SEPARATOR = "faces-Breadcrumb-Separator";
 	private static final String STYLE_BREADCRUMB_DISABLED_SUFFIX = "-Disabled";
@@ -67,6 +68,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		mainPanel = new BreadcrumbPanel(this);
 		initWidget(mainPanel);
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	/**
