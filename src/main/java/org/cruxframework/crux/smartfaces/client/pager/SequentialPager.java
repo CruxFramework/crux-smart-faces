@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * A pager which does not know the total number of pages. So, it can only move the cursor to next or to previous page.  
  * @author Gesse S. F. Dafe
+ * @author Thiago da Rosa de Bustamante
  */
 public class SequentialPager<T> extends NavigationButtonsPager<T>
 {

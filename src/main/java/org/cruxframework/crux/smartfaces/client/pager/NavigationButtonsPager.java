@@ -16,27 +16,22 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
-import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base implementation for navigation-buttons-based pager
  * @author Thiago da Rosa de Bustamante
  * @author Gesse S. F. Dafe
  */
-public abstract class NavigationButtonsPager<T> extends AbstractPager<T> implements HasPageable<T>
+public abstract class NavigationButtonsPager<T> extends AbstractPager<T> 
 {
 	private Button previousButton;
 	private Button nextButton;
 	private Button firstButton;
 	private Button lastButton;
-	protected Panel contentPanel;
 	
 	@Override
 	protected void onUpdate()
@@ -227,26 +222,6 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T> impleme
 		lastButton.setEnabled(enabled);
 	}
 	
-	@Override
-	public boolean supportsInfiniteScroll()
-	{
-		return false;
-	}
-	
-	@Override
-    public void updatePagePanel(IsWidget pagePanel, boolean forward)
-    {
-		contentPanel.clear();
-		contentPanel.add(pagePanel);
-    }
-
-	@Override
-    public void initializeContentPanel(Panel contentPanel)
-    {
-		this.contentPanel = contentPanel;
-    }
-	
-
 	/**
 	 * Creates a generic navigation button
 	 * @param styleName
