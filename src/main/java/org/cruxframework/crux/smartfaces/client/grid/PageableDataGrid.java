@@ -92,7 +92,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 					@Override
 					public void onPageRequested(PageRequestedEvent event) 
 					{
-						if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
+						if(PageableDataGrid.this.hasPageable == null || !PageableDataGrid.this.hasPageable.supportsInfiniteScroll())
 						{
 							rows.clear();
 						}
@@ -414,7 +414,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			public void read(T dataObject, int dataProviderRowIndex) 
 			{
 				int gridRowIndex = 0;
-				if(PageableDataGrid.this.pager != null && PageableDataGrid.this.pager.supportsInfiniteScroll())
+				if(PageableDataGrid.this.hasPageable != null && PageableDataGrid.this.hasPageable.supportsInfiniteScroll())
 				{
 					gridRowIndex = dataProviderRowIndex;					
 				} 

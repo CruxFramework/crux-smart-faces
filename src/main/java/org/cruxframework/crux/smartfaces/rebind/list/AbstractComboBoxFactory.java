@@ -23,7 +23,6 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBindPathFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasPagedDataProviderFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -37,7 +36,6 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.list.AbstractComboBox.OptionsRenderer;
 import org.cruxframework.crux.smartfaces.client.list.ComboBox;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -56,7 +54,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, 
 					description = "Combobox component that uses a data provider to display a list of items or widgets")
 @TagChildren({ 
-	@TagChild(HasPagedDataProviderFactory.PagedDataProviderChildren.class), 
 	@TagChild(value = AbstractComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
 })
 public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
@@ -70,23 +67,9 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreat
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
-		JSONObject optionsRendererChild = null;
-		JSONObject dataChild = null;
-		JSONArray children = ensureChildren(context.getWidgetElement(), false, context.getWidgetId());
-		for (int i=0; i< children.length(); i++)
-		{
-			JSONObject child = children.optJSONObject(i);
-			if (getChildName(child).startsWith("options"))
-			{
-				optionsRendererChild = child;
-			}
-			else
-			{
-				dataChild = child;
-			}
-		}
+		JSONObject optionsRendererChild = ensureFirstChild(context.getWidgetElement(), false, context.getWidgetId());
 		
-		JClassType dataObject = getDataObject(context.getWidgetId(), dataChild);
+		JClassType dataObject = getDataObject(context);
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String className = getWidgetClassName()+"<"+dataObjectName+">";
 
