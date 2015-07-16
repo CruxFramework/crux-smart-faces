@@ -365,4 +365,20 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 		cancelButton.setText(WidgetMsgFactory.getMessages().cancelLabel());
 		return cancelButton;
     }
+	
+	/**
+	 * @return the OK button.
+	 */
+	public Button getOkButton() 
+	{
+		return okButton;
+	}
+
+	/**
+	 * @return the CANCEL button.
+	 */
+	public Button getCancelButton() 
+	{
+		return cancelButton;
+	}
 }
