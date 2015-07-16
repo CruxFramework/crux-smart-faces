@@ -25,7 +25,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -108,6 +107,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ValueBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A numeric box 
@@ -635,7 +635,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		{
 			super(Document.get().createTextInputElement(), renderer, renderer);
 			NumberBoxType numberBoxType = GWT.create(NumberBoxType.class);
-			numberBoxType.handleType(getElement());
+			numberBoxType.handleType(this);
 			PasteEventSourceRegisterFactory.getRegister().registerPasteEventSource(this, getElement());
 		}
 		
@@ -648,9 +648,9 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	
 	public static class NumberBoxType
 	{
-		public void handleType(Element element)
+		public void handleType(Widget widget)
 		{
-			element.setAttribute("inputmode", "numeric");
+			widget.getElement().setAttribute("inputmode", "numeric");
 		}
 	}
 
