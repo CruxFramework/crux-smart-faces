@@ -73,12 +73,6 @@ body
 {
 	width:80%;
 	margin:0;
-	-webkit-transform: translateY(-50%) translateZ(0) scale(1.0, 1.0);
-    -moz-transform: translateY(-50%) translateZ(0) scale(1.0, 1.0);
-    transform: translateY(-50%) translateZ(0) scale(1.0, 1.0);
-   	-webkit-backface-visibility: hidden;
-	-webkit-perspective: 1px;
-    perspective: 1px;
 }
 
 .faces-popup-header
