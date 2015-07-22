@@ -845,6 +845,19 @@ td > div > .faces--group
 	overflow:hidden;
 }
 
+.faces-popup.faces-popup--center
+{
+	left: 50% !important;
+	top: 50% !important;
+	-webkit-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -moz-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+   	-webkit-backface-visibility: hidden;
+	-webkit-perspective: 1px;
+    perspective: 1px;
+}
+
 .faces-popup-header
 {
 	background: #f7f7f7;

@@ -32,7 +32,6 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -718,16 +717,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	private void centralizeMe()
 	{
-		Style style = getElement().getStyle();
-		style.setLeft(50, Unit.PCT);
-		style.setTop(50, Unit.PCT);
-		style.setProperty("mozTransform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
-		style.setProperty("webkitTransform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
-		style.setProperty("transform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
-		
-		style.setProperty("webkitPerspective", "1px");
-		style.setProperty("perspective", "1px");
-		style.setProperty("webkitBackfaceVisibility", "hidden");
+		removeStyleName("faces-popup--center");
+		addStyleName("faces-popup--center");
 		
 		left = -1;
 		top = -1;
@@ -736,9 +727,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	
 	private void uncentralizeMe()
 	{
-		Style style = getElement().getStyle();
-		style.clearProperty("webkitTransform");
-		style.clearProperty("transform");
+		removeStyleName("faces-popup--center");
 		centered = false;
 	}
 	
