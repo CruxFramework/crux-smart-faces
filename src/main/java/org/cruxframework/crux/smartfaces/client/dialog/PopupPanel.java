@@ -721,8 +721,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		Style style = getElement().getStyle();
 		style.setLeft(50, Unit.PCT);
 		style.setTop(50, Unit.PCT);
-		style.setProperty("webkitTransform", "translateY(-50%) translateX(-50%)");
-		style.setProperty("transform", "translateY(-50%) translateX(-50%)");
+		style.setProperty("mozTransform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
+		style.setProperty("webkitTransform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
+		style.setProperty("transform", "translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0)");
+		
+		style.setProperty("webkitPerspective", "1px");
+		style.setProperty("perspective", "1px");
+		style.setProperty("webkitBackfaceVisibility", "hidden");
+		
 		left = -1;
 		top = -1;
 		centered = true;
