@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.Panel;
 public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation, HasCloseHandlers<PopupPanel>
 {
 	private DialogBox dialog;
+
 	private FlowPanel contentPanel; 
 	private boolean unloadViewOnClose;
 	
@@ -708,5 +709,13 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
 		this.dialog.setDialogTitle(title);
+	}
+	
+	/**
+	 * @return the dialog implementation.
+	 */
+	public DialogBox getDialog() 
+	{
+		return dialog;
 	}
 }
