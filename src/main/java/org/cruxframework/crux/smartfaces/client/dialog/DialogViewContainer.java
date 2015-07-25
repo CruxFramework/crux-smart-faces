@@ -709,4 +709,12 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	{
 		this.dialog.setDialogTitle(title);
 	}
+	
+	/**
+	 * @return the dialog implementation.
+	 */
+	public DialogBox getDialog() 
+	{
+		return dialog;
+	}
 }
