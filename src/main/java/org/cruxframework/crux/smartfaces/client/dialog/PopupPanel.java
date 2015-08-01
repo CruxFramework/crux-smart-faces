@@ -131,6 +131,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		if (modal)
 		{
 			glass = Document.get().createDivElement();
+			preventMove(glass);
 			glass.setClassName(glassStyleName);
 		}
 
@@ -170,6 +171,15 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		setPosition(0, 0);
 		setStyleName(getContainerElement(), "faces-popup-content");
 	}
+	
+	private static native void preventMove(Element element) /*-{
+		var prevent = function(event) 
+		{
+    		event.preventDefault();
+     	}
+    	element.addEventListener("touchstart", prevent);
+    	element.addEventListener("mousewheel", prevent);
+	}-*/;
 
 	/**
 	 * Mouse events that occur within an autoHide partner will not hide a panel
