@@ -2,9 +2,16 @@
     <inherits name="org.cruxframework.crux.core.Crux"/>
 
 	<!-- Popup Panel (centralizer) -->
-	<replace-with class="org.cruxframework.crux.smartfaces.client.dialog.PopupPanel.PopupCentralizerImpl">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.dialog.PopupPanel.PopupCentralizer" />
+	<replace-with class="org.cruxframework.crux.smartfaces.client.dialog.PopupCentralizerImpl">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.dialog.PopupCentralizer" />
 	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.dialog.PopupCentralizerIE9Impl">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.dialog.PopupCentralizer" />
+		<any>
+			<when-property-is name="user.agent" value="ie9" />
+		</any>
+	</replace-with>
+	
 	<!-- Menu -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer" />
