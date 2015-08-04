@@ -93,6 +93,18 @@ body
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* --------------------   common for all dialogs  -----------------------*/
+.dragging, .unselectable {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.unselectable
+{
+	overflow: hidden;
+}
+
 /* -------------------- dialogs z-indexes -----------------------*/
 
 .faces-overlay
