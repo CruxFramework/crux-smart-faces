@@ -93,6 +93,18 @@ body
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* --------------------   common for all dialogs  -----------------------*/
+.dragging, .unselectable {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.unselectable
+{
+	overflow: hidden;
+}
+
 /* -------------------- dialogs z-indexes -----------------------*/
 
 .faces-overlay
@@ -843,6 +855,19 @@ td > div > .faces--group
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 5px 20px rgba(0, 0, 0, 0.4) !important;
 	position: fixed;
 	overflow:hidden;
+}
+
+.faces-popup.faces-popup--center
+{
+	left: 50% !important;
+	top: 50% !important;
+	-webkit-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -moz-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+   	-webkit-backface-visibility: hidden;
+	-webkit-perspective: 1px;
+    perspective: 1px;
 }
 
 .faces-popup-header

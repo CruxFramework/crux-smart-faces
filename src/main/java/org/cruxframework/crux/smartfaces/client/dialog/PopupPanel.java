@@ -25,6 +25,7 @@ import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimat
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -32,7 +33,6 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -68,6 +68,13 @@ import com.google.gwt.user.client.ui.UIObject;
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
 	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
+
+	private PopupCentralizer popupCentralizer = GWT.create(PopupCentralizer.class);
+
+	/**
+	 * Coordinates the times that the glass is called.  
+	 */
+	private static int numberCalls = 0;
 	
 	private HandlerRegistration nativePreviewHandlerRegistration;
 	private HandlerRegistration historyHandlerRegistration;
@@ -80,16 +87,15 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private Element glass;
 	private String glassStyleName = DEFAULT_GLASS_STYLE_NAME;
 	private boolean glassShowing;
-	private boolean centered;
 	private Element containerElement;
 	private DialogAnimation animation;
 	private boolean animating;
 	private int left = -1;
 	private int top = -1;
-	
+
 	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
 	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
-	
+
 	/**
 	 * Creates an empty popup panel. A child widget must be added to it before
 	 * it is shown.
@@ -98,7 +104,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		this(false);
 	}
-	
+
 	/**
 	 * Creates an empty popup panel, specifying its "auto-hide" property.
 	 * 
@@ -111,7 +117,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		this(autoHide, false);
 	}
-	
+
 	/**
 	 * Creates an empty popup panel, specifying its "auto-hide" and "modal"
 	 * properties.
@@ -151,8 +157,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		addOpenHandler(new OpenHandler<PopupPanel>()
 		{
 			@Override
-            public void onOpen(OpenEvent<PopupPanel> event)
-            {
+			public void onOpen(OpenEvent<PopupPanel> event)
+			{
 				if (defaultOpenHandlers != null)
 				{
 					for (OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
@@ -160,16 +166,16 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 						openHandler.onOpen(event);
 					}
 				}
-            }
+			}
 		});
-		
+
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
 		getElement().getStyle().setPosition(Position.ABSOLUTE);
-	    setPosition(0, 0);
-	    setStyleName(getContainerElement(), "faces-popup-content");
+		setPosition(0, 0);
+		setStyleName(getContainerElement(), "faces-popup-content");
 	}
-	
+
 	/**
 	 * Mouse events that occur within an autoHide partner will not hide a panel
 	 * set to autoHide.
@@ -213,7 +219,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return showing;
 	}
-	
+
 	/**
 	 * Determines if the popup is animating or not
 	 * 
@@ -262,7 +268,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public void center()
 	{
-		if (!centered)
+		if (!popupCentralizer.isCentralized())
 		{
 			if (animating)
 			{
@@ -291,7 +297,67 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			}
 		}
 	}	
-	
+
+	/**
+	 * This class handle the centralizer implementation throught
+	 * all browsers compatible with this library.
+	 * @author samuel.cardoso
+	 *
+	 */
+	public static abstract class PopupCentralizer
+	{
+		boolean centralized = false;
+
+		/**
+		 * Centralize the popup.
+		 * @param uiObject
+		 */
+		public abstract void centralize(UIObject uiObject);
+
+		/**
+		 * Descentralize the popup.
+		 * @param uiObject
+		 */
+		public abstract void descentralize(UIObject uiObject);
+
+		/**
+		 * @return true if the popup is centralized and
+		 * false otherwise.
+		 */
+		public boolean isCentralized()
+		{
+			return centralized;
+		}
+
+		/**
+		 * @param centralized
+		 */
+		public void setCentralized(boolean centralized) 
+		{
+			this.centralized = centralized;
+		}
+	}
+
+	public static class PopupCentralizerImpl extends PopupCentralizer
+	{
+		private static final String DEFAULT_CENTER_STYLE_NAME = "faces-popup--center";
+
+		@Override
+		public void centralize(UIObject uiObject) 
+		{
+			uiObject.removeStyleName(DEFAULT_CENTER_STYLE_NAME);
+			uiObject.addStyleName(DEFAULT_CENTER_STYLE_NAME);
+			centralized = true;
+		}
+
+		@Override
+		public void descentralize(UIObject uiObject) 
+		{
+			uiObject.removeStyleName(DEFAULT_CENTER_STYLE_NAME);
+			centralized = false;
+		}
+	}
+
 	/**
 	 * Hides the popup and detaches it from the page. This has no effect if it
 	 * is not currently showing.
@@ -331,7 +397,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return addHandler(handler, CloseEvent.getType());
 	}
-	
+
 	@Override
 	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
 	{
@@ -347,7 +413,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		this.animation = animation;
 		setAnimationEnabled(animation != null);
 	}
-	
+
 	@Override
 	public boolean isAnimationEnabled()
 	{
@@ -403,7 +469,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return modal;
 	}
-	
+
 	/**
 	 * Enable or disable autoHide on history change events. When enabled, the
 	 * popup will be automatically hidden when the history token changes, such
@@ -421,9 +487,9 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	@SuppressWarnings("deprecation")
 	protected com.google.gwt.user.client.Element getContainerElement()
 	{
-	    return containerElement.cast();
+		return containerElement.cast();
 	}
-	
+
 	/**
 	 * Sets the popup's position relative to the browser's client area. The
 	 * popup's position may be set before calling {@link #show()}.
@@ -435,7 +501,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public void setPosition(int left, int top)
 	{
-		if (centered)
+		if (popupCentralizer.isCentralized())
 		{
 			uncentralizeMe();
 		}
@@ -476,7 +542,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			glass.getStyle().setVisibility(visible?Visibility.VISIBLE:Visibility.HIDDEN);
 		}
 	}	
-	
+
 	/**
 	 * Determines whether or not this popup is visible. Note that this just
 	 * checks the <code>visibility</code> style attribute, which is set in the
@@ -491,11 +557,42 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return !getElement().getStyle().getVisibility().equals(Visibility.HIDDEN.getCssName());
 	}
-	
+
+	/**
+	 * Fires a blur event to the element.
+	 * @param elt the element.
+	 */
+	private native void blur(Element elt) /*-{
+	    // Issue 2390: blurring the body causes IE to disappear to the background
+	    if (elt.blur && elt != $doc.body) {
+	      elt.blur();
+	    }
+	  }-*/;
+
 	@Override
 	public void onPreviewNativeEvent(NativePreviewEvent event)
 	{
-		if (event.isCanceled())
+		// If the event has been canceled or consumed, ignore it
+		if (event.isCanceled() || (event.isConsumed())) 
+		{
+			// We need to ensure that we cancel the event even if its been consumed so
+			// that popups lower on the stack do not auto hide
+			if (modal) 
+			{
+				event.cancel();
+			}
+			return;
+		}
+
+		// Fire the event hook and return if the event is canceled
+		//	    onPreviewNativeEvent(event);
+		// Cancel the event based on the deprecated onEventPreview() method
+		//	    if (event.isFirstHandler()
+		//	        && !onEventPreview(Event.as(event.getNativeEvent()))) {
+		//	      event.cancel();
+		//	    }
+
+		if (event.isCanceled()) 
 		{
 			return;
 		}
@@ -503,46 +600,65 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		// If the event targets the popup or the partner, consume it
 		Event nativeEvent = Event.as(event.getNativeEvent());
 		boolean eventTargetsPopupOrPartner = eventTargetsPopup(nativeEvent) || eventTargetsPartner(nativeEvent);
-		if (eventTargetsPopupOrPartner)
+		if (eventTargetsPopupOrPartner) 
 		{
 			event.consume();
 		}
 
+		// Cancel the event if it doesn't target the modal popup. Note that the
+		// event can be both canceled and consumed.
+		if (modal) 
+		{
+			event.cancel();
+		}
+
 		// Switch on the event type
 		int type = nativeEvent.getTypeInt();
-		switch (type)
+		switch (type) 
 		{
-			case Event.ONMOUSEDOWN:
-			case Event.ONTOUCHSTART:
-				// Don't eat events if event capture is enabled, as this can
-				// interfere with dialog dragging, for example.
-				if (DOM.getCaptureElement() != null)
-				{
-					event.consume();
-					return;
-				}
-	
-				if (!eventTargetsPopupOrPartner && autoHide)
-				{
-					hide(true);
-					return;
-				}
-				break;
-			case Event.ONMOUSEUP:
-			case Event.ONMOUSEMOVE:
-			case Event.ONCLICK:
-			case Event.ONDBLCLICK:
-			case Event.ONTOUCHEND:
+		case Event.ONMOUSEDOWN:
+		case Event.ONTOUCHSTART:
+			// Don't eat events if event capture is enabled, as this can
+			// interfere with dialog dragging, for example.
+			if (DOM.getCaptureElement() != null) 
 			{
-				// Don't eat events if event capture is enabled, as this can
-				// interfere with dialog dragging, for example.
-				if (DOM.getCaptureElement() != null)
-				{
-					event.consume();
-					return;
-				}
-				break;
+				event.consume();
+				return;
 			}
+
+			if (!eventTargetsPopupOrPartner && autoHide) 
+			{
+				hide(true);
+				return;
+			}
+			break;
+		case Event.ONMOUSEUP:
+		case Event.ONMOUSEMOVE:
+		case Event.ONCLICK:
+		case Event.ONDBLCLICK:
+		case Event.ONTOUCHEND: 
+		{
+			// Don't eat events if event capture is enabled, as this can
+			// interfere with dialog dragging, for example.
+			if (DOM.getCaptureElement() != null) 
+			{
+				event.consume();
+				return;
+			}
+			break;
+		}
+
+		case Event.ONFOCUS: 
+		{
+			@SuppressWarnings("deprecation")
+			Element target = nativeEvent.getTarget();
+			if (modal && !eventTargetsPopupOrPartner && (target != null)) {
+				blur(target);
+				event.cancel();
+				return;
+			}
+			break;
+		}
 		}
 	}
 
@@ -561,7 +677,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			setState(false, true, false, null);
 		}
 	}
-	
+
 	/**
 	 * Hides the popup and detaches it from the page. This has no effect if it
 	 * is not currently showing.
@@ -577,22 +693,22 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	}
 
 	private void runEntranceAnimation(final StateChangeCallback callback)
-    {
-	    animating = true;
-	    getDialogAnimation().animateEntrance(this, new Animation.Callback()
-	    {
-	    	@Override
-	    	public void onAnimationCompleted()
-	    	{
-	    		animating = false;
-	    		if (callback != null)
-	    		{
-	    			callback.onStateChange();
-	    		}
-	    	}
-	    });
-    }
-	
+	{
+		animating = true;
+		getDialogAnimation().animateEntrance(this, new Animation.Callback()
+		{
+			@Override
+			public void onAnimationCompleted()
+			{
+				animating = false;
+				if (callback != null)
+				{
+					callback.onStateChange();
+				}
+			}
+		});
+	}
+
 	private DialogAnimation getDialogAnimation()
 	{
 		if (animation == null)
@@ -601,14 +717,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		return animation;
 	}
-	
+
 	private void doHide(boolean fireEvent, final boolean autoClosed, boolean animated)
-    {
-	    if (!isShowing())
+	{
+		if (!isShowing())
 		{
 			return;
 		}
-		if (animated && centered)
+		if (animated && popupCentralizer.isCentralized())
 		{
 			fixPositionToCenter();
 		}
@@ -627,14 +743,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			setState(false, false, animated, null);
 		}
-    }
+	}
 
 	private void fixPositionToCenter()
-    {
+	{
 		int left = getPopupLeftToCenter();
 		int top = getPopupTopToCenter();
 		setPosition(left, top);
-    }
+	}
 
 	/**
 	 * Gets the popup's left position relative to the browser's center area.
@@ -646,7 +762,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		int windowLeft = Window.getScrollLeft();
 		int windowWidth = Window.getClientWidth();
 		int centerLeft = (windowWidth / 2) + windowLeft;
-		
+
 		int offsetWidth = getOffsetWidth();
 		return centerLeft - (offsetWidth / 2);
 	}
@@ -681,7 +797,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			// since PopupPanel is a Widget, its legal.
 			this.removeFromParent();
 		}
-		if (centered && animated)
+		if (popupCentralizer.isCentralized() && animated)
 		{
 			setVisible(false);
 			setState(true, false, false, new StateChangeCallback()
@@ -718,34 +834,27 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	private void centralizeMe()
 	{
-		Style style = getElement().getStyle();
-		style.setLeft(50, Unit.PCT);
-		style.setTop(50, Unit.PCT);
-		style.setProperty("webkitTransform", "translateY(-50%) translateX(-50%)");
-		style.setProperty("transform", "translateY(-50%) translateX(-50%)");
+		popupCentralizer.centralize(this);
+
 		left = -1;
 		top = -1;
-		centered = true;
 	}
-	
+
 	private void uncentralizeMe()
 	{
-		Style style = getElement().getStyle();
-		style.clearProperty("webkitTransform");
-		style.clearProperty("transform");
-		centered = false;
+		popupCentralizer.descentralize(this);
 	}
-	
+
 	private void setPopupPositionStyle(int left, int top)
-    {
-	    Style style = getElement().getStyle();
+	{
+		Style style = getElement().getStyle();
 		style.setPropertyPx("left", left);
 		style.setPropertyPx("top", top);
-    }
-	
+	}
+
 	private void setState(boolean showing, boolean unloading, boolean animated, final StateChangeCallback callback)
-    {
-	    this.showing = showing;
+	{
+		this.showing = showing;
 		updateHandlers();
 
 		maybeShowGlass();
@@ -757,14 +866,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				getDialogAnimation().animateEntrance(this, new Animation.Callback()
 				{
 					@Override
-                    public void onAnimationCompleted()
-                    {
+					public void onAnimationCompleted()
+					{
 						animating = false;
 						if (callback != null)
 						{
 							callback.onStateChange();
 						}
-                    }
+					}
 				});
 			}
 			RootPanel.get().add(this);
@@ -808,7 +917,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	private void removePopupFromDOM()
 	{
-		if (centered)
+		if (popupCentralizer.isCentralized())
 		{
 			fixPositionToCenter();
 		}
@@ -826,16 +935,37 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			if (modal)
 			{
-				body.appendChild(glass);
-				body.addClassName("unselectable");
-				glassShowing = true;
+				try
+				{
+					body.appendChild(glass);
+					if(numberCalls == 0)
+					{
+						body.addClassName("unselectable");
+					}
+					glassShowing = true;	
+				}
+				finally
+				{
+					numberCalls++;	
+				}
 			}
 		}
 		else if (glassShowing)
 		{
-			body.removeChild(glass);
-			body.removeClassName("unselectable");
-			glassShowing = false;
+			try
+			{
+				body.removeChild(glass);
+				if(numberCalls == 1)
+				{
+					body.removeClassName("unselectable");
+				}
+				glassShowing = false;	
+			}
+			finally
+			{
+				numberCalls--;	
+			}
+			
 		}
 	}
 
@@ -905,7 +1035,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		// Create handlers if showing.
 		if (isShowing())
 		{
-			if (!modal)
+			if (modal)
 			{
 				nativePreviewHandlerRegistration = Event.addNativePreviewHandler(this);
 			}
@@ -921,7 +1051,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			});
 		}
 	}
-	
+
 	private int getLeftRelativeObject(final UIObject relativeObject)
 	{
 		int offsetWidth = getOffsetWidth();
@@ -966,7 +1096,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		return left;
 	}
-	
+
 	private int getTopRelativeObject(final UIObject relativeObject)
 	{
 		int offsetHeight = getOffsetHeight();
@@ -988,12 +1118,12 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		return top;
 	}
-	
+
 	private static interface StateChangeCallback
 	{
 		void onStateChange();
 	}
-	
+
 	/**
 	 * Add a default open handler that will be appended to each created object
 	 * @param defaultOpenHandler
@@ -1006,7 +1136,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		defaultOpenHandlers.add(defaultOpenHandler);
 	}
-	
+
 	/**
 	 * Add a default close handler that will be appended to each created object
 	 * @param defaultCloseHandler
