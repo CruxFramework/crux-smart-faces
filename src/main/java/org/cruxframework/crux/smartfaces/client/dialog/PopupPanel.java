@@ -67,8 +67,6 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
-	private static final String STYLENAME_NO_SCROLL = "faces--bodyNoScroll";
-
 	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
 
 	private PopupCentralizer popupCentralizer = GWT.create(PopupCentralizer.class);
