@@ -154,6 +154,7 @@ public class StoryboardFactory  extends ComplexPanelFactory<StoryboardContext> i
 			}
 			context.largeDeviceItemHeight = null;
 			context.smallDeviceItemHeight = null;
+			context.largeDeviceItemWidth = null;
 			context.horizontalAlignment = null;
 			context.verticalAlignment = null;
 		}
