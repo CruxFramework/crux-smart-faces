@@ -281,4 +281,12 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 
 		return contents;
 	}
+	
+	/**
+	 * @return the HIDE button.
+	 */
+	public Button getHideButton() 
+	{
+		return hideButton;
+	}
 }

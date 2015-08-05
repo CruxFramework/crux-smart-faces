@@ -1,12 +1,6 @@
 @external *;
 
 /* --------------------   common for all dialogs  -----------------------*/
-.dragging, .unselectable *{
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}
-
 @-webkit-keyframes faces-InfinityProgressBarAnimation
 {
 	0%   {width:0%;left:0%}

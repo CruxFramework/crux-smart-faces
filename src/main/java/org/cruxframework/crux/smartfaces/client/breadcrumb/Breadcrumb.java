@@ -318,9 +318,10 @@ public class Breadcrumb extends Composite implements HasEnabled
 	 */
 	public Breadcrumb removeFrom(int index)
 	{
-		while (size() >= index)
+		int from = index + 1;
+		while (size() > from)
 		{
-			remove(index);
+			remove(from);
 		}
 		return this;
 	}
@@ -509,12 +510,8 @@ public class Breadcrumb extends Composite implements HasEnabled
 	 */
 	protected void adopt(BreadcrumbItem item, int onPosition)
 	{
-		SelectablePanel itemPanel = item.getItemPanel();
-		if (itemPanel != null)
-		{
-		    children.add(item);
-			mainPanel.adopt(item);
-		}
+		children.add(item);
+		mainPanel.adopt(item);
 	}
 	
 	/**
@@ -565,13 +562,8 @@ public class Breadcrumb extends Composite implements HasEnabled
 	 */
 	protected void orphan(BreadcrumbItem item)
 	{
-		SelectablePanel itemPanel = item.getItemPanel();
-		if (itemPanel != null)
-		{
-			getElement().removeChild(item.getElement());
-		    children.remove(item);
-		    mainPanel.orphan(item);
-		}
+		children.remove(item);
+	    mainPanel.orphan(item);
 	}
 	
 	protected Breadcrumb remove(BreadcrumbItem item, int index) 
@@ -668,7 +660,6 @@ public class Breadcrumb extends Composite implements HasEnabled
 			SelectablePanel itemPanel = item.getItemPanel();
 			if (itemPanel != null)
 			{
-				getElement().removeChild(item.getElement());
 			    getChildren().remove(itemPanel);
 				orphan(itemPanel);
 			}

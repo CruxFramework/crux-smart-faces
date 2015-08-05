@@ -269,4 +269,12 @@ public class QuestionBox extends AbstractDialogBox
 
 		return contents;
 	}
+	
+	/**
+	 * @return the buttons navpanel.
+	 */
+	public NavPanel getButtonsPanel() 
+	{
+		return buttonsPanel;
+	}
 }
