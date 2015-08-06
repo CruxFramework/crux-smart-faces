@@ -42,21 +42,6 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
     clear: both;
 }
 
-/*
- Makes the element that uses this class
- with non-selectable text 
-*/
-.faces-noSelectable,
-.faces-noSelectable *
-{
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
 hr{
 	background:#e3e3e3;
 	height:1px;
@@ -91,18 +76,6 @@ body
 	color:#111;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-}
-
-/* --------------------   common for all dialogs  -----------------------*/
-.dragging, .unselectable {
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}
-
-.unselectable
-{
-	overflow: hidden;
 }
 
 /* -------------------- dialogs z-indexes -----------------------*/
@@ -855,6 +828,7 @@ td > div > .faces--group
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 5px 20px rgba(0, 0, 0, 0.4) !important;
 	position: fixed;
 	overflow:hidden;
+	pointer-events: auto;
 }
 
 .faces-popup.faces-popup--center

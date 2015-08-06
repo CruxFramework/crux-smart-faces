@@ -940,7 +940,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 					body.appendChild(glass);
 					if(numberCalls == 0)
 					{
-						body.addClassName("unselectable");
+						body.addClassName("faces--unscrollable");
+						body.addClassName("faces--unselectable");
 					}
 					glassShowing = true;	
 				}
@@ -957,7 +958,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				body.removeChild(glass);
 				if(numberCalls == 1)
 				{
-					body.removeClassName("unselectable");
+					body.removeClassName("faces--unscrollable");
+					body.removeClassName("faces--unselectable");
 				}
 				glassShowing = false;	
 			}
@@ -965,7 +967,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			{
 				numberCalls--;	
 			}
-			
 		}
 	}
 
