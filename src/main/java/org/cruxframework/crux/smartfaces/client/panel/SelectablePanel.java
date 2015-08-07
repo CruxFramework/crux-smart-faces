@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -36,7 +37,8 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SelectablePanel extends SelectableWidget implements HasAllFocusHandlers, AcceptsOneWidget, HasEnabled
+public class SelectablePanel extends SelectableWidget implements HasAllFocusHandlers, AcceptsOneWidget, HasEnabled, 
+													  Focusable
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
 	private SimplePanel panel;
@@ -65,6 +67,13 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		makeFocusable(panel.getElement());
 		initWidget(this.panel);
 	}
+	
+	@Override
+	public void select()
+	{
+		setFocus(true);
+	    super.select();
+	}
 
 	@Override
     public void setWidget(IsWidget w)
@@ -87,11 +96,6 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		return panel.remove(w);
 	}
 	
-	public void select()
-	{
-		getSelectEventsHandler().select();
-	}
-
 	@Override
 	public HandlerRegistration addFocusHandler(FocusHandler handler)
 	{
