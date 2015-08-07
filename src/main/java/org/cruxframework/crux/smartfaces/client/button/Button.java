@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.client.HasSafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasHTML;
 
@@ -33,7 +34,8 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, HasAllFocusHandlers, HasEnabled
+public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, HasAllFocusHandlers, HasEnabled, 
+											 Focusable
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-Button";
 	private com.google.gwt.user.client.ui.Button button;
@@ -44,6 +46,11 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
+	public Button(ButtonElement element)
+	{
+		this(new InternalButton(element));
+	}
+	
 	public Button(String text, SelectHandler buttonSelectHandler) 
 	{
 		this(new com.google.gwt.user.client.ui.Button());
@@ -52,56 +59,10 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 	
-	public Button(ButtonElement element)
-	{
-		this(new InternalButton(element));
-	}
-	
 	protected Button(com.google.gwt.user.client.ui.Button button)
 	{
 		this.button = button;
 		initWidget(this.button);
-	}
-
-	public void select()
-	{
-		getSelectEventsHandler().select();
-	}
-
-	@Override
-	public String getText()
-	{
-		return button.getText();
-	}
-
-	@Override
-	public void setText(String text)
-	{
-		button.setText(text);
-	}
-
-	@Override
-	public String getHTML()
-	{
-		return button.getHTML();
-	}
-
-	@Override
-	public void setHTML(String html)
-	{
-		button.setHTML(html);
-	}
-
-	@Override
-	public void setHTML(SafeHtml html)
-	{
-		button.setHTML(html);
-	}
-
-	@Override
-	public HandlerRegistration addFocusHandler(FocusHandler handler)
-	{
-		return button.addFocusHandler(handler);
 	}
 
 	@Override
@@ -111,9 +72,45 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 	}
 
 	@Override
+	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	{
+		return button.addFocusHandler(handler);
+	}
+
+	@Override
+	public String getHTML()
+	{
+		return button.getHTML();
+	}
+
+	@Override
+    public int getTabIndex()
+    {
+	    return button.getTabIndex();
+    }
+
+	@Override
+	public String getText()
+	{
+		return button.getText();
+	}
+
+	@Override
 	public boolean isEnabled()
 	{
 		return getSelectEventsHandler().isEnabled();
+	}
+
+	@Override
+	public void select()
+	{
+		setFocus(true);
+	    super.select();
+	}
+
+	public void setAccessKey(char key)
+	{
+		button.setAccessKey(key);
 	}
 
 	@Override
@@ -128,9 +125,16 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		button.setFocus(focused);
 	}
 	
-	public void setAccessKey(char key)
+	@Override
+	public void setHTML(SafeHtml html)
 	{
-		button.setAccessKey(key);
+		button.setHTML(html);
+	}
+	
+	@Override
+	public void setHTML(String html)
+	{
+		button.setHTML(html);
 	}
 	
 	public void setTabIndex(int index)
@@ -138,6 +142,12 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		button.setTabIndex(index);
 	}
 	
+	@Override
+	public void setText(String text)
+	{
+		button.setText(text);
+	}
+
 	private static class InternalButton extends com.google.gwt.user.client.ui.Button
 	{
 		public InternalButton(ButtonElement element)
