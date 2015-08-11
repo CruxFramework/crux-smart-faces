@@ -19,7 +19,7 @@ import java.text.ParseException;
 
 import org.cruxframework.crux.core.client.event.paste.HasPasteHandlers;
 import org.cruxframework.crux.core.client.event.paste.PasteEvent;
-import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegisterFactory;
+import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegister;
 import org.cruxframework.crux.core.client.event.paste.PasteHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
@@ -636,7 +636,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			super(Document.get().createTextInputElement(), renderer, renderer);
 			NumberBoxType numberBoxType = GWT.create(NumberBoxType.class);
 			numberBoxType.handleType(this);
-			PasteEventSourceRegisterFactory.getRegister().registerPasteEventSource(this, getElement());
+			PasteEventSourceRegister.registerPasteEventSource(this, getElement());
 		}
 		
 		@Override
