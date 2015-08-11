@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -36,11 +37,12 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SelectablePanel extends SelectableWidget implements HasAllFocusHandlers, AcceptsOneWidget, HasEnabled
+public class SelectablePanel extends SelectableWidget implements HasAllFocusHandlers, AcceptsOneWidget, HasEnabled,
+														Focusable
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
-	private SimplePanel panel;
 	private static FocusImpl focusImpl = FocusImpl.getFocusImplForPanel();
+	private SimplePanel panel;
 
 	public SelectablePanel()
 	{
@@ -48,15 +50,15 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
+	public SelectablePanel(Element element)
+	{
+		this(new InternalPanel(element));
+	}
+	
 	public SelectablePanel(SelectHandler buttonSelectHandler) 
 	{
 		super();
 		addSelectHandler(buttonSelectHandler);
-	}
-	
-	public SelectablePanel(Element element)
-	{
-		this(new InternalPanel(element));
 	}
 	
 	protected SelectablePanel(SimplePanel panel)
@@ -66,42 +68,31 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		initWidget(this.panel);
 	}
 
-	@Override
-    public void setWidget(IsWidget w)
-    {
-		panel.setWidget(w);
-    }
-
-	public Widget getChildWidget()
-	{
-	    return panel.getWidget();
-	}
-	
 	public void add(IsWidget w)
 	{
 		panel.add(w);
-	}
-	
-	public boolean remove(IsWidget w)
-	{
-		return panel.remove(w);
-	}
-	
-	public void select()
-	{
-		getSelectEventsHandler().select();
-	}
-
-	@Override
-	public HandlerRegistration addFocusHandler(FocusHandler handler)
-	{
-		return addDomHandler(handler, FocusEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
 		return addDomHandler(handler, BlurEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	{
+		return addDomHandler(handler, FocusEvent.getType());
+	}
+	
+	public Widget getChildWidget()
+	{
+	    return panel.getWidget();
+	}
+	
+	public int getTabIndex() 
+	{
+		return focusImpl.getTabIndex(getElement());
 	}
 
 	@Override
@@ -110,6 +101,22 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		return getSelectEventsHandler().isEnabled();
 	}
 
+	public boolean remove(IsWidget w)
+	{
+		return panel.remove(w);
+	}
+
+	public void select()
+	{
+		setFocus(true);
+		super.select();
+	}
+
+	public void setAccessKey(char key)
+	{
+		focusImpl.setAccessKey(getElement(), key);
+	}
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -122,11 +129,6 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		{
 			addStyleDependentName("disabled");
 		}
-	}
-	
-	public int getTabIndex() 
-	{
-		return focusImpl.getTabIndex(getElement());
 	}
 
 	public void setFocus(boolean focused)
@@ -141,15 +143,16 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		}
 	}
 	
-	public void setAccessKey(char key)
-	{
-		focusImpl.setAccessKey(getElement(), key);
-	}
-	
 	public void setTabIndex(int index)
 	{
 		focusImpl.setTabIndex(getElement(), index);
 	}
+	
+	@Override
+    public void setWidget(IsWidget w)
+    {
+		panel.setWidget(w);
+    }
 	
 	protected void makeFocusable(Element e)
 	{

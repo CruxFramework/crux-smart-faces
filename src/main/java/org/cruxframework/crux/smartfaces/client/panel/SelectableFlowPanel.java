@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
@@ -38,7 +39,8 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
  *
  */
 public class SelectableFlowPanel extends SelectableWidget implements HasAllFocusHandlers, 
-								IndexedPanel.ForIsWidget, InsertPanel.ForIsWidget, HasEnabled
+								IndexedPanel.ForIsWidget, InsertPanel.ForIsWidget, HasEnabled, 
+								Focusable
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
 	private static FocusImpl focusImpl = FocusImpl.getFocusImplForPanel();
@@ -146,7 +148,8 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 
 	public void select()
 	{
-		getSelectEventsHandler().select();
+		setFocus(true);
+		super.select();
 	}
 	
 	public void setAccessKey(char key)
