@@ -76,12 +76,12 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 								HasAllFocusHandlers, HasEnabled, HasSelectHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
-	public static final String LABEL_ITEM = "faces-comboBox-LabelItem";
+	public static final String LABEL_ITEM = "faces-ComboBox-LabelItem";
 	
 	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-Button";
-	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-comboBox-comboItemList";
+	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-ComboBox-comboItemList";
 	private static final String COMBO_BOX_POPUP = "faces-ComboBox-Popup";
-	private static final String COMBO_BOX_SCROLL_PANEL = "faces-comboBox-scrollPanel";
+	private static final String COMBO_BOX_SCROLL_PANEL = "faces-ComboBox-scrollPanel";
 	private static final String COMBO_BOX_TEXT = "faces-ComboBox-Text";
 
 	protected OptionsRenderer<V, T> optionsRenderer = null;

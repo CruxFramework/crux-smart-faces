@@ -1071,24 +1071,24 @@ td > div > .faces--group
 
 /* ------------ Combobox ---------------- */
 
-.faces-comboBoxOptionPanel
+.faces-ComboBoxOptionPanel
 {
 	background-color: #FFFFFF;
 }
 
-.faces-comboBoxOptionPanel:hover * 
+.faces-ComboBoxOptionPanel:hover * 
 {
 	background-color: #4496c6;
 	color: #fff;
 	cursor: pointer;
 }
 
-.faces-comboBox-LabelItem
+.faces-ComboBox-LabelItem
 {
 	
 }
 
-.faces-comboBox-comboItemList
+.faces-ComboBox-comboItemList
 {
 	
 }
@@ -1098,7 +1098,7 @@ td > div > .faces--group
 	width: 200px;
 }
 
-.faces-comboBox-scrollPanel
+.faces-ComboBox-scrollPanel
 {
 	height: 150px;
 }
