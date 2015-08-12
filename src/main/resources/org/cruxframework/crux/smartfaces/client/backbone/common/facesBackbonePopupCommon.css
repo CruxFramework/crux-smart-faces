@@ -1,0 +1,46 @@
+.facesOverlay
+{
+	z-index:5;
+}
+
+.facesPopup
+{
+	z-index:6;
+	position: fixed;
+	overflow:hidden;
+	pointer-events: auto;
+}
+
+.facesWaitBox
+{
+	z-index:7;
+}
+
+.facesPopupCenter
+{
+	left: 50% !important;
+	top: 50% !important;
+	-webkit-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -moz-transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
+   	-webkit-backface-visibility: hidden;
+	-webkit-perspective: 1px;
+    perspective: 1px;
+}
+
+.facesUnscrollable
+{
+	overflow: hidden;
+}
+
+.facesUnselectable
+{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+}

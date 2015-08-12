@@ -922,8 +922,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 					body.appendChild(glass);
 					if(numberCalls == 0)
 					{
-						body.addClassName("faces--unscrollable");
-						body.addClassName("faces--unselectable");
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
 					}
 					glassShowing = true;	
 				}
@@ -940,8 +940,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				body.removeChild(glass);
 				if(numberCalls == 1)
 				{
-					body.removeClassName("faces--unscrollable");
-					body.removeClassName("faces--unselectable");
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
 				}
 				glassShowing = false;	
 			}
