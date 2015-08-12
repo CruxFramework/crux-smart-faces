@@ -52,4 +52,12 @@ public interface FacesBackboneCSSCommon extends CssResource
 	
 	//ListBox
 	String facesBackboneListbox();
+	
+	//Popup
+	String facesPopup();
+	String facesOverlay();
+	String facesWaitBox();
+	String facesPopupCenter();
+	String facesUnscrollable();
+	String facesUnselectable();	
 }
