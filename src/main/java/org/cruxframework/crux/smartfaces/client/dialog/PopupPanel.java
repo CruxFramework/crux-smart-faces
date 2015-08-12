@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.css.animation.Animation;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
+import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 
@@ -32,7 +34,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -67,6 +68,8 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
+	private static final String FACES_POPUP_CONTENT = "faces-popup-content";
+
 	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
 
 	private PopupCentralizer popupCentralizer = GWT.create(PopupCentralizer.class);
@@ -130,6 +133,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public PopupPanel(boolean autoHide, boolean modal)
 	{
+		FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
+
 		this.autoHide = autoHide;
 		this.autoHideOnHistoryEvents = autoHide;
 		this.modal = modal;
@@ -137,6 +142,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			glass = Document.get().createDivElement();
 			glass.setClassName(glassStyleName);
+			glass.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesOverlay());
 		}
 
 		addCloseHandler(new CloseHandler<PopupPanel>()
@@ -171,11 +177,29 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
-		getElement().getStyle().setPosition(Position.ABSOLUTE);
+//		getElement().getStyle().setPosition(Position.ABSOLUTE);
 		setPosition(0, 0);
-		setStyleName(getContainerElement(), "faces-popup-content");
+		setStyleName(getContainerElement(), FACES_POPUP_CONTENT);
 	}
 
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
+		}
+	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
+	}
+	
+	
 	/**
 	 * Mouse events that occur within an autoHide partner will not hide a panel
 	 * set to autoHide.
@@ -340,20 +364,19 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	public static class PopupCentralizerImpl extends PopupCentralizer
 	{
-		private static final String DEFAULT_CENTER_STYLE_NAME = "faces-popup--center";
 
 		@Override
 		public void centralize(UIObject uiObject) 
 		{
-			uiObject.removeStyleName(DEFAULT_CENTER_STYLE_NAME);
-			uiObject.addStyleName(DEFAULT_CENTER_STYLE_NAME);
+			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
+			uiObject.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
 			centralized = true;
 		}
 
 		@Override
 		public void descentralize(UIObject uiObject) 
 		{
-			uiObject.removeStyleName(DEFAULT_CENTER_STYLE_NAME);
+			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
 			centralized = false;
 		}
 	}
@@ -379,6 +402,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		if (glass != null)
 		{
 			glass.setClassName(glassStyleName);
+			glass.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesOverlay());
 		}
 	}
 
@@ -940,8 +964,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 					body.appendChild(glass);
 					if(numberCalls == 0)
 					{
-						body.addClassName("faces--unscrollable");
-						body.addClassName("faces--unselectable");
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
 					}
 					glassShowing = true;	
 				}
@@ -958,8 +982,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				body.removeChild(glass);
 				if(numberCalls == 1)
 				{
-					body.removeClassName("faces--unscrollable");
-					body.removeClassName("faces--unselectable");
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
 				}
 				glassShowing = false;	
 			}
