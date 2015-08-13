@@ -321,24 +321,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 	}	
 
-	public static class PopupCentralizerImpl extends PopupCentralizer
-	{
-		@Override
-		public void centralize(UIObject uiObject) 
-		{
-			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			uiObject.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			centralized = true;
-		}
-
-		@Override
-		public void descentralize(UIObject uiObject) 
-		{
-			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			centralized = false;
-		}
-	}
-
 	/**
 	 * Hides the popup and detaches it from the page. This has no effect if it
 	 * is not currently showing.
@@ -1133,4 +1115,39 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		defaultCloseHandlers.add(defaultCloseHandler);
 	}
+	
+	public static abstract class PopupCentralizer
+	{
+		boolean centralized = false;
+
+		/**
+		 * Centralize the popup.
+		 * @param uiObject
+		 */
+		public abstract void centralize(UIObject uiObject);
+		
+		/**
+		 * Descentralize the popup.
+		 * @param uiObject
+		 */
+		public abstract void descentralize(UIObject uiObject);
+
+		/**
+		 * @return true if the popup is centralized and
+		 * false otherwise.
+		 */
+		public boolean isCentralized()
+		{
+			return centralized;
+		}
+		
+		/**
+		 * @param centralized
+		 */
+		protected void setCentralized(boolean centralized) 
+		{
+			this.centralized = centralized;
+		}
+	}
+
 }
