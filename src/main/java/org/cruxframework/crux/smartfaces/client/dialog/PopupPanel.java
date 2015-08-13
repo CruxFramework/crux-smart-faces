@@ -356,28 +356,9 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		/**
 		 * @param centralized
 		 */
-		public void setCentralized(boolean centralized) 
+		protected void setCentralized(boolean centralized) 
 		{
 			this.centralized = centralized;
-		}
-	}
-
-	public static class PopupCentralizerImpl extends PopupCentralizer
-	{
-
-		@Override
-		public void centralize(UIObject uiObject) 
-		{
-			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			uiObject.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			centralized = true;
-		}
-
-		@Override
-		public void descentralize(UIObject uiObject) 
-		{
-			uiObject.removeStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopupCenter());
-			centralized = false;
 		}
 	}
 
