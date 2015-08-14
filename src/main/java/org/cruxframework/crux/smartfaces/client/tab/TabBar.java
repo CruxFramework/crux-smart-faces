@@ -51,9 +51,9 @@ import com.google.gwt.user.client.ui.Widget;
 class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-TabBar";
+	private static final String FLAP_LABEL_STYLE_NAME = "faces-TabBar-flapLabel";
 	private static final String ITEM_STYLE_NAME = "faces-TabBar-item";
 	private static final String TAB_BAR_ITEM_SELECTED_STYLE_NAME = "faces-TabBar-item--selected";
-	private static final String FLAP_LABEL_STYLE_NAME = "faces-TabBar-flapLabel";
 
 	private RollingPanel panel;
 	private Widget selectedTab;
@@ -112,6 +112,84 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 	}
 
 	/**
+	 * 
+	 * @param html
+	 * @param berforeIndex
+	 */
+	public void insertTab(SafeHtml html, int beforeIndex)
+	{
+		HTML label = new HTML(html);
+		label.setWordWrap(false);
+		label.setStyleName(FLAP_LABEL_STYLE_NAME);
+		insertTabWidget(label, beforeIndex);
+	}
+
+	/**
+	 * Inserts a new tab at the specified index.
+	 * 
+	 * @param text the new tab's text
+	 * @param beforeIndex the index before which this tab will be inserted
+	 */
+	public void insertTab(String text, int beforeIndex)
+	{
+		checkInsertBeforeTabIndex(beforeIndex);
+
+		Label label = new Label(text);
+		label.setWordWrap(false);
+		label.setStyleName(FLAP_LABEL_STYLE_NAME);
+		insertTabWidget(label, beforeIndex);
+	}
+	
+	/**
+	 * Inserts a new tab at the specified index.
+	 * 
+	 * @param widget widget to be used in the new tab
+	 * @param beforeIndex the index before which this tab will be inserted
+	 */
+	public void insertTab(Widget widget, int beforeIndex)
+	{
+		insertTabWidget(widget, beforeIndex);
+	}
+
+	/**
+	 * Programmatically selects the specified tab. Use index -1 to specify that no tab should be selected.
+	 * 
+	 * @param index the index of the tab to be selected
+	 * @return <code>true</code> if successful, <code>false</code> if the change is denied by the {@link BeforeSelectionHandler}.
+	 */
+	public boolean selectTab(int index)
+	{
+		checkTabIndex(index);
+		
+		ClickDelegatePanel targetTab = (ClickDelegatePanel) (index == -1 ? null : panel.getWidget(index));
+		
+		if (targetTab != null && !targetTab.getChildWidget().isVisible())
+		{
+			return false;
+		}
+		
+		BeforeSelectionEvent<?> event = BeforeSelectionEvent.fire(this, index);
+
+		if (event != null && event.isCanceled())
+		{
+			return false;
+		}
+
+		// Check for -1.
+		setSelectionStyle(selectedTab, false);
+		selectedTab = targetTab;
+		if (index == -1)
+		{
+			return true;
+		}
+
+		setSelectionStyle(selectedTab, true);
+		panel.scrollToWidget(selectedTab);
+		SelectionEvent.fire(this, index);
+		return true;
+	}
+
+	/**
 	 * Enable or disable a tab. When disabled, users cannot select the tab.
 	 * 
 	 * @param index the index of the tab to enable or disable
@@ -134,7 +212,8 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 			delPanel.addStyleDependentName("disabled");
 		}
 	}
-
+	
+	
 	public void setTabWordWrap(int index, boolean wordWrap)
 	{
 		assert (index >= 0) && (index < getTabCount()) : "Flap index out of bounds";
@@ -142,78 +221,6 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 		// Style the wrapper
 		ClickDelegatePanel delPanel = (ClickDelegatePanel) panel.getWidget(index);
 		delPanel.setWordWrap(wordWrap);
-	}
-	
-	/**
-	 * Inserts a new tab at the specified index.
-	 * 
-	 * @param widget widget to be used in the new tab
-	 * @param beforeIndex the index before which this tab will be inserted
-	 */
-	public void insertTab(Widget widget, int beforeIndex)
-	{
-		insertTabWidget(widget, beforeIndex);
-	}
-
-	/**
-	 * Inserts a new tab at the specified index.
-	 * 
-	 * @param text the new tab's text
-	 * @param beforeIndex the index before which this tab will be inserted
-	 */
-	public void insertTab(String text, int beforeIndex)
-	{
-		checkInsertBeforeTabIndex(beforeIndex);
-
-		Label label = new Label(text);
-		label.setWordWrap(false);
-		label.setStyleName(FLAP_LABEL_STYLE_NAME);
-		insertTabWidget(label, beforeIndex);
-	}
-
-	/**
-	 * 
-	 * @param html
-	 * @param berforeIndex
-	 */
-	public void insertTab(SafeHtml html, int beforeIndex)
-	{
-		HTML label = new HTML(html);
-		label.setWordWrap(false);
-		label.setStyleName(FLAP_LABEL_STYLE_NAME);
-		insertTabWidget(label, beforeIndex);
-	}
-	
-	
-	/**
-	 * Programmatically selects the specified tab. Use index -1 to specify that no tab should be selected.
-	 * 
-	 * @param index the index of the tab to be selected
-	 * @return <code>true</code> if successful, <code>false</code> if the change is denied by the {@link BeforeSelectionHandler}.
-	 */
-	public boolean selectTab(int index)
-	{
-		checkTabIndex(index);
-		BeforeSelectionEvent<?> event = BeforeSelectionEvent.fire(this, index);
-
-		if (event != null && event.isCanceled())
-		{
-			return false;
-		}
-
-		// Check for -1.
-		setSelectionStyle(selectedTab, false);
-		if (index == -1)
-		{
-			selectedTab = null;
-			return true;
-		}
-
-		selectedTab = panel.getWidget(index);
-		setSelectionStyle(selectedTab, true);
-		panel.scrollToWidget(selectedTab);
-		SelectionEvent.fire(this, index);
-		return true;
 	}
 
 	/**
@@ -357,10 +364,10 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 			sinkEvents(Event.ONKEYDOWN);
 		}
 
-		SelectablePanel getFocusablePanel()
-		{
-			return focusablePanel;
-		}
+		public Widget getChildWidget()
+ 		{
+			return focusablePanel.getChildWidget();
+ 		}
 
 		public boolean hasWordWrap()
 		{
@@ -405,5 +412,10 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 				throw new UnsupportedOperationException("Widget does not implement HasWordWrap");
 			}
 		}
+		
+		SelectablePanel getFocusablePanel()
+		{
+			return focusablePanel;
+		}		
 	}
 }

@@ -30,8 +30,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandlers
 {
-	private final Flap flap;
 	private SimplePanel containerPanel;
+	private final Flap flap;
 	private final String viewId;
 
 	Tab(Flap flap, String viewId)
@@ -47,21 +47,21 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
     {
 	    return flap.addBeforeBlurHandler(handler);
     }
-
+	
 	@Override
     public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
     {
 	    return flap.addBeforeFocusHandler(handler);
     }
-	
-	public void setLabel(String label)
-	{
-		flap.setLabel(label);
-	}
-	
+
 	public String getLabel()
 	{
 		return flap.getLabel();
+	}
+	
+	public String getViewId()
+	{
+		return viewId;
 	}
 	
 	public boolean isCloseable()
@@ -69,9 +69,16 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
 		return flap.isCloseable();
 	}
 	
-	public String getViewId()
+	public void setLabel(String label)
 	{
-		return viewId;
+		flap.setLabel(label);
+	}
+	
+	@Override
+	public void setVisible(boolean visible)
+	{
+	    super.setVisible(visible);
+	    flap.setVisible(visible);
 	}
 	
 	Panel getContainerPanel()
