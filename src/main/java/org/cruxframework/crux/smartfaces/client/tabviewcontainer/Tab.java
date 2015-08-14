@@ -69,18 +69,21 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
 		return flap.isCloseable();
 	}
 	
+	public boolean isFlapVisible()
+	{
+	    return flap.isVisible();
+	}
+	
+	public void setFlapVisible(boolean visible)
+	{
+	    flap.setVisible(visible);
+	}
+	
 	public void setLabel(String label)
 	{
 		flap.setLabel(label);
 	}
-	
-	@Override
-	public void setVisible(boolean visible)
-	{
-	    super.setVisible(visible);
-	    flap.setVisible(visible);
-	}
-	
+
 	Panel getContainerPanel()
 	{
 		return containerPanel;
