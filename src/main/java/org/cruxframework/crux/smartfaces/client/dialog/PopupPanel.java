@@ -177,7 +177,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
-//		getElement().getStyle().setPosition(Position.ABSOLUTE);
 		setPosition(0, 0);
 		setStyleName(getContainerElement(), FACES_POPUP_CONTENT);
 	}
@@ -752,19 +751,19 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	private void fixPositionToCenter()
 	{
-		int left = getPopupLeftToCenter();
-		int top = getPopupTopToCenter();
+		int left = getPopupLeftToCenter(false);
+		int top = getPopupTopToCenter(false);
 		setPosition(left, top);
 	}
 
 	/**
 	 * Gets the popup's left position relative to the browser's center area.
-	 * 
+	 * @param includeScroll if true include the window scroll 
 	 * @return the popup's left position
 	 */
-	private int getPopupLeftToCenter()
+	private int getPopupLeftToCenter(boolean includeScroll)
 	{
-		int windowLeft = Window.getScrollLeft();
+		int windowLeft = includeScroll?Window.getScrollLeft():0;
 		int windowWidth = Window.getClientWidth();
 		int centerLeft = (windowWidth / 2) + windowLeft;
 
@@ -774,12 +773,12 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	/**
 	 * Gets the popup's top position relative to the browser's center area.
-	 * 
+	 * @param includeScroll if true include the window scroll 
 	 * @return the popup's top position
 	 */
-	private int getPopupTopToCenter()
+	private int getPopupTopToCenter(boolean includeScroll)
 	{
-		int windowTop = Window.getScrollTop();
+		int windowTop = includeScroll?Window.getScrollTop():0;
 		int windowHeight = Window.getClientHeight();
 		int centerTop = (windowHeight / 2) + windowTop;
 
