@@ -213,6 +213,21 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 		}
 	}
 	
+	/**
+	 * Display or hide a tab.
+	 * 
+	 * @param index the index of the tab to display or hide
+	 * @param visible true to display, false to hide
+	 */
+	public void setTabVisible(int index, boolean visible)
+	{
+		assert (index >= 0) && (index < getTabCount()) : "Flap index out of bounds";
+
+		// Style the wrapper
+		ClickDelegatePanel delPanel = (ClickDelegatePanel) panel.getWidget(index);
+		delPanel.setVisible(visible);
+	}
+
 	public void setTabWordWrap(int index, boolean wordWrap)
 	{
 		assert (index >= 0) && (index < getTabCount()) : "Flap index out of bounds";
