@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.tabviewcontainer;
 import org.cruxframework.crux.core.client.event.focusblur.BeforeBlurHandler;
 import org.cruxframework.crux.core.client.event.focusblur.BeforeFocusHandler;
 import org.cruxframework.crux.core.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
+import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
@@ -33,9 +34,11 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
 	private SimplePanel containerPanel;
 	private final Flap flap;
 	private final String viewId;
+	private TabPanel tabPanel;
 
-	Tab(Flap flap, String viewId)
+	Tab(TabPanel tabPanel, Flap flap, String viewId)
     {
+		this.tabPanel = tabPanel;
 		this.flap = flap;
 		this.viewId = viewId;
 		this.containerPanel = new SimplePanel();
@@ -69,18 +72,25 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
 		return flap.isCloseable();
 	}
 	
+	public boolean isFlapVisible()
+ 	{
+ 	    return flap.isVisible();
+ 	}
+	
 	public void setLabel(String label)
 	{
 		flap.setLabel(label);
 	}
 	
-	@Override
-	public void setVisible(boolean visible)
-	{
-	    super.setVisible(visible);
-	    flap.setVisible(visible);
-	}
-	
+	public void setFlapVisible(boolean visible)
+ 	{
+ 	    flap.setVisible(visible);
+	    int index = tabPanel.getWidgetIndex(flap);
+	    if (index >= 0)
+	    {
+	    	tabPanel.setTabVisible(index, visible);
+	    }
+ 	}	
 	Panel getContainerPanel()
 	{
 		return containerPanel;
