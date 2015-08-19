@@ -269,7 +269,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	    	if (doAdd)
 	    	{
 	    		Flap flap = new Flap(this, view, closeable);
-	    		Tab tab = new Tab(flap, tabId);
+	    		Tab tab = new Tab(tabPanel, flap, tabId);
 	    		this.tabs.put(tabId, tab);			
 	    		tabPanel.add(tab, flap);
 	    		if (!lazy)

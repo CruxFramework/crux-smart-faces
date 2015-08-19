@@ -197,6 +197,11 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 		tabBar.setTabEnabled(index, enabled);
 	}
 	
+	public void setTabVisible(int index, boolean visible)
+	{
+		tabBar.setTabVisible(index, visible);
+	}
+	
 	public void setTabWordWrap(int index, boolean wordWrap)
 	{
 		tabBar.setTabWordWrap(index, wordWrap);
