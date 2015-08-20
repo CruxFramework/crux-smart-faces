@@ -362,7 +362,6 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 		{
 
 			focusablePanel = new SelectablePanel();
-			focusablePanel.getElement().setTabIndex(0);
 			focusablePanel.setWidget(child);
 			focusablePanel.addSelectHandler(new SelectHandler()
 			{
