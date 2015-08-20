@@ -61,7 +61,13 @@
  Makes the element that uses this class
  with non-selectable text 
 */
-.faces--unselectable 
+.facesUnscrollable
+{
+	overflow: hidden;
+	position: fixed; /*Required to avoid body scrolling on IOS only*/
+}
+
+.facesUnselectable
 {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -70,13 +76,4 @@
 	-ms-user-select: none;
 	user-select: none;
 	pointer-events: none;
-}
-
-/*
- Makes the element that uses this class
- do not have a scroll bar. 
-*/
-.faces--unscrollable
-{
-	overflow: hidden;
 }
