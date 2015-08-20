@@ -85,7 +85,7 @@ public class Tab extends Composite implements HasBeforeFocusAndBeforeBlurHandler
 	public void setFlapVisible(boolean visible)
  	{
  	    flap.setVisible(visible);
-	    int index = tabPanel.getWidgetIndex(flap);
+	    int index = tabPanel.getWidgetIndex(this);
 	    if (index >= 0)
 	    {
 	    	tabPanel.setTabVisible(index, visible);
