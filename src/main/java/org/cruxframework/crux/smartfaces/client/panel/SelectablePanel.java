@@ -52,7 +52,7 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 
 	public SelectablePanel(SelectHandler buttonSelectHandler) 
 	{
-		super();
+		this();
 		addSelectHandler(buttonSelectHandler);
 	}
 	
