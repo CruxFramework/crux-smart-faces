@@ -704,7 +704,8 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 			boolean isMinus = (keyCode == KeyCodes.KEY_NUM_MINUS || keyCode == DASH);
 
-			isControlChar = keyCode <= KeyCodes.KEY_DELETE || event.isControlKeyDown() || event.isAltKeyDown() || event.isMetaKeyDown();
+			isControlChar = (keyCode <= KeyCodes.KEY_DELETE && keyCode != KeyCodes.KEY_SPACE) || 
+							 event.isControlKeyDown() || event.isAltKeyDown() || event.isMetaKeyDown();
 
 			if (isMinus && numberBox.formatterOptions.allowNegatives)
 			{
