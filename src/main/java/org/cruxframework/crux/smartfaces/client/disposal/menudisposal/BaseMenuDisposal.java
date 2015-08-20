@@ -27,6 +27,8 @@ import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
@@ -295,12 +297,15 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
         {
 			if (disposal.menu != null)
 			{
+				BodyElement body = Document.get().getBody();
 				if (disposal.menu.getParent() == null)
 				{
+					body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
 					disposal.menuPanel.add(disposal.menu);
 				} 
 				else
 				{
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
 					disposal.menuPanel.remove(disposal.menu);
 				}
 			}
