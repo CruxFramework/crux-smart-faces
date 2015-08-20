@@ -25,13 +25,14 @@
     -ms-transform: translateY(-50%) translateX(-50%);
     transform: translateY(-50%) translateX(-50%) translateZ(0) scale(1.0, 1.0);
    	-webkit-backface-visibility: hidden;
-	-webkit-perspective: 1px;
-    perspective: 1px;
+/*	-webkit-perspective: 1px;
+    perspective: 1px;*/
 }
 
 .facesUnscrollable
 {
 	overflow: hidden;
+	position: fixed;
 }
 
 .facesUnselectable
