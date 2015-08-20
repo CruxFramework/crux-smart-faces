@@ -32,7 +32,7 @@
 .facesUnscrollable
 {
 	overflow: hidden;
-	position: fixed;
+	position: fixed; /*Required to avoid body scrolling on IOS only*/
 }
 
 .facesUnselectable
