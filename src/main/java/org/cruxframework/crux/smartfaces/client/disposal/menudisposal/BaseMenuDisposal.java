@@ -286,7 +286,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 					
 					if(!event.getSelectedItem().hasChildren())
 					{
-						disposal.menuPanel.remove(menu);
+						showSmallMenu(disposal);
 					}
 				}
 			});
