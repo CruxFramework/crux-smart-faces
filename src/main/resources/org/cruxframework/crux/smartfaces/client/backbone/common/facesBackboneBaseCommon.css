@@ -64,6 +64,7 @@
 .facesUnscrollable
 {
 	overflow: hidden;
+	width: 100%;
 }
 
 @if (org.cruxframework.crux.core.client.screen.Screen.isIos()) 
@@ -71,6 +72,7 @@
  .facesUnscrollable 
   { 
 	position: fixed; /*Required to avoid body scrolling on IOS only*/
+	width: 100%;
   }
 }
 
