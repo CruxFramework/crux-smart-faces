@@ -16,6 +16,8 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
+import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer;
@@ -25,6 +27,14 @@ import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Touch;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -33,6 +43,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,10 +74,23 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	protected static final String STYLE_AUX_CLOSE_TRIGGER_SLIDER_HELPER = "faces-Menu-closeTriggerSliderHelper";
 	
 	private boolean enabled = true;
+	private boolean autoHide = false;
+	private HowToHideMenu howToHideMenu;
 	private MenuItem root;
 	private MenuPanel menuPanel = new MenuPanel();
 	protected Type currentType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
+	private HandlerRegistration menuCloseTouchHandlerRegistration;
+	private HandlerRegistration menuCloseClickHandlerRegistration;
+	
+	/**
+	 * Defines how the menu should be hidden.
+	 * @author samuel.cardoso
+	 */
+	public interface HowToHideMenu
+	{
+		public void hide(Menu menu, Element elementSelected);
+	}
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
@@ -88,7 +112,106 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		}
 		
 		menuRenderer.render(this, largeType, smallType);
+
+		addAttachHandler(new Handler() 
+		{
+			@Override
+			public void onAttachOrDetach(AttachEvent event) 
+			{
+				if(event.isAttached())
+				{
+					if(Screen.getCurrentDevice().getInput().equals(Input.touch))
+					{
+						menuCloseTouchHandlerRegistration = RootPanel.get().addDomHandler(new TouchStartHandler() 
+						{
+							@Override
+							public void onTouchStart(TouchStartEvent event) 
+							{
+								if(!autoHide)
+								{
+									return;
+								}
+								
+								Touch touch = event.getTouches().get(0);
+								touch.getClientX();
+								touch.getClientY();
+								
+								doHandleMenuOutsideSelection(touch.getClientX(), touch.getClientY());
+							}
+						}, TouchStartEvent.getType());						
+					} else
+					{
+						menuCloseClickHandlerRegistration = RootPanel.get().addDomHandler(new ClickHandler() 
+						{
+							@Override
+							public void onClick(ClickEvent event) 
+							{
+								if(!autoHide)
+								{
+									return;
+								}
+								doHandleMenuOutsideSelection(event.getClientX(), event.getClientY());
+							}
+						}, ClickEvent.getType());
+					}
+				} 
+				else
+				{
+					if(menuCloseTouchHandlerRegistration != null)
+					{
+						menuCloseTouchHandlerRegistration.removeHandler();
+					}
+					
+					if(menuCloseClickHandlerRegistration != null)
+					{
+						menuCloseClickHandlerRegistration.removeHandler();
+					}
+				}
+			}
+		});
 	}
+	
+	private void doHandleMenuOutsideSelection(int clientX, int clientY) 
+	{
+		Element elementFromPoint = getElementFromPoint(clientX, clientY);
+		if(!findMenuParent(elementFromPoint))
+		{
+			if(howToHideMenu != null)
+			{
+				howToHideMenu.hide(this, elementFromPoint);
+			}
+			else
+			{
+				removeFromParent();
+			}
+		}
+	}
+	
+	private boolean findMenuParent(Element element)
+	{
+		if(element == null)
+		{
+			return false;
+		}
+		
+		if(element.equals(Menu.this.getElement()))
+		{
+			return true;
+		}
+		else
+		{
+			return findMenuParent(element.getParentElement());
+		}
+	}
+	
+	public static native Element getElementFromPoint(int clientX, int clientY) /*-{
+		var el = $wnd.document.elementFromPoint(clientX, clientY);
+		if(el != null && el.nodeType == 3) 
+		{
+			el = el.parentNode;
+		}
+		return el;
+	}-*/;
 	
 	@Override
 	public void setStyleName(String style, boolean add)
@@ -375,5 +498,26 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		}
 		setStyleName(getBaseStyleName());
 		menuRenderer.render(this, largeType, smallType);
+	}
+	
+	/**
+	 * Define if the menu should hide when a user clicks outside it.
+	 * @param autoHideMenu true if it should be hidden and false otherwise.
+	 */
+	public void setAutoHide(boolean autoHide) 
+	{
+		this.autoHide = autoHide;
+	}
+	
+	/**
+	 * Define if the menu should hide when a user clicks outside it.
+	 * And define how it should be hidden.
+	 * @param howToHideMenu defines how to hide the menu.
+	 * @param autoHideMenu true if it should be hidden and false otherwise.
+	 */
+	public void setAutoHide(boolean autoHide, HowToHideMenu howToHideMenu) 
+	{
+		this.autoHide = autoHide;
+		this.howToHideMenu = howToHideMenu;
 	}
 }
