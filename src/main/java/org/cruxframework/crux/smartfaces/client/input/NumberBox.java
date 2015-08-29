@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.event.paste.HasPasteHandlers;
 import org.cruxframework.crux.core.client.event.paste.PasteEvent;
 import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegister;
 import org.cruxframework.crux.core.client.event.paste.PasteHandler;
+import org.cruxframework.crux.core.client.utils.DeviceAdaptiveUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -726,7 +727,12 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 				double value = (numVal != null ? numVal.doubleValue() : 0);
 				if (value == 0)
 				{
-					numberBox.setValue(null);
+					//This is a workaround to browsers that do not fire onKeyPress event
+					//@see issue github #798
+					if(!DeviceAdaptiveUtils.isInternetExplorerMobile())
+					{
+						numberBox.setValue(null);
+					}
 					ignored = true;
 				}
 			}
