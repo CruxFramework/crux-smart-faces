@@ -34,13 +34,12 @@ import com.google.gwt.user.client.ui.Widget;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class WidgetList<T> extends AbstractPageable<T>
+public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WidgetList";
 	private static final String PAGE_PANEL_STYLE_NAME = "faces-WidgetList-page";
 	
 	protected SimplePanel contentPanel = new SimplePanel();
-	protected FlowPanel pagePanel;
 	protected final WidgetFactory<T> widgetFactory;
 
 	/**
@@ -62,9 +61,9 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public T getDataObject(Widget w)
 	{
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			int widgetIndex = pagePanel.getWidgetIndex(w);
+			int widgetIndex = getPagePanel().getWidgetIndex(w);
 			if (widgetIndex >= 0)
 			{
 				if (hasPageable != null && !hasPageable.supportsInfiniteScroll())
@@ -86,7 +85,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 	 */
 	public int getWidgetIndex(Widget w)
 	{
-		return pagePanel != null ? pagePanel.getWidgetIndex(w) : -1;
+		return getPagePanel() != null ? getPagePanel().getWidgetIndex(w) : -1;
 	}
 
 	@Override
@@ -99,20 +98,20 @@ public class WidgetList<T> extends AbstractPageable<T>
 	@Override
 	protected void clear()
 	{
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.clear();
+			getPagePanel().clear();
 		}
 	}
 	
 	@Override
 	protected void clearRange(int start)
 	{
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			while (pagePanel.getWidgetCount() > start)
+			while (getPagePanel().getWidgetCount() > start)
 			{
-				pagePanel.remove(start);
+				getPagePanel().remove(start);
 			}
 		}
 	}
@@ -126,24 +125,18 @@ public class WidgetList<T> extends AbstractPageable<T>
             public void read(T value, int index)
             {
 				IsWidget widget = widgetFactory.createWidget(value);
-				pagePanel.add(widget);
+				getPagePanel().add(widget);
             }
 	    };
 	}
 	
 	@Override
-    protected Panel initializePagePanel()
+    protected FlowPanel initializePagePanel()
     {
-		pagePanel = new FlowPanel();
+		FlowPanel pagePanel = new FlowPanel();
 		pagePanel.setStyleName(getPagePanelStyleName());
 		return pagePanel;
     }
-
-	@Override
-	protected IsWidget getPagePanel()
-	{
-	    return pagePanel;
-	}
 
 	protected String getPagePanelStyleName()
     {

@@ -40,6 +40,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,27 +50,23 @@ import com.google.gwt.user.client.ui.Widget;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class PageableDataGrid<T> extends AbstractPageable<T>
+public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 {
-	/**
-	 * Style class.
-	 */
 	public static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
+	
+	protected SimplePanel contentPanel = new SimplePanel();
 	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
-
-	private DivTable table = new DivTable();
 	private Array<Column<?>> columns = CollectionFactory.createArray();
 	private Array<Row> rows = CollectionFactory.createArray();
-
+	
 	/**
 	 * @param dataProvider the dataprovider.
 	 * @param autoLoadData if true, the data must be loaded after the constructor has been invoked.
 	 */
 	public PageableDataGrid(final PagedDataProvider<T> dataProvider, boolean autoLoadData)
 	{
-		table.setStyleName(STYLE_FACES_DATAGRID);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
-		initWidget(table);
+		initWidget(contentPanel);
 		setDataProvider(dataProvider, autoLoadData);
 		setAllowRefreshAfterDataChange(false);
 
@@ -115,15 +112,15 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 			PageableDataGrid<T>.Column<?> dataGridColumn = getColumns().get(index);
 			dataGridColumn.clear();
 		}
-		table.clear();
+		getPagePanel().clear();
 	}
 
 	@Override
 	protected void clearRange(int pageStart)
 	{
-		while (table.getRowCount() > pageStart)
+		while (getPagePanel().getRowCount() > pageStart)
 		{
-			table.removeRow(pageStart);
+			getPagePanel().removeRow(pageStart);
 		}
 	}
 
@@ -379,11 +376,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 		return selectStrategy;
 	}
 
-	protected DivTable getTable() 
-	{
-		return table;
-	}
-
 	public void setSelectStrategy(SelectStrategy selectStrategy)
 	{
 		this.selectStrategy = selectStrategy;
@@ -452,27 +444,20 @@ public class PageableDataGrid<T> extends AbstractPageable<T>
 	
 	private static <T> void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget)
 	{
-		grid.getTable().setWidget(rowIndex, columnIndex, widget);		
+		grid.getPagePanel().setWidget(rowIndex, columnIndex, widget);		
 	}
-
+	
 	@Override
-    protected Panel initializePagePanel()
+    protected DivTable initializePagePanel()
     {
-	    // TODO Auto-generated method stub
-	    return null;
+		DivTable divTable = new DivTable();
+		divTable.setStyleName(STYLE_FACES_DATAGRID);
+	    return divTable;
     }
 
 	@Override
     protected Panel getContentPanel()
     {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    protected IsWidget getPagePanel()
-    {
-	    // TODO Auto-generated method stub
-	    return null;
+	    return contentPanel;
     }
 }
