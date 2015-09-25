@@ -94,9 +94,9 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 	}
 	
 	@Override
-	protected final void setInteractionEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
+		super.setEnabled(enabled);
 		listBox.setEnabled(enabled);
 	}
 	

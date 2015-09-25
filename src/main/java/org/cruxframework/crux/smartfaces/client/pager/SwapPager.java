@@ -262,9 +262,9 @@ public class SwapPager<T> extends AbstractPager<T> implements HasPageable<T>, Ha
 	}
 
 	@Override
-	protected void setInteractionEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
+		super.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 		backButton.setEnabled(enabled);
 	}

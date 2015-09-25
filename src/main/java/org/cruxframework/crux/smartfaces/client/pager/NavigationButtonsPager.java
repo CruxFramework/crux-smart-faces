@@ -213,9 +213,9 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T>
 	}
 	
 	@Override
-	protected void setInteractionEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
+		super.setEnabled(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 		firstButton.setEnabled(enabled);
