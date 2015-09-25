@@ -213,9 +213,9 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T>
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) 
+	protected void enableCompositeWidgets(boolean enabled) 
 	{
-		super.setEnabled(enabled);
+		super.enableCompositeWidgets(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 		firstButton.setEnabled(enabled);

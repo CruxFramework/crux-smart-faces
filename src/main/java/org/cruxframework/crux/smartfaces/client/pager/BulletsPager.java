@@ -138,7 +138,7 @@ public class BulletsPager<T> extends AbstractPager<T>
 			@Override
 			public void onSelect(SelectEvent event) 
 			{
-				if (isEnabled())
+				if (!transactionRunning)
 				{
 					goToPage(index);
 				}
