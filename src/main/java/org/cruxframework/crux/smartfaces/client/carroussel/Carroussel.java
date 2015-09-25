@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class Carroussel<T> extends AbstractPageable<T>
+public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Carroussel";
 	public static final String PAGE_PANEL_STYLE_NAME = "faces-Carroussel-Page";
@@ -48,7 +48,6 @@ public class Carroussel<T> extends AbstractPageable<T>
 	protected HorizontalAlignmentConstant horizontalAlignment;
 	protected String largeDeviceItemHeight;
 	protected String largeDeviceItemWidth;
-	protected Storyboard pagePanel;
 	protected String smallDeviceItemHeight;
 	protected VerticalAlignmentConstant verticalAlignment;
 	protected WidgetFactory<T> widgetFactory;
@@ -83,9 +82,9 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setFixedHeight(boolean fixedHeight)
 	{
 		this.fixedHeight = fixedHeight;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setFixedHeight(fixedHeight);
+			getPagePanel().setFixedHeight(fixedHeight);
 		}
 	}
 	
@@ -99,9 +98,9 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setFixedWidth(boolean fixedWidth)
 	{
 		this.fixedWidth = fixedWidth;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setFixedWidth(fixedWidth);
+			getPagePanel().setFixedWidth(fixedWidth);
 		}
 	}
 	
@@ -113,9 +112,9 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setHorizontalAlignment(HasHorizontalAlignment.HorizontalAlignmentConstant value)
 	{
 		this.horizontalAlignment = value;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setHorizontalAlignment(horizontalAlignment);
+			getPagePanel().setHorizontalAlignment(horizontalAlignment);
 		}
 		
 	}
@@ -127,18 +126,18 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setLargeDeviceItemHeight(String height)
 	{
 		this.largeDeviceItemHeight = height;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setLargeDeviceItemHeight(largeDeviceItemHeight);
+			getPagePanel().setLargeDeviceItemHeight(largeDeviceItemHeight);
 		}
 	}
 	
 	public void setLargeDeviceItemWidth(String width)
 	{
 		this.largeDeviceItemWidth = width;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setLargeDeviceItemWidth(largeDeviceItemWidth);
+			getPagePanel().setLargeDeviceItemWidth(largeDeviceItemWidth);
 		}
 	}
 	
@@ -149,9 +148,9 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setSmallDeviceItemHeight(String height)
 	{
 		this.smallDeviceItemHeight = height;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setSmallDeviceItemHeight(smallDeviceItemHeight);
+			getPagePanel().setSmallDeviceItemHeight(smallDeviceItemHeight);
 		}
 	}
 	
@@ -162,29 +161,29 @@ public class Carroussel<T> extends AbstractPageable<T>
 	public void setVerticalAlignment(HasVerticalAlignment.VerticalAlignmentConstant value)
 	{
 		this.verticalAlignment = value;
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.setVerticalAlignment(verticalAlignment);
+			getPagePanel().setVerticalAlignment(verticalAlignment);
 		}
 	}
 
 	@Override
 	protected void clear() 
 	{
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			pagePanel.clear();
+			getPagePanel().clear();
 		}
 	}
 
 	@Override
 	protected void clearRange(int startRecord) 
 	{
-		if (pagePanel != null)
+		if (getPagePanel() != null)
 		{
-			while (pagePanel.getWidgetCount() > startRecord)
+			while (getPagePanel().getWidgetCount() > startRecord)
 			{
-				pagePanel.remove(startRecord);
+				getPagePanel().remove(startRecord);
 			}
 		}
 	}
@@ -204,21 +203,15 @@ public class Carroussel<T> extends AbstractPageable<T>
             public void read(T value, int index)
             {
 				IsWidget widget = widgetFactory.createWidget(value);
-				pagePanel.add(widget);
+				getPagePanel().add(widget);
             }
 	    };
 	}
 
 	@Override
-	protected IsWidget getPagePanel() 
-	{
-		return pagePanel;
-	}
-
-	@Override
-    protected IsWidget initializePagePanel()
+    protected Storyboard initializePagePanel()
     {
-		pagePanel = new Storyboard();
+		Storyboard pagePanel = new Storyboard();
 		pagePanel.setStyleName(PAGE_PANEL_STYLE_NAME);
 		pagePanel.setFixedHeight(fixedHeight);
 		pagePanel.setFixedWidth(fixedWidth);

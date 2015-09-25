@@ -414,7 +414,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(renderer.getValue(value));
 					panel.setLabel(renderer.getLabel(value));
-					int widgetIndex = pagePanel.getWidgetCount();
+					int widgetIndex = getPagePanel().getWidgetCount();
 					if (hasPageable != null && !hasPageable.supportsInfiniteScroll())
 					{
 						int numPreviousPage = getDataProvider().getCurrentPage() - 1;
@@ -423,7 +423,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					panel.setIndex(widgetIndex);
 					panel.add(widget);
 					
-					pagePanel.add(panel);
+					getPagePanel().add(panel);
 				}
 			};
 		}
