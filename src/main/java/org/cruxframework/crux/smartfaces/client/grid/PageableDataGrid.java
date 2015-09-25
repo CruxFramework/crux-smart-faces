@@ -31,7 +31,6 @@ import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
-import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -208,7 +207,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			final HasValue<K> widget = CellEditor.this.getWidget(dataObject);
 			assert(widget != null): "widget cannot be null";
 
-			drawCell(grid, rowIndex, columnIndex, (Widget) widget);
+			grid.drawCell(grid, grid.hasHeader ? rowIndex+1 : rowIndex, columnIndex, (Widget) widget);
 
 			widget.addValueChangeHandler(new ValueChangeHandler<K>()
 			{
@@ -291,16 +290,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		private CellEditor<T, ?> editableCell;
 
 		@SuppressWarnings("unused")
-		private Label label;
-		
-		@SuppressWarnings("unused")
 		private boolean sortable = false;
 		
 		@SuppressWarnings("unused")
-		private String header;
-		
-		@SuppressWarnings("unused")
 		private Comparator<T> comparator;
+		
+		private IsWidget headerWidget;
 		
 		public Column(DataFactory<V, T> dataFactory)
 		{
@@ -350,7 +345,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				return;
 			}
 
-			drawCell(PageableDataGrid.this, row.gridRowIndex, columnIndex, widget);
+			drawCell(PageableDataGrid.this, hasHeader ? row.gridRowIndex+1 : row.gridRowIndex, columnIndex, widget);
 		}
 
 		private void renderToEdit() 
@@ -368,6 +363,16 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			{
 				renderToView();						
 			}
+		}
+		
+		public void setHeaderWidget(IsWidget headerWidget)
+		{
+			this.headerWidget = headerWidget;
+		}
+		
+		public IsWidget getHeaderWidget() 
+		{
+			return headerWidget;
 		}
 	}
 
@@ -409,7 +414,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				if(PageableDataGrid.this.hasPageable != null && PageableDataGrid.this.hasPageable.supportsInfiniteScroll())
 				{
 					gridRowIndex = dataProviderRowIndex;					
-				} 
+				}
 				else
 				{
 					gridRowIndex = dataProviderRowIndex % getDataProvider().getPageSize();
@@ -431,18 +436,37 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		};
 	}
 	
+	private boolean hasHeader;
 	private void drawColumns(Row row)
 	{
+		//detect if at least one column has a header
+		hasHeader = false;
 		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
 		{
 			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
+			
+			if(column.getHeaderWidget() != null)
+			{
+				hasHeader = true;
+			}
+		}
+		
+		//iterate over the columns to render the cells (and the header)
+		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
+		{
+			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
+		
+			if(row.gridRowIndex == 0 && hasHeader)
+			{
+				drawCell(PageableDataGrid.this, 0, columnIndex, column.getHeaderWidget());
+			}
 			
 			column.setRow(row);
 			column.render();
 		}
 	}
 	
-	private static <T> void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget)
+	private void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget)
 	{
 		grid.getPagePanel().setWidget(rowIndex, columnIndex, widget);		
 	}
