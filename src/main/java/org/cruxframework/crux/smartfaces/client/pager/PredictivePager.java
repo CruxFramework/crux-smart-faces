@@ -90,9 +90,9 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 	}
 	
 	@Override
-	protected void enableCompositeWidgets(boolean enabled) 
+	protected void setInteractionEnabled(boolean enabled) 
 	{
-		super.enableCompositeWidgets(enabled);
+		super.setInteractionEnabled(enabled);
 		listBox.setEnabled(enabled);
 	}
 	

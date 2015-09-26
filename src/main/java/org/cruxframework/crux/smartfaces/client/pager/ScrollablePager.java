@@ -92,9 +92,9 @@ public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<
     }
 
 	@Override
-	protected void enableCompositeWidgets(boolean enabled) 
+	protected void setInteractionEnabled(boolean enabled) 
 	{
-		super.enableCompositeWidgets(enabled);
+		super.setInteractionEnabled(enabled);
 		scrollable.setTouchScrollingDisabled(!enabled);
 	}
 	
