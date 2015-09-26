@@ -42,10 +42,6 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 		this.listBox = createListBox();	
 		
 		this.panel = new NavPanel();
-//		this.panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-//		this.panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-//		this.panel.setSpacing(2);
-				
 		this.panel.add(createFirstPageButton());
 		this.panel.add(createPreviousButton());
 		this.panel.add(listBox);
@@ -94,9 +90,9 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 	}
 	
 	@Override
-	protected final void setInteractionEnabled(boolean enabled) 
+	protected void enableCompositeWidgets(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
+		super.enableCompositeWidgets(enabled);
 		listBox.setEnabled(enabled);
 	}
 	
@@ -114,7 +110,7 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 			{
 				public void onChange(ChangeEvent event)
 				{
-					if(isEnabled())
+					if(!transactionRunning)
 					{
 						PageEvent pageEvent = PageEvent.fire(PredictivePager.this, getCurrentPage() + 1);
 						if(!pageEvent.isCanceled())

@@ -21,6 +21,8 @@ import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
@@ -90,9 +92,9 @@ public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<
     }
 
 	@Override
-	protected void setInteractionEnabled(boolean enabled) 
+	protected void enableCompositeWidgets(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
+		super.enableCompositeWidgets(enabled);
 		scrollable.setTouchScrollingDisabled(!enabled);
 	}
 	
@@ -146,9 +148,17 @@ public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<
     }
 
 	@Override
-    public void initializeContentPanel(Panel contentPanel)
+    public void initializeContentPanel(final Panel contentPanel)
     {
 		contentPanel.clear();
 		contentPanel.add(this);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+		{
+			@Override
+			public void execute() 
+			{
+				ScrollablePager.this.setHeight(contentPanel.getElement().getClientHeight() - 1 + "px");
+			}
+		});
     }	
 }

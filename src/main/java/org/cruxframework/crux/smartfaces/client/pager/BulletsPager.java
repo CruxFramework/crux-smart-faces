@@ -49,7 +49,6 @@ public class BulletsPager<T> extends AbstractPager<T>
 	protected boolean autoTransitionEnabled = true;
 	protected int autoTransitionInterval = 10000;
 	protected int currentBullet = -1;
-	protected boolean interactionEnabled = true;
 	protected NavPanel mainPanel = new NavPanel();
 	protected int pageCount;
 
@@ -139,7 +138,7 @@ public class BulletsPager<T> extends AbstractPager<T>
 			@Override
 			public void onSelect(SelectEvent event) 
 			{
-				if (interactionEnabled)
+				if (!transactionRunning)
 				{
 					goToPage(index);
 				}
@@ -194,13 +193,6 @@ public class BulletsPager<T> extends AbstractPager<T>
 		}
 	}
 	
-	@Override
-	protected void setInteractionEnabled(boolean enabled) 
-	{
-		super.setInteractionEnabled(enabled);
-		interactionEnabled = enabled;
-	}
-
 	@Override
 	protected void showLoading() 
 	{
