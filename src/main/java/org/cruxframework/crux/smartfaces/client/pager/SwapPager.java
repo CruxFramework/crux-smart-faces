@@ -16,7 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
-import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.shared.Experimental;
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class SwapPager<T> extends AbstractPager<T> implements HasPageable<T>, HasAnimation
+public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SwapPager";
 

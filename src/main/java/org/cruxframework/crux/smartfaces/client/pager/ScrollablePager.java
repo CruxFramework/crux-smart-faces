@@ -16,7 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
-import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public class ScrollablePager<T> extends AbstractPager<T> implements HasPageable<T>
+public class ScrollablePager<T> extends AbstractPager<T> implements PageablePager<T>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";
 

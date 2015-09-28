@@ -17,8 +17,8 @@ package org.cruxframework.crux.smartfaces.client.list;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.pager.HasPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
@@ -44,7 +44,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,23 +53,6 @@ import com.google.gwt.user.client.ui.Widget;
  *            Value type
  * @param <T>
  *            Data object type
- * 
- *            <p>
- *            <b>Example of usage:</b>
- *            </p>
- *            <p>
- *            &lt;faces:comboBox id="comboBox1" dataObject="person"
- *            pageSize="10" autoLoadData="true"&gt;<br>
- *            &emsp;&lt;faces:dataProvider  dataObject="person" autoLoadData="true" onLoad="homeController.loadComboData" /&gt;<br>
- *            &emsp;&lt;faces:optionsRenderer valuePath="name"
- *            labelPath="name"&gt;<br>
- *            &emsp;&lt;faces:displayWidget&gt; <br>
- *            &emsp;&lt;faces:button bindPath="name" id="buttons"
- *            text="name"&gt;&lt;/faces:button&gt;<br>
- *            &emsp;&lt;/faces:displayWidget&gt;<br>
- *            &emsp;&lt;/faces:optionsRenderer&gt;<br>
- *            &lt;/faces:comboBox&gt;
- *            </p>
  */
 public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<T>, 
 								HasAllFocusHandlers, HasEnabled, HasSelectHandlers
@@ -81,7 +63,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-Button";
 	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-ComboBox-comboItemList";
 	private static final String COMBO_BOX_POPUP = "faces-ComboBox-Popup";
-	private static final String COMBO_BOX_SCROLL_PANEL = "faces-ComboBox-scrollPanel";
 	private static final String COMBO_BOX_TEXT = "faces-ComboBox-Text";
 
 	protected OptionsRenderer<V, T> optionsRenderer = null;
@@ -90,7 +71,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private final Button button = new Button();
 	private ComboBoxOptionList<V, T> optionsList;
 	private PopupPanel popup;
-	private ScrollPanel scrollPanel;
 	private int selectedIndex;
 	private final TextBox textBox = new TextBox();
 	private V value;
@@ -125,12 +105,24 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	}
 	
 	@Override
+    public void firstPage()
+    {
+		optionsList.firstPage();
+    }
+	
+	
+	@Override
+	public int getCurrentPage()
+    {
+	    return optionsList.getCurrentPage();
+    }
+
+	@Override
 	public PagedDataProvider<T> getDataProvider()
 	{
 		return optionsList.getDataProvider();
 	}
-	
-	
+
 	@Override
 	public int getPageCount()
 	{
@@ -160,6 +152,18 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	}
 
 	@Override
+    public boolean hasNextPage()
+    {
+	    return optionsList.hasNextPage();
+    }
+
+	@Override
+    public boolean hasPreviousPage()
+    {
+	    return optionsList.hasPreviousPage();
+    }
+
+	@Override
 	public boolean isDataLoaded()
 	{
 		return optionsList.isDataLoaded();
@@ -170,6 +174,12 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		return button.isEnabled();
 	}
+	
+	@Override
+    public void lastPage()
+    {
+		optionsList.lastPage();
+    }
 
 	@Override
 	public void nextPage()
@@ -193,48 +203,17 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		button.setEnabled(enabled);
 		textBox.setEnabled(enabled);
-	}
-
-	@Override
-	public int getCurrentPage()
-    {
-	    return optionsList.getCurrentPage();
-    }
-
-	@Override
-    public boolean hasNextPage()
-    {
-	    return optionsList.hasNextPage();
-    }
-
-	@Override
-    public boolean hasPreviousPage()
-    {
-	    return optionsList.hasPreviousPage();
-    }
-
-	@Override
-    public void firstPage()
-    {
-		optionsList.firstPage();
-    }
-
-	@Override
-    public void lastPage()
-    {
-		optionsList.lastPage();
-    }	
+	}	
 	
 	@Override
-	public void setPager(HasPageable<T> pager)
+	public void setPager(PageablePager<T> pager)
 	{
-		bodyPanel.add(pager);
 		optionsList.setPager(pager);
 	}
 
@@ -278,7 +257,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	public void setWidth(String width)
 	{
  		super.setWidth(width);
-		scrollPanel.setWidth(width);
 		//TODO tudo isso pra baixo nao funciona... remover tudo isso e usar css flex box nos filhos do bodypanel
 		width = width.substring(0,width.indexOf("px"));
 		int widthInt = Integer.parseInt(width);
@@ -305,7 +283,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		popup = new PopupPanel();
 		popup.addStyleName(COMBO_BOX_POPUP);
 		popup.setAutoHideEnabled(true);
-		popup.add(scrollPanel);
+		popup.add(optionsList);
 		popup.showRelativeTo(textBox);
 	}
 	
@@ -346,11 +324,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		
 		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
 		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
-		
-		scrollPanel = new ScrollPanel();
-		scrollPanel.setStyleName(COMBO_BOX_SCROLL_PANEL);
-		scrollPanel.add(optionsList);
-		
+				
 		button.setStyleName(COMBO_BOX_BUTTON);
 		button.addSelectHandler(new SelectHandler(){
 			@Override
@@ -415,7 +389,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					panel.setValue(renderer.getValue(value));
 					panel.setLabel(renderer.getLabel(value));
 					int widgetIndex = getPagePanel().getWidgetCount();
-					if (hasPageable != null && !hasPageable.supportsInfiniteScroll())
+					if (pager != null && !pager.supportsInfiniteScroll())
 					{
 						int numPreviousPage = getDataProvider().getCurrentPage() - 1;
 						widgetIndex += (numPreviousPage*getPageSize());
