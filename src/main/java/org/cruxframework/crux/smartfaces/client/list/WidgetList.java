@@ -61,12 +61,13 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 	 */
 	public T getDataObject(Widget w)
 	{
-		if (getPagePanel() != null)
+		FlowPanel pagePanel = getPagePanel();
+		if (pagePanel != null)
 		{
-			int widgetIndex = getPagePanel().getWidgetIndex(w);
+			int widgetIndex = pagePanel.getWidgetIndex(w);
 			if (widgetIndex >= 0)
 			{
-				if (hasPageable != null && !hasPageable.supportsInfiniteScroll())
+				if (pager != null && !pager.supportsInfiniteScroll())
 				{
 				int numPreviousPage = getDataProvider().getCurrentPage() - 1;
 					widgetIndex += (numPreviousPage*getPageSize());
@@ -85,7 +86,8 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 	 */
 	public int getWidgetIndex(Widget w)
 	{
-		return getPagePanel() != null ? getPagePanel().getWidgetIndex(w) : -1;
+		FlowPanel pagePanel = getPagePanel();
+		return pagePanel != null ? pagePanel.getWidgetIndex(w) : -1;
 	}
 
 	@Override
@@ -98,23 +100,31 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 	@Override
 	protected void clear()
 	{
-		if (getPagePanel() != null)
+		FlowPanel pagePanel = getPagePanel();
+		if (pagePanel != null)
 		{
-			getPagePanel().clear();
+			pagePanel.clear();
 		}
 	}
 	
 	@Override
 	protected void clearRange(int start)
 	{
-		if (getPagePanel() != null)
+		FlowPanel pagePanel = getPagePanel();
+		if (pagePanel != null)
 		{
-			while (getPagePanel().getWidgetCount() > start)
+			while (pagePanel.getWidgetCount() > start)
 			{
-				getPagePanel().remove(start);
+				pagePanel.remove(start);
 			}
 		}
 	}
+	
+	@Override
+    protected Panel getContentPanel()
+    {
+	    return contentPanel;
+    }
 	
 	@Override
 	protected DataProvider.DataReader<T> getDataReader()
@@ -129,14 +139,6 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
             }
 	    };
 	}
-	
-	@Override
-    protected FlowPanel initializePagePanel()
-    {
-		FlowPanel pagePanel = new FlowPanel();
-		pagePanel.setStyleName(getPagePanelStyleName());
-		return pagePanel;
-    }
 
 	protected String getPagePanelStyleName()
     {
@@ -144,8 +146,10 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
     }
 
 	@Override
-    protected Panel getContentPanel()
+    protected FlowPanel initializePagePanel()
     {
-	    return contentPanel;
+		FlowPanel pagePanel = new FlowPanel();
+		pagePanel.setStyleName(getPagePanelStyleName());
+		return pagePanel;
     }	
 }
