@@ -50,13 +50,12 @@ import com.google.gwt.user.client.ui.IsWidget;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-//TODO Create another factory to separate the two combo types
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, 
 					description = "Combobox component that uses a data provider to display a list of items or widgets")
 @TagChildren({ 
-	@TagChild(value = AbstractComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
+	@TagChild(value = ComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
 })
-public class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
+public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
 {
 	@Override
 	public WidgetCreatorContext instantiateContext()
