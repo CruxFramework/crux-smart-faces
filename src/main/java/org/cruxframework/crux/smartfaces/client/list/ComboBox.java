@@ -42,6 +42,12 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	}
 
 	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
+	{
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+
+	@Override
 	public void setValue(String value)
 	{
 		setValue(value, false);
@@ -71,11 +77,5 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	protected void setValueByObject(T obj)
 	{
 		setValue(optionsRenderer.getValue(obj));
-	}
-
-	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
-	{
-		return addHandler(handler, ValueChangeEvent.getType());
 	}
 }
