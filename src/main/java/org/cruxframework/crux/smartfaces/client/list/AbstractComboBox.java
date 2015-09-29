@@ -133,19 +133,31 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		return optionsList.getPageSize();
 	}
 
+	/**
+	 * Retrieve the index of the selected item.
+	 * @return selected index
+	 */
 	public int getSelectedIndex()
 	{
 		return this.selectedIndex;
 	}
 
-	public V getValue()
-	{
-		return value;
-	}
-	
+	/**
+	 * Retrieve the text displayed on the combobox's textBox.
+	 * @return text displayed
+	 */
 	public String getText()
 	{
 		return textBox.getText();
+	}
+	
+	/**
+	 * Retrieve the value of the selected item
+	 * @return the value
+	 */
+	public V getValue()
+	{
+		return value;
 	}
 
 	@Override
@@ -196,6 +208,9 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.previousPage();
 	}
 
+	/**
+	 * Refresh the combobox data. It will reset the its {@link DataProvider}.
+	 */
 	public void refresh()
 	{
 		optionsList.reset();
@@ -207,16 +222,21 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
 
-	public void setListHeight(String height)
-	{
-		optionsList.setHeight(height);
-	}
-	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		button.setEnabled(enabled);
 		textBox.setEnabled(enabled);
+	}
+	
+	/**
+	 * Set the height of the list box, containing the items. If not defined, the height of the 
+	 * first page loaded into this combobox will be assumed. 
+	 * @param height the height to set
+	 */
+	public void setListHeight(String height)
+	{
+		optionsList.setHeight(height);
 	}	
 	
 	@Override
