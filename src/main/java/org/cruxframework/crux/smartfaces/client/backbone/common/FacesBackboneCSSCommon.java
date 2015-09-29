@@ -59,5 +59,8 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String facesWaitBox();
 	String facesPopupCenter();
 	String facesUnscrollable();
-	String facesUnselectable();	
+	String facesUnselectable();
+	
+	//Pager
+	String facesScrollablePager();	
 }

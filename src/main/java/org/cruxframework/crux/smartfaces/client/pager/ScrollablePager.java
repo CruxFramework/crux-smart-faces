@@ -16,10 +16,12 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
-import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -27,6 +29,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -42,13 +46,14 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 
 	private static final String STYLE_SCROLLABLE_PAGER_PAGER_LOADING = "faces-ScrollablePager--pagerLoading";
 	
-	private DivElement loadingElement;
 	private int lastRequestedPage = 0;
 	private int lastScrollPos = 0;
+	private DivElement loadingElement;
 	private ScrollPanel scrollable;
 	
 	public ScrollablePager()
     {
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		scrollable = new ScrollPanel();
 		
 		initWidget(scrollable);
@@ -92,10 +97,28 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
     }
 
 	@Override
-	protected void setInteractionEnabled(boolean enabled) 
+    public void initializeContentPanel(final Panel contentPanel)
+    {
+		setContentPanelHeight(contentPanel);
+		contentPanel.clear();
+		contentPanel.add(this);
+    }
+
+	@Override
+	public void setStyleName(String style)
 	{
-		super.setInteractionEnabled(enabled);
-		scrollable.setTouchScrollingDisabled(!enabled);
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesScrollablePager());
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesScrollablePager());
+		}
 	}
 	
 	@Override
@@ -105,29 +128,9 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 	}
 	
 	@Override
-    protected void onUpdate()
+    public void updatePagePanel(IsWidget pagePanel, boolean forward)
     {
-	    // Do nothing
-    }
-
-	@Override
-	protected void onTransactionStarted(int startRecord)
-	{
-		super.onTransactionStarted(startRecord);
-		int pageSize = getDataProvider().getPageSize();
-		int index = startRecord + 1;
-		lastRequestedPage = (index / pageSize) + (index%pageSize==0?0:1);	
-	}
-	
-	@Override
-    protected void showLoading()
-    {
-		if (loadingElement == null)
-		{
-			loadingElement = Document.get().createDivElement();
-			loadingElement.setClassName(STYLE_SCROLLABLE_PAGER_PAGER_LOADING);
-			Document.get().getBody().appendChild(loadingElement);
-		}
+		scrollable.setWidget(pagePanel);
     }
 
 	@Override
@@ -140,25 +143,72 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 		}
     }
 	
+	@Override
+	protected void onTransactionStarted(int startRecord)
+	{
+		super.onTransactionStarted(startRecord);
+		int pageSize = getDataProvider().getPageSize();
+		int index = startRecord + 1;
+		lastRequestedPage = (index / pageSize) + (index%pageSize==0?0:1);	
+	}
 
 	@Override
-    public void updatePagePanel(IsWidget pagePanel, boolean forward)
+    protected void onUpdate()
     {
-		scrollable.setWidget(pagePanel);
+	    // Do nothing
+    }
+	
+
+	@Override
+	protected void setInteractionEnabled(boolean enabled) 
+	{
+		super.setInteractionEnabled(enabled);
+		scrollable.setTouchScrollingDisabled(!enabled);
+	}
+
+	@Override
+    protected void showLoading()
+    {
+		if (loadingElement == null)
+		{
+			loadingElement = Document.get().createDivElement();
+			loadingElement.setClassName(STYLE_SCROLLABLE_PAGER_PAGER_LOADING);
+			Document.get().getBody().appendChild(loadingElement);
+		}
     }
 
-	@Override
-    public void initializeContentPanel(final Panel contentPanel)
+	private void defineContentPageHeightToPageHeight(final Panel contentPanel)
     {
-		contentPanel.clear();
-		contentPanel.add(this);
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+	    addAttachHandler(new Handler()
+	    {
+	    	@Override
+	    	public void onAttachOrDetach(AttachEvent event)
+	    	{
+	    		if (event.isAttached())
+	    		{
+	    			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+	    			{
+	    				@Override
+	    				public void execute() 
+	    				{
+	    					int clientHeight = contentPanel.getElement().getClientHeight();
+	    					if (clientHeight > 0)
+	    					{
+	    						contentPanel.setHeight(clientHeight + "px");
+	    					}
+	    				}
+	    			});
+	    		}
+	    	}
+	    });
+    }
+
+	private void setContentPanelHeight(final Panel contentPanel)
+    {
+	    String height = contentPanel.getElement().getPropertyString("height");
+		if (StringUtils.isEmpty(height))
 		{
-			@Override
-			public void execute() 
-			{
-				ScrollablePager.this.setHeight(contentPanel.getElement().getClientHeight() - 1 + "px");
-			}
-		});
+			defineContentPageHeightToPageHeight(contentPanel);
+		}
     }	
 }
