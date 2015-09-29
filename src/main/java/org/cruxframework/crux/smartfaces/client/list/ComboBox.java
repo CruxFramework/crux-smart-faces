@@ -69,7 +69,7 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 		if(filterResult.size() > 0)
 		{
 			T obj = filterResult.get(0);
-			selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj), dataProvider.indexOf(obj));
+			selectItem(optionsRenderer.getText(obj), optionsRenderer.getValue(obj), dataProvider.indexOf(obj));
 		}
 	}
 
