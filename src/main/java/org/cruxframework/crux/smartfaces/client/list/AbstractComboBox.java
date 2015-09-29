@@ -63,6 +63,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-ComboBox-comboItemList";
 	private static final String COMBO_BOX_POPUP = "faces-ComboBox-popup";
 	private static final String COMBO_BOX_TEXT = "faces-ComboBox-text";
+	private static final String DEFAULT_WIDTH = "150px";
 
 	protected OptionsRenderer<V, T> optionsRenderer = null;
 	
@@ -133,19 +134,31 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		return optionsList.getPageSize();
 	}
 
+	/**
+	 * Retrieve the index of the selected item.
+	 * @return selected index
+	 */
 	public int getSelectedIndex()
 	{
 		return this.selectedIndex;
 	}
 
-	public V getValue()
-	{
-		return value;
-	}
-	
+	/**
+	 * Retrieve the text displayed on the combobox's textBox.
+	 * @return text displayed
+	 */
 	public String getText()
 	{
 		return textBox.getText();
+	}
+	
+	/**
+	 * Retrieve the value of the selected item
+	 * @return the value
+	 */
+	public V getValue()
+	{
+		return value;
 	}
 
 	@Override
@@ -196,6 +209,9 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.previousPage();
 	}
 
+	/**
+	 * Refresh the combobox data. It will reset the its {@link DataProvider}.
+	 */
 	public void refresh()
 	{
 		optionsList.reset();
@@ -207,16 +223,21 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
 
-	public void setListHeight(String height)
-	{
-		optionsList.setHeight(height);
-	}
-	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		button.setEnabled(enabled);
 		textBox.setEnabled(enabled);
+	}
+	
+	/**
+	 * Set the height of the list box, containing the items. If not defined, the height of the 
+	 * first page loaded into this combobox will be assumed. 
+	 * @param height the height to set
+	 */
+	public void setListHeight(String height)
+	{
+		optionsList.setHeight(height);
 	}	
 	
 	@Override
@@ -231,6 +252,10 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setPageSize(pageSize);
 	}
 
+	/**
+	 * Set the index of the selected item.
+	 * @param index item index
+	 */
 	public void setSelectedIndex(int index)
 	{
 		DataProvider<T> dataProvider = getDataProvider();
@@ -261,17 +286,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}
 	}
 
-	@Override
-	public void setWidth(String width)
-	{
- 		super.setWidth(width);
-		//TODO tudo isso pra baixo nao funciona... remover tudo isso e usar css flex box nos filhos do bodypanel
-		width = width.substring(0,width.indexOf("px"));
-		int widthInt = Integer.parseInt(width);
-		int widthTextBox = widthInt-23;
-		textBox.setWidth(widthTextBox+"px");
-	}
-
 	protected void selectItem(String text, V value, int selectedIndex)
 	{
 		this.selectedIndex = selectedIndex;
@@ -286,7 +300,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	
 	protected abstract void setValueByObject(T obj);
 	
-	private void createPopup()
+	private void showList()
 	{
 		popup.showRelativeTo(textBox);
 	}
@@ -295,7 +309,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		this.optionsRenderer = optionsRenderer;
 		bodyPanel.add(textBox);
-		bodyPanel.setWidth("100%");
+		bodyPanel.setWidth(DEFAULT_WIDTH);
 		bodyPanel.add(button);
 		bodyPanel.addSelectHandler(new SelectHandler()
 		{
@@ -315,6 +329,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		});
 		
 		textBox.setStyleName(COMBO_BOX_TEXT);
+		textBox.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneComboboxText());
 		textBox.setReadOnly(true);
 		
 		textBox.addClickHandler(new ClickHandler(){
@@ -322,7 +337,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			@Override	
 			public void onClick(ClickEvent event)
 			{
-				createPopup();
+				showList();
 			}
 		});//TODO trocar pra select handler
 		
@@ -339,7 +354,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			@Override
 			public void onSelect(SelectEvent event)
 			{
-				createPopup();
+				showList();
 			}
 		});
 

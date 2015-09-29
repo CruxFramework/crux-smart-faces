@@ -6,3 +6,8 @@
 	height: 23px;
 	width: 23px;
 }
+
+.facesBackboneComboboxText
+{
+	flex: 1;
+}
