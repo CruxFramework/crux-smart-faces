@@ -48,22 +48,21 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author wesley.diniz
+ * 
+ * @author Thiago da Rosa de Bustamante
+ *
  * @param <V>
- *            Value type
  * @param <T>
- *            Data object type
  */
 public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<T>, 
 								HasAllFocusHandlers, HasEnabled, HasSelectHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
-	public static final String LABEL_ITEM = "faces-ComboBox-LabelItem";
 	
-	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-Button";
+	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-button";
 	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-ComboBox-comboItemList";
-	private static final String COMBO_BOX_POPUP = "faces-ComboBox-Popup";
-	private static final String COMBO_BOX_TEXT = "faces-ComboBox-Text";
+	private static final String COMBO_BOX_POPUP = "faces-ComboBox-popup";
+	private static final String COMBO_BOX_TEXT = "faces-ComboBox-text";
 
 	protected OptionsRenderer<V, T> optionsRenderer = null;
 	
@@ -110,7 +109,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.firstPage();
     }
 	
-	
 	@Override
 	public int getCurrentPage()
     {
@@ -143,6 +141,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	public V getValue()
 	{
 		return value;
+	}
+	
+	public String getText()
+	{
+		return textBox.getText();
 	}
 
 	@Override
@@ -204,6 +207,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
 
+	public void setPopupHeight(String height)
+	{
+		optionsList.setHeight(height);
+	}
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -231,7 +239,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			@Override
             public void read(T object, int index)
             {
-				selectItem(optionsRenderer.getLabel(object), optionsRenderer.getValue(object), index);
+				selectItem(optionsRenderer.getText(object), optionsRenderer.getValue(object), index);
             }
 		});
 	}
@@ -264,12 +272,12 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		textBox.setWidth(widthTextBox+"px");
 	}
 
-	protected void selectItem(String label, V value, int selectedIndex)
+	protected void selectItem(String text, V value, int selectedIndex)
 	{
 		this.selectedIndex = selectedIndex;
-		textBox.setText(label);
+		textBox.setText(text);
 		this.value = value;
-		if(popup != null)
+		if(popup.isShowing())
 		{
 			popup.hide();
 		}
@@ -280,10 +288,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	
 	private void createPopup()
 	{
-		popup = new PopupPanel();
-		popup.addStyleName(COMBO_BOX_POPUP);
-		popup.setAutoHideEnabled(true);
-		popup.add(optionsList);
 		popup.showRelativeTo(textBox);
 	}
 	
@@ -324,7 +328,12 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		
 		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
 		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
-				
+
+		popup = new PopupPanel();
+		popup.setStyleName(COMBO_BOX_POPUP);
+		popup.setAutoHideEnabled(true);
+		popup.add(optionsList);
+		
 		button.setStyleName(COMBO_BOX_BUTTON);
 		button.addSelectHandler(new SelectHandler(){
 			@Override
@@ -338,7 +347,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			@Override
 			public void onSelectItem(SelectComboItemEvent<V> event)
 			{
-				selectItem(event.label, event.value, event.index);
+				selectItem(event.text, event.value, event.index);
 			}
 		}, SelectComboItemEvent.getType());
 		setStyleName(DEFAULT_STYLE_NAME);
@@ -352,9 +361,21 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	 */
 	public static interface OptionsRenderer<V, T> extends WidgetFactory<T>
 	{
-		String getLabel(T record);
+		/**
+		 * Retrieve the text label that will appears on the comboBox text field, when the
+		 * given valueObject is selected.
+		 * @param valueObject
+		 * @return
+		 */
+		String getText(T valueObject);
 
-		V getValue(T record);
+		/**
+		 * Retrieve the value that willbe bound  to the comboBox, when the
+		 * given valueObject is selected.
+		 * @param valueObject
+		 * @return
+		 */
+		V getValue(T valueObject);
 	}
 	
 	/**
@@ -366,28 +387,28 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static class ComboBoxOptionList<V, T> extends WidgetList<T>
 	{
 		private final AbstractComboBox<V, T> comboBoxParent;
-
+		private OptionsRenderer<V, T> renderer;
+		
 		public ComboBoxOptionList(OptionsRenderer<V, T> optionsRenderer, AbstractComboBox<V, T> comboBoxParent)
 		{
 			super(optionsRenderer);
+			this.renderer = optionsRenderer;
 			this.comboBoxParent = comboBoxParent;
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		protected DataProvider.DataReader<T> getDataReader()
 		{
 			return new DataProvider.DataReader<T>()
 			{
-				OptionsRenderer<V, T> renderer = (OptionsRenderer<V, T>) widgetFactory;
 
 				@Override
 				public void read(T value, int index)
 				{
-					IsWidget widget = widgetFactory.createWidget(value);
+					IsWidget widget = renderer.createWidget(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(renderer.getValue(value));
-					panel.setLabel(renderer.getLabel(value));
+					panel.setText(renderer.getText(value));
 					int widgetIndex = getPagePanel().getWidgetCount();
 					if (pager != null && !pager.supportsInfiniteScroll())
 					{
@@ -413,7 +434,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		private static final String COMBO_BOX_OPTION_PANEL = "faces-comboBoxOptionPanel";
 		private SelectablePanel bodyPanel = new SelectablePanel();
 		private int index;
-		private String label;
+		private String text;
 		private V value;
 
 		ComboBoxOptionPanel(final Widget parent)
@@ -426,7 +447,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 				{
 					SelectComboItemEvent<V> ev = new SelectComboItemEvent<V>();
 					ev.value = getValue();
-					ev.label = getLabel();
+					ev.text = getText();
 					ev.index = getIndex();
 					parent.fireEvent(ev);
 				}
@@ -443,9 +464,9 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			return index;
 		}
 
-		String getLabel()
+		String getText()
 		{
-			return label;
+			return text;
 		}
 
 		V getValue()
@@ -458,9 +479,9 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			this.index = index;
 		}
 
-		void setLabel(String label)
+		void setText(String text)
 		{
-			this.label = label;
+			this.text = text;
 		}
 
 		void setValue(V value)
@@ -479,7 +500,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		private static final Type<SelectComboItemHandler> TYPE = new Type<SelectComboItemHandler>();
 		private int index;
-		private String label;
+		private String text;
 		private V value;
 
 		@Override

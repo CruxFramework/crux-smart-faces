@@ -26,7 +26,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBindPathFacto
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
@@ -54,6 +56,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 					description = "Combobox component that uses a data provider to display a list of items or widgets")
 @TagChildren({ 
 	@TagChild(value = ComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
+})
+@TagAttributes({
+	@TagAttribute("popupHeight")
 })
 public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
 {
@@ -106,16 +111,16 @@ public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContex
 		String dataObjectVariable = createVariableName("value");
 		String bindingContextVariable = createVariableName("context");
 
-		String labelAttr = optionRendererElement.optString("label");
+		String textAttr = optionRendererElement.optString("text");
 		String valueAttr = optionRendererElement.optString("value");
 		Set<String> converterDeclarations = new HashSet<String>();
 		out.println("new " + comboBoxRendererClassName + "(){");
 		generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
 		
-		String labelExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
-																bindingContextVariable, labelAttr, converterDeclarations);	
+		String textExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
+																bindingContextVariable, textAttr, converterDeclarations, "text");	
 		String valueExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
-																bindingContextVariable, valueAttr, converterDeclarations);	
+																bindingContextVariable, valueAttr, converterDeclarations, "value");	
 
 		if (child != null)
 		{
@@ -139,15 +144,15 @@ public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContex
 		{
 			out.println("@Override public "+IsWidget.class.getCanonicalName()+" createWidget(" + 
 											dataObjectName + " " + dataObjectVariable + "){");
-			out.println("return new " + Label.class.getCanonicalName() + "(" + labelExpression + ");");
+			out.println("return new " + Label.class.getCanonicalName() + "(" + textExpression + ");");
 			out.println("}");
 		}
 		out.println("@Override public " + getValueType() + " getValue(" + dataObjectName + " " + dataObjectVariable + "){");
 		out.println("return " + valueExpression + ";");
 		out.println("}");
 		
-		out.println("@Override public String getLabel(" + dataObjectName + " " + dataObjectVariable + "){");
-		out.println("return " + labelExpression + ";");
+		out.println("@Override public String getText(" + dataObjectName + " " + dataObjectVariable + "){");
+		out.println("return " + textExpression + ";");
 		out.println("}");
 		
 		for (String converterDeclaration : converterDeclarations)
@@ -161,7 +166,7 @@ public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContex
 	@TagConstraints(tagName = "options", minOccurs = "1", maxOccurs = "1")
 	@TagAttributesDeclaration({ 
 		@TagAttributeDeclaration(value="value", required=true), 
-		@TagAttributeDeclaration(value="label", required=true)
+		@TagAttributeDeclaration(value="text", required=true)
 	})
 	@TagChildren({
 		@TagChild(value=WidgetListChildCreator.class, autoProcess=false)
