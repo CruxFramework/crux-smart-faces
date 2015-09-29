@@ -22,15 +22,27 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 
+/**
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ * 
+ * This is a simple row based in divs.
+ */
 public class DivRow extends FlowPanel 
 {
 	private static Array<String> columnClasses = CollectionFactory.createArray();
-	
+
+	public static native void setClassContent(String className, String classContent) /*-{
+		var style = document.createElement('style');
+		style.type = 'text/css';
+		style.innerHTML = '.' + className +' { '+ classContent +' }';
+		$doc.getElementsByTagName('head')[0].appendChild(style);
+	}-*/;
+
 	public DivRow()
 	{
 		setStyleName("row");
 	}
-	
+
 	public FlowPanel add(IsWidget widget, int columnIndex) 
 	{
 		FlowPanel column = new FlowPanel();
@@ -38,12 +50,31 @@ public class DivRow extends FlowPanel
 		add(column);
 		return column;
 	}
-	
+
+	public void insert(IsWidget widget, int columnIndex) 
+	{
+		FlowPanel column = null;
+		if(columnIndex < 0 || columnIndex >= getChildren().size())
+		{
+			//create a new column.
+			column = add(widget, columnIndex);
+			setStyleProperties(column, columnIndex);	
+		}
+		else
+		{
+			//update the column
+			column = (FlowPanel) getWidget(columnIndex);
+			column.clear();
+			column.add(widget);
+			setStyleProperties(column, columnIndex);
+		}
+	}
+
 	private void setStyleProperties(final FlowPanel column, int columnIndex)
-    {
+	{
 		Element element = column.getElement();
 		element.addClassName("column");
-		
+
 		String columnName = "column_" + columnIndex;
 		int columnClassesIndex = columnClasses.indexOf(columnName);
 		if(columnClassesIndex >= 0)
@@ -54,29 +85,6 @@ public class DivRow extends FlowPanel
 			setClassContent(columnName, "order: " + String.valueOf(columnIndex));
 			element.addClassName(columnName);
 			columnClasses.insert(columnIndex, columnName);
-		}
-    }
-	
-	public static native void setClassContent(String className, String classContent) /*-{
-		var style = document.createElement('style');
-		style.type = 'text/css';
-		style.innerHTML = '.' + className +' { '+ classContent +' }';
-		$doc.getElementsByTagName('head')[0].appendChild(style);
-	}-*/;
-
-	public void insert(IsWidget widget, int columnIndex) 
-	{
-		FlowPanel column = null;
-		try
-		{
-			column = (FlowPanel) getWidget(columnIndex);
-			column.clear();
-			column.add(widget);
-			setStyleProperties(column, columnIndex);
-		} catch (IndexOutOfBoundsException e)
-		{
-			column = add(widget, columnIndex);
-			setStyleProperties(column, columnIndex);
 		}
 	}	
 }

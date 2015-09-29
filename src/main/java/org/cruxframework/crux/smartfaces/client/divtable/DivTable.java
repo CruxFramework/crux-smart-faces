@@ -24,11 +24,16 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ * 
+ * This is a simple table based in divs.
+ */
 public class DivTable extends Composite
 {
-	FlowPanel table = new FlowPanel();
-	ArrayList<DivRow> rows = new ArrayList<DivRow>();
-	
+	private ArrayList<DivRow> rows = new ArrayList<DivRow>();
+	private FlowPanel table = new FlowPanel();
+
 	public DivTable()
 	{
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
@@ -40,32 +45,13 @@ public class DivTable extends Composite
 	{
 		rows.get(rows.size()-1).add(widget);
 	}
-	
+
 	public void clear()
 	{
 		rows.clear();
 		table.clear();
 	}
 
-	public void removeRow(int rowIndex)
-	{
-		rows.remove(rowIndex);
-		table.remove(rowIndex);
-	}
-
-	public void setWidget(int row, int column, IsWidget widget)
-	{
-		DivRow rowList;
-		
-		if(rows.size() <= row)
-		{
-			rowList = insertRow(row);
-		}
-		rowList = rows.get(row);
-		
-		rowList.insert(widget, column);
-	}
-	
 	public int getRowCount()
 	{
 		if(rows == null)
@@ -74,20 +60,68 @@ public class DivTable extends Composite
 		}
 		return rows.size();
 	}
-	
-	public DivRow insertRow(int index)
+
+	public Widget getWidget(int row, int column)
+	{
+		if(rows == null)
+		{
+			return null;
+		}
+
+		DivRow divRow = rows.get(row);
+
+		if(divRow == null)
+		{
+			return null;
+		}
+
+		return ((FlowPanel)rows.get(row).getWidget(column)).getWidget(0);
+	}
+
+	/**
+	 * Replaces the current row or creates a new one.
+	 * @param index 
+	 * @return
+	 */
+	private DivRow insertRow(int index)
 	{
 		DivRow row = new DivRow();
+
+		if(index%2 == 0)
+		{
+			row.addStyleName("even");
+		}
+		else
+		{
+			row.addStyleName("odd");
+		}
+
 		rows.add(index, row);
 		table.insert(row, index);
 		return row;
 	}
-	
-	public DivRow addRow()
+
+	public void removeRow(int rowIndex)
 	{
-		DivRow row = new DivRow();
-		rows.add(row);
-		table.add(row);
-		return row;
+		rows.remove(rowIndex);
+		table.remove(rowIndex);
+	}
+
+	public DivRow setWidget(int row, int column, IsWidget widget)
+	{
+		DivRow rowList;
+
+		if(rows.size() <= row)
+		{
+			rowList = insertRow(row);
+		} 
+		else
+		{
+			rowList = rows.get(row);
+		}
+
+		rowList.insert(widget, column);
+
+		return rowList;
 	}
 }

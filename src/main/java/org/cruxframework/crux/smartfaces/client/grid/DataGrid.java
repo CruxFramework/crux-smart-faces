@@ -21,114 +21,28 @@ import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.core.shared.Experimental;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
+import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
+import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
 
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
-//CHECKSTYLE:OFF
 /**
- * @author Samuel Almeida Cardoso (samuel@cruxframework.org)	
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  * @param <T>
  * - EXPERIMENTAL - 
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
+public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandlers, HasEnabled, HasSelectHandlers
 {
-	public DataGrid(PagedDataProvider<T> dataProvider, boolean autoLoadData)
-    {
-	    super(dataProvider, autoLoadData);
-    }
-
-	@Override
-    public HandlerRegistration addFocusHandler(FocusHandler handler)
-    {
-	    // TODO Auto-generated  method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addBlurHandler(BlurHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public boolean isEnabled()
-    {
-	    // TODO Auto-generated method stub
-	    return false;
-    }
-
-	@Override
-    public void setEnabled(boolean enabled)
-    {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public HandlerRegistration addSelectHandler(SelectHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler)
-    {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
 	public class DataGridColumnGroup
 	{
 		private Array<Column<?>> columns;
@@ -138,11 +52,111 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandl
 			columns.add(widgetColumn);
 		}
 	}
-	
+	private static final String STYLE_DISABLED = "--disabled";
+	private static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
+
+	private boolean enabled;
+	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
+
+	public DataGrid(PagedDataProvider<T> dataProvider, boolean autoLoadData)
+	{
+		super(dataProvider, autoLoadData);
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
+		setStyleName(STYLE_FACES_DATAGRID);
+	}
+
+	@Override
+	public HandlerRegistration addBlurHandler(BlurHandler handler)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	{
+		// TODO Auto-generated  method stub
+		return null;
+	}
+
+	@Override
+	public HandlerRegistration addSelectHandler(SelectHandler handler)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SelectStrategy getSelectStrategy()
+	{
+		return selectStrategy;
+	}
+
+	@Override
+	protected DivTable initializePagePanel() 
+	{
+		DivTable divTable = super.initializePagePanel();
+		return divTable;
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+
 	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
-    {
-	    PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
-	    addColumn(column);
+	{
+		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
+		addColumn(column);
 		return column;
-    }
+	}
+
+	private void setEnableColumns(boolean enabled) 
+	{
+		Array<PageableDataGrid<T>.Column<?>> columns = getColumns();
+		int sizeColumns = columns.size();
+
+		Array<PageableDataGrid<T>.Row> rows = getRows();
+		int sizeRows = rows.size();
+
+		if(sizeColumns <= 0 || sizeRows <= 0)
+		{
+			return;
+		}
+
+		for(int i=0; i<sizeRows;i++)
+		{
+			for(int j=0;j<sizeColumns;j++)
+			{
+				Widget widget = getPagePanel().getWidget(i, j);
+				if(widget != null)
+				{
+					try
+					{
+						((HasEnabled)widget).setEnabled(enabled);
+					} catch(ClassCastException e){}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+		if(!enabled)
+		{
+			getContentPanel().addStyleDependentName(STYLE_DISABLED);
+		}
+		else
+		{
+			getContentPanel().addStyleDependentName(STYLE_DISABLED);
+		}
+		setEnableColumns(enabled);
+	}
+
+	public void setSelectStrategy(final SelectStrategy selectStrategy)
+	{
+		this.selectStrategy = selectStrategy;
+	}
 }
