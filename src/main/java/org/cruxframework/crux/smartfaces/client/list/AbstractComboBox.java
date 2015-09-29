@@ -207,7 +207,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
 
-	public void setPopupHeight(String height)
+	public void setListHeight(String height)
 	{
 		optionsList.setHeight(height);
 	}
