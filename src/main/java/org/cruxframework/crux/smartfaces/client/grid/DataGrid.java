@@ -17,18 +17,12 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.event.HasSelectHandlers;
-import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
 
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandlers, HasEnabled, HasSelectHandlers
+public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 {
 	public class DataGridColumnGroup
 	{
@@ -63,27 +57,6 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandl
 		super(dataProvider, autoLoadData);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
-	}
-
-	@Override
-	public HandlerRegistration addBlurHandler(BlurHandler handler)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HandlerRegistration addFocusHandler(FocusHandler handler)
-	{
-		// TODO Auto-generated  method stub
-		return null;
-	}
-
-	@Override
-	public HandlerRegistration addSelectHandler(SelectHandler handler)
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public SelectStrategy getSelectStrategy()
