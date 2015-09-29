@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 	@TagChild(value = ComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
 })
 @TagAttributes({
-	@TagAttribute("popupHeight")
+	@TagAttribute("listHeight")
 })
 public class ComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
 {
