@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.grid;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
@@ -26,11 +27,14 @@ import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.DataFactory;
+import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.shared.Experimental;
-import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
+import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
-import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
+import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -43,7 +47,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author samuel.cardoso
+ * Implements a div grid based widget.
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  * - EXPERIMENTAL - 
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
@@ -51,20 +56,330 @@ import com.google.gwt.user.client.ui.Widget;
 @Experimental
 public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 {
-	public static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
+	/**
+	 * Handles how the cell should render in the edition mode.
+	 * @author samuel.cardoso
+	 *
+	 * @param <T> the DataObject type.
+	 * @param <K> the property type inside of DataObject.
+	 */
+	public static abstract class CellEditor<T, K> implements WidgetFactory<T>
+	{
+		private boolean autoRefreshRow = true;
+
+		public CellEditor()
+		{
+		}
+
+		/**
+		 * @param autoRefreshRow if true, the row will be refreshed when changed.
+		 */
+		public CellEditor(boolean autoRefreshRow)
+		{
+			this.autoRefreshRow = autoRefreshRow;
+		}
+
+		@SuppressWarnings({ "unchecked" })
+		private void maybeAddHandlerToUpdateRow(final PageableDataGrid<T> grid, final int rowIndex, final T dataObject,
+		    final IsWidget widget)
+		{
+			try
+			{
+				((HasValue<K>) widget).addValueChangeHandler(new ValueChangeHandler<K>()
+				{
+					@Override
+					public void onValueChange(ValueChangeEvent<K> event)
+					{
+						CellEditor.this.setProperty(dataObject, event.getValue());
+						if(autoRefreshRow)
+						{
+							grid.rows.get(rowIndex).makeChanges();
+						}
+					}
+				});
+			} catch (ClassCastException e){}
+		}
+
+		/**
+		 * Renders the cell.
+		 * @param grid
+		 * @param rowIndex
+		 * @param columnIndex
+		 * @param dataObject
+		 * @param row 
+		 */
+		public void render(
+			final PageableDataGrid<T> grid, 
+			final int rowIndex, 
+			final int columnIndex, 
+			final T dataObject 
+			)
+		{
+			final IsWidget widget = CellEditor.this.createWidget(dataObject);
+			assert(widget != null): "widget cannot be null";
+
+			grid.drawCell(grid, grid.hasHeader ? rowIndex+1 : rowIndex, columnIndex, (Widget) widget, false);
+
+			maybeAddHandlerToUpdateRow(grid, rowIndex, dataObject, widget);
+		}
+
+		/**
+		 * User has to inform how the data will be saved in the dataObject.
+		 * @param dataObject the dataObject. 
+		 * @param object the new value to be inserted in the dataObject. 
+		 */
+		public abstract void setProperty(T dataObject, K object);
+	}
 	
-	protected SimplePanel contentPanel = new SimplePanel();
-	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
+	/**
+	 * Define the column data type.
+	 * @author samuel.cardoso
+	 *
+	 * @param <V>
+	 */
+	public class Column<V extends IsWidget>
+	{
+		private ColumnComparator<T> columnComparator;
+		private int columnIndex = 0;
+		private DataFactory<V, T> dataFactory;
+		private CellEditor<T, ?> editableCell;
+		private IsWidget headerWidget;
+		private Row row;
+		private boolean sortable = false;
+
+		public Column(DataFactory<V, T> dataFactory)
+		{
+			assert(dataFactory != null): "dataFactory must not be null";
+			this.dataFactory = dataFactory;
+			this.columnIndex = columns != null ? columns.size() : 0;
+		}
+
+		/**
+		 * Clear the column content.
+		 */
+		public void clear()
+		{
+			row = null;
+		}
+
+		/**
+		 * @return the data factory.
+		 */
+		public DataFactory<V, T> getDataFactory()
+		{
+			return dataFactory;
+		}
+
+		/**
+		 * @return the widget 
+		 */
+		public IsWidget getHeaderWidget() 
+		{
+			return headerWidget;
+		}
+
+		public Row getRow() 
+		{
+			return row;
+		}
+
+		public void render() 
+		{
+			if(row.isEditing() && editableCell != null)
+			{
+				renderToEdit();
+			}
+			else
+			{
+				renderToView();						
+			}
+		}
+
+		private void renderToEdit() 
+		{
+			editableCell.render(PageableDataGrid.this, row.gridRowIndex, columnIndex, row.dataObject);
+		}
+
+		private void renderToView() 
+		{
+			V widget = dataFactory.createData(row.dataObject);
+
+			if(widget == null)
+			{
+				return;
+			}
+
+			drawCell(PageableDataGrid.this, hasHeader ? row.gridRowIndex+1 : row.gridRowIndex, columnIndex, widget, false);
+		}
+
+		public Column<V> setCellEditor(CellEditor<T, ?> editableCell)
+		{
+			this.editableCell = editableCell;
+			return this;
+		}
+
+		public Column<V> setComparator(Comparator<T> comparator)
+		{
+			this.columnComparator = new ColumnComparator<T>();
+			columnComparator.comparator = comparator;
+			columnComparator.multiplier = 1;
+			return this;
+		}
+
+		public Column<V> setDataFactory(DataFactory<V, T> dataFactory)
+		{
+			this.dataFactory = dataFactory;
+			return this;
+		}
+
+		public Column<V> setHeaderWidget(IsWidget headerWidget)
+		{
+			this.headerWidget = headerWidget;
+			return this;
+		}
+
+		public void setRow(PageableDataGrid<T>.Row row) 
+		{
+			this.row = row;
+		}
+
+		public Column<V> setSortable(boolean sortable)
+		{
+			this.sortable = sortable;
+			return this;
+		}
+
+		public void sort()
+		{
+			assert(getDataProvider() != null) :"No dataProvider set for this component.";
+			getDataProvider().sort(new Comparator<T>()
+			{
+				@Override
+				public int compare(T o1, T o2)
+				{
+					int compareResult = 0;
+					int index = 0;
+					//uses all the comparators that were added when uses clicks in the column header.
+					while((compareResult == 0) && (index != linkedComparators.size()))
+					{
+						ColumnComparator<T> columnComparator = linkedComparators.get(index);
+						compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
+						index++;
+					}
+					return compareResult;
+				}
+			});
+		}
+	}
+	/**
+	 * Encapsulate the comparator adding a variable to indicate if the ordering should be
+	 * ascending or descending.
+	 * @author samuel.cardoso
+	 *
+	 * @param <T>
+	 */
+	private static class ColumnComparator<T>
+	{
+		private Comparator<T> comparator;
+		private short multiplier = -1; 
+	}
+	/**
+	 * Define the row data type.
+	 * @author samuel.cardoso
+	 *
+	 */
+	public class Row
+	{
+		private T dataObject;
+		private int dataProviderRowIndex;
+		private boolean editing;
+		private int gridRowIndex;
+		private T oldDataObject;
+
+		public Row(T dataObject, int gridRowIndex, int dataProviderRowIndex)
+		{
+			this.dataObject = dataObject;
+			this.oldDataObject = dataObject;
+
+			this.gridRowIndex = gridRowIndex;
+			this.dataProviderRowIndex = dataProviderRowIndex;
+		}
+
+		/**
+		 * Put the Row in the edition mode.
+		 */
+		public void edit()
+		{
+			if(!editing)
+			{
+				dataObject = getDataProvider().get(dataProviderRowIndex);
+				getDataProvider().set(dataProviderRowIndex, dataObject);
+				editing = true;
+				refresh();
+			}
+		}
+
+		/**
+		 * @return the row index.
+		 */
+		public int getRowIndex() 
+		{
+			return gridRowIndex;
+		}
+
+		/**
+		 * @return true if the row is in the edition mode and false otherwise.
+		 */
+		public boolean isEditing() 
+		{
+			return editing;
+		}
+
+		/**
+		 * Commit all the changes for a single row.
+		 */
+		public void makeChanges()
+		{
+			editing = false;
+			refresh();
+		}
+
+		/**
+		 * Refreshes the all the row columns. 
+		 */
+		public void refresh()
+		{
+			drawColumns(this);
+		}
+
+		/**
+		 * Undo the changes for a single row.
+		 */
+		public void undoChanges()
+		{
+			dataObject = oldDataObject;
+			getDataProvider().set(dataProviderRowIndex, dataObject);
+			editing = false;
+			refresh();
+		}
+	}
+
 	private Array<Column<?>> columns = CollectionFactory.createArray();
-	private Array<Row> rows = CollectionFactory.createArray();
+
+	private SimplePanel contentPanel = new SimplePanel();
+
+	private boolean hasHeader;
+
+	private LinkedList<ColumnComparator<T>> linkedComparators = new LinkedList<ColumnComparator<T>>();
 	
+	private Array<Row> rows = CollectionFactory.createArray();
+
 	/**
 	 * @param dataProvider the dataprovider.
 	 * @param autoLoadData if true, the data must be loaded after the constructor has been invoked.
 	 */
 	public PageableDataGrid(final PagedDataProvider<T> dataProvider, boolean autoLoadData)
 	{
-		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		initWidget(contentPanel);
 		setDataProvider(dataProvider, autoLoadData);
 		setAllowRefreshAfterDataChange(false);
@@ -82,7 +397,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 						PageableDataGrid.super.refreshPage(dataProvider.getCurrentPageStartRecord());		
 					}
 				});
-				
+
 				dataProvider.addPageRequestedHandler(new PageRequestedHandler() 
 				{
 					@Override
@@ -98,11 +413,14 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		});
 	}
 
-	@Override
-	protected void refreshPage(int startRecord) 
+	/**
+	 * @param column the column to be added.
+	 */
+	public void addColumn(Column<?> column)
 	{
+		columns.add(column);
 	}
-	
+
 	@Override
 	protected void clear()
 	{
@@ -123,14 +441,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 	}
 
-	/**
-	 * @param column the column to be added.
-	 */
-	public void addColumn(Column<?> column)
-	{
-		columns.add(column);
-	}
-	
 	@Override
 	public void commit() 
 	{
@@ -138,268 +448,60 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		{
 			rows.get(i).makeChanges();
 		}
-		
+
 		super.commit();
 	}
 
-	@Override
-	public void rollback() 
+	private void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget, boolean isHeader)
 	{
-		for(int i=0; i<rows.size();i++)
+		DivRow row = grid.getPagePanel().setWidget(rowIndex, columnIndex, widget);
+
+		//handle the header
+		if(isHeader)
 		{
-			rows.get(i).undoChanges();
+			row.removeStyleName("even");
+			row.addStyleName("header");
 		}
-		
-		super.rollback();
+	}
+	
+	private void drawColumns(Row row)
+	{
+		//detect if at least one column has a header
+		hasHeader = false;
+		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
+		{
+			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
+
+			if(column.getHeaderWidget() != null)
+			{
+				hasHeader = true;
+			}
+		}
+
+		//iterate over the columns to render the cells (and the header)
+		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
+		{
+			final PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
+			column.setRow(row);
+			//header
+			maybeCreateHeader(row, columnIndex, column);
+			//body
+			column.render();
+		}
 	}
 
 	/**
-	 * @author samuel.cardoso
-	 *
-	 * @param <T> the DataObject type.
-	 * @param <K> the property type inside of DataObject.
+	 * @return all the table columns.
 	 */
-	public static abstract class CellEditor<T, K>
-	{
-		private boolean autoRefreshRow = true;
-
-		/**
-		 * The default constructor.
-		 */
-		public CellEditor()
-		{
-		}
-
-		/**
-		 * @param autoRefreshRow if true, the row will be refreshed when changed.
-		 */
-		public CellEditor(boolean autoRefreshRow)
-		{
-			this.autoRefreshRow = autoRefreshRow;
-		}
-
-		/**
-		 * @param dataObject the dataObject.
-		 * @return the widget to be rendered when in edition mode.
-		 */
-		public abstract HasValue<K> getWidget(T dataObject);
-
-		/**
-		 * @param dataObject the dataObject. 
-		 * @param newValue the new value to be inserted in the dataObject. 
-		 */
-		public abstract void setProperty(T dataObject, K newValue);
-
-		/**
-		 * @param grid
-		 * @param rowIndex
-		 * @param columnIndex
-		 * @param dataObject
-		 * @param row 
-		 */
-		public void render(
-				final PageableDataGrid<T> grid, 
-				final int rowIndex, 
-				final int columnIndex, 
-				final T dataObject 
-				)
-		{
-			final HasValue<K> widget = CellEditor.this.getWidget(dataObject);
-			assert(widget != null): "widget cannot be null";
-
-			grid.drawCell(grid, grid.hasHeader ? rowIndex+1 : rowIndex, columnIndex, (Widget) widget);
-
-			widget.addValueChangeHandler(new ValueChangeHandler<K>()
-			{
-				@Override
-				public void onValueChange(ValueChangeEvent<K> event)
-				{
-					CellEditor.this.setProperty(dataObject, event.getValue());
-					if(autoRefreshRow)
-					{
-						grid.rows.get(rowIndex).makeChanges();
-					}
-				}
-			});
-		}
-	}
-
-	public class Row
-	{
-		private T dataObject;
-		private T oldDataObject;
-		private int gridRowIndex;
-		private int dataProviderRowIndex;
-		private boolean editing;
-
-		public Row(T dataObject, int gridRowIndex, int dataProviderRowIndex)
-		{
-			this.dataObject = dataObject;
-			this.oldDataObject = dataObject;
-			
-			this.gridRowIndex = gridRowIndex;
-			this.dataProviderRowIndex = dataProviderRowIndex;
-		}
-
-		public boolean isEditing() 
-		{
-			return editing;
-		}
-
-		public int getRowIndex() 
-		{
-			return gridRowIndex;
-		}
-
-		public void undoChanges()
-		{
-			dataObject = oldDataObject;
-			getDataProvider().set(dataProviderRowIndex, dataObject);
-			editing = false;
-			refresh();
-		}
-
-		public void makeChanges()
-		{
-			editing = false;
-			refresh();
-		}
-
-		public void edit()
-		{
-			if(!editing)
-			{
-				dataObject = getDataProvider().get(dataProviderRowIndex);
-				getDataProvider().set(dataProviderRowIndex, dataObject);
-				editing = true;
-				refresh();
-			}
-		}
-
-		public void refresh()
-		{
-			drawColumns(this);
-		}
-	}
-
-	public class Column<V extends IsWidget>
-	{
-		private int columnIndex = 0;
-		private Row row;
-		private DataFactory<V, T> dataFactory;
-		private CellEditor<T, ?> editableCell;
-
-		@SuppressWarnings("unused")
-		private boolean sortable = false;
-		
-		@SuppressWarnings("unused")
-		private Comparator<T> comparator;
-		
-		private IsWidget headerWidget;
-		
-		public Column(DataFactory<V, T> dataFactory)
-		{
-			assert(dataFactory != null): "dataFactory must not be null";
-			this.dataFactory = dataFactory;
-			this.columnIndex = columns != null ? columns.size() : 0;
-		}
-
-		public void clear()
-		{
-			row = null;
-		}
-
-		public Row getRow() 
-		{
-			return row;
-		}
-
-		public Column<V> setDataFactory(DataFactory<V, T> dataFactory)
-		{
-			this.dataFactory = dataFactory;
-			return this;
-		}
-
-		public DataFactory<V, T> getDataFactory()
-		{
-			return dataFactory;
-		}
-
-		public Column<V> setCellEditor(CellEditor<T, ?> editableCell)
-		{
-			this.editableCell = editableCell;
-			return this;
-		}
-
-		public void setRow(PageableDataGrid<T>.Row row) 
-		{
-			this.row = row;
-		}
-
-		private void renderToView() 
-		{
-			V widget = dataFactory.createData(row.dataObject);
-
-			if(widget == null)
-			{
-				return;
-			}
-
-			drawCell(PageableDataGrid.this, hasHeader ? row.gridRowIndex+1 : row.gridRowIndex, columnIndex, widget);
-		}
-
-		private void renderToEdit() 
-		{
-			editableCell.render(PageableDataGrid.this, row.gridRowIndex, columnIndex, row.dataObject);
-		}
-
-		public void render() 
-		{
-			if(row.isEditing() && editableCell != null)
-			{
-				renderToEdit();
-			}
-			else
-			{
-				renderToView();						
-			}
-		}
-		
-		public void setHeaderWidget(IsWidget headerWidget)
-		{
-			this.headerWidget = headerWidget;
-		}
-		
-		public IsWidget getHeaderWidget() 
-		{
-			return headerWidget;
-		}
-	}
-
-	public SelectStrategy getSelectStrategy()
-	{
-		return selectStrategy;
-	}
-
-	public void setSelectStrategy(SelectStrategy selectStrategy)
-	{
-		this.selectStrategy = selectStrategy;
-	}
-
 	public Array<Column<?>> getColumns()
 	{
 		return columns;
 	}
 
-	public Row getRow(T boundObject)
+	@Override
+	protected Panel getContentPanel()
 	{
-		int rowIndex = getDataProvider().indexOf(boundObject);
-		return rows.get(rowIndex);
-	}
-
-	public Array<Row> getRows()
-	{
-		return rows;
+		return contentPanel;
 	}
 
 	@Override
@@ -419,7 +521,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				{
 					gridRowIndex = dataProviderRowIndex % getDataProvider().getPageSize();
 				}
-				
+
 				Row row = null;
 				if(rows.size() <= gridRowIndex)
 				{
@@ -430,58 +532,78 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				{
 					row = rows.get(gridRowIndex);
 				}
-				
+
 				drawColumns(row);
 			}
 		};
 	}
-	
-	private boolean hasHeader;
-	private void drawColumns(Row row)
+
+	/**
+	 * @param boundObject
+	 * @return a row given its bound object.
+	 */
+	public Row getRow(T boundObject)
 	{
-		//detect if at least one column has a header
-		hasHeader = false;
-		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
-		{
-			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
-			
-			if(column.getHeaderWidget() != null)
-			{
-				hasHeader = true;
-			}
-		}
-		
-		//iterate over the columns to render the cells (and the header)
-		for(int columnIndex = 0; columnIndex < columns.size(); columnIndex++)
-		{
-			PageableDataGrid<T>.Column<?> column = columns.get(columnIndex);
-		
-			if(row.gridRowIndex == 0 && hasHeader)
-			{
-				drawCell(PageableDataGrid.this, 0, columnIndex, column.getHeaderWidget());
-			}
-			
-			column.setRow(row);
-			column.render();
-		}
+		int rowIndex = getDataProvider().indexOf(boundObject);
+		return rows.get(rowIndex);
 	}
-	
-	private void drawCell(PageableDataGrid<T> grid, int rowIndex, int columnIndex, IsWidget widget)
+
+	/**
+	 * @return all the table rows. 
+	 */
+	public Array<Row> getRows()
 	{
-		grid.getPagePanel().setWidget(rowIndex, columnIndex, widget);		
+		return rows;
 	}
-	
-	@Override
-    protected DivTable initializePagePanel()
-    {
-		DivTable divTable = new DivTable();
-		divTable.setStyleName(STYLE_FACES_DATAGRID);
-	    return divTable;
-    }
 
 	@Override
-    protected Panel getContentPanel()
-    {
-	    return contentPanel;
-    }
+	protected DivTable initializePagePanel()
+	{
+		DivTable divTable = new DivTable();
+		return divTable;
+	}
+
+	private boolean isFirstRow(Row row)
+	{
+		return row.gridRowIndex == 0;
+	}
+
+	private void maybeCreateHeader(Row row, int columnIndex, final PageableDataGrid<T>.Column<?> column)
+	{
+		if(isFirstRow(row) && hasHeader)
+		{
+			SelectablePanel headerWrapper = new SelectablePanel();
+			headerWrapper.add(column.getHeaderWidget());
+			if(column.sortable)
+			{
+				headerWrapper.addSelectHandler(new SelectHandler()
+				{
+					@Override
+					public void onSelect(SelectEvent event)
+					{
+						linkedComparators.remove(column.columnComparator);
+						column.columnComparator.multiplier *= -1;
+						linkedComparators.addFirst(column.columnComparator);
+						column.sort();
+					}
+				});
+			}
+
+			drawCell(PageableDataGrid.this, 0, columnIndex, headerWrapper, true);
+		}
+	}
+
+	/**
+	 * Rolls back any transaction started in the edition mode.
+	 */
+	@Override
+	public void rollback() 
+	{
+		for(int i=0; i<rows.size();i++)
+		{
+			rows.get(i).undoChanges();
+		}
+
+		super.rollback();
+	}
 }
