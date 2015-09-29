@@ -179,11 +179,12 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	@Override
 	protected void clearRange(int startRecord) 
 	{
-		if (getPagePanel() != null)
+		Storyboard pagePanel = getPagePanel();
+		if (pagePanel != null)
 		{
-			while (getPagePanel().getWidgetCount() > startRecord)
+			while (pagePanel.getWidgetCount() > startRecord)
 			{
-				getPagePanel().remove(startRecord);
+				pagePanel.remove(startRecord);
 			}
 		}
 	}
