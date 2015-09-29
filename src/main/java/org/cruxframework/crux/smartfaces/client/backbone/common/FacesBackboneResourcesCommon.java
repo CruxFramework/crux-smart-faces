@@ -36,7 +36,8 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneSwapPanelCommon.css",
 		"facesBackboneComboboxCommon.css",
 		"facesBackboneListboxCommon.css",
-		"facesBackbonePopupCommon.css"
+		"facesBackbonePopupCommon.css",
+		"facesBackboneScrollablePagerCommon.css"
 		})
 	FacesBackboneCSSCommon css();
 }
