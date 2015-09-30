@@ -19,7 +19,6 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -27,15 +26,18 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 
 /**
+ * A Combobox widget that uses a {@link DataProvider} to provide its items collection.
+ * 
  * @author wesley.diniz
  *
- * @param <T>
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
+ * @param <T> The item type
  */
-@Experimental
 public class ComboBox<T> extends AbstractComboBox<String, T>
 {
+	/**
+	 * Constructor
+	 * @param optionsRenderer handler for options rendering 
+	 */
 	public ComboBox(OptionsRenderer<String, T> optionsRenderer)
 	{
 		super(optionsRenderer);
