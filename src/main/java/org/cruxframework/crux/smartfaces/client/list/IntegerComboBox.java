@@ -18,7 +18,6 @@ package org.cruxframework.crux.smartfaces.client.list;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
-import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -28,35 +27,35 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * A Combobox widget that uses a {@link DataProvider} to provide its items collection.
  * 
- * @author wesley.diniz
+ * @author Thiago da Rosa de Bustamante
  *
  * @param <T> The item type
  */
-public class ComboBox<T> extends AbstractComboBox<String, T>
+public class IntegerComboBox<T> extends AbstractComboBox<Integer, T>
 {
 	/**
 	 * Constructor
 	 * @param optionsRenderer handler for options rendering 
 	 */
-	public ComboBox(OptionsRenderer<String, T> optionsRenderer)
+	public IntegerComboBox(OptionsRenderer<Integer, T> optionsRenderer)
 	{
 		super(optionsRenderer);
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> handler)
 	{
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override
-	public void setValue(String value)
+	public void setValue(Integer value)
 	{
 		setValue(value, false);
 	}
 
 	@Override
-	public void setValue(final String value, boolean fireEvents)
+	public void setValue(final Integer value, boolean fireEvents)
 	{
 		DataProvider<T> dataProvider = getDataProvider();
 		Array<T> filterResult = dataProvider.filter(new DataFilter<T>(){
@@ -64,7 +63,16 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 			@Override
 			public boolean accept(T dataObject)
 			{
-				return StringUtils.unsafeEquals(optionsRenderer.getValue(dataObject), value);
+				Integer optionValue = optionsRenderer.getValue(dataObject);
+				if (optionValue == null && value == null)
+				{
+					return true;
+				}
+				if (optionValue == null || value == null)
+				{
+					return false;
+				}
+				return optionValue.equals(value);
 			}
 		});
 		

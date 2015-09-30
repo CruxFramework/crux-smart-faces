@@ -18,7 +18,7 @@ package org.cruxframework.crux.smartfaces.rebind.list;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
-import org.cruxframework.crux.smartfaces.client.list.ComboBox;
+import org.cruxframework.crux.smartfaces.client.list.IntegerComboBox;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
@@ -26,15 +26,15 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, 
+@DeclarativeFactory(targetWidget = IntegerComboBox.class, id = "integerComboBox", library = Constants.LIBRARY_NAME, 
 					description = "Combobox component that uses a data provider to display a list of items or widgets")
 @TagChildren({ 
 	@TagChild(value = ComboBoxFactory.OptionsProcessor.class, autoProcess = false) 
 })
-public class ComboBoxFactory extends AbstractComboBoxFactory
+public class IntegerComboBoxFactory extends AbstractComboBoxFactory
 {
 	protected String getValueType()
     {
-	    return "String";
+	    return "Integer";
     }
 }
