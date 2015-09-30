@@ -6,6 +6,22 @@
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.dialog.PopupPanel.PopupCentralizer" />
 	</replace-with>
 	
+	<!-- Storyboard -->
+	<replace-with class="org.cruxframework.crux.smartfaces.client.storyboard.StoryboardPanelLarge">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.storyboard.StoryboardPanel" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayArrows" />
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="largeDisplayMouse" />
+		</any>
+	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.storyboard.StoryboardPanelSmall">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.storyboard.StoryboardPanel" />
+		<any>
+			<when-property-is name="device.features" value="smallDisplayArrows" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</any>
+	</replace-with>
 	<!-- Menu -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer" />
