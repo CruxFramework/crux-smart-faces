@@ -30,7 +30,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
-import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.carroussel.Carroussel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONObject;
@@ -41,10 +40,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * 
  * @author Thiago da Rosa de Bustamante
  *
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 @DeclarativeFactory(library=Constants.LIBRARY_NAME, id="carroussel", targetWidget=Carroussel.class)
 @TagAttributes({
 	@TagAttribute(value="largeDeviceItemWidth", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),

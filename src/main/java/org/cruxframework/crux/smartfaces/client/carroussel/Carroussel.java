@@ -19,7 +19,6 @@ import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
-import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.storyboard.Storyboard;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -33,14 +32,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * A Carroussel of items that support {@link DataProvider}s to provide a collection of data.
  * @author Thiago da Rosa de Bustamante
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Carroussel";
-	public static final String PAGE_PANEL_STYLE_NAME = "faces-Carroussel-Page";
+	public static final String PAGE_PANEL_STYLE_NAME = "faces-Carroussel-page";
 
 	protected SimplePanel contentPanel = new SimplePanel();
 	protected boolean fixedHeight = true;
@@ -73,7 +69,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * It this is set to true, the item height will be fixed to the provided value through the methods
+	 * If this is set to true, the item height will be fixed to the provided value through the methods
 	 * setSmallDeviceItemHeight and setLargeDeviceItemHeight. If false, the value provided to this method
 	 * will be the minimun height for the item. If the content is bigger than the height provided, the 
 	 * item will expand to the content height.
@@ -89,7 +85,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * It this is set to true, the item width will be fixed to the provided value through the methods
+	 * If this is set to true, the item width will be fixed to the provided value through the methods
 	 * setLargeDeviceItemWidth. If false, the value provided to this method
 	 * will be the minimun width for the item. If the content is bigger than the width provided, the 
 	 * item will expand to the content width.
@@ -132,6 +128,10 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 		}
 	}
 	
+	/**
+	 * Set the width of each item on this Carroussel, when displaying on a large device. 
+	 * @param width item width.
+	 */
 	public void setLargeDeviceItemWidth(String width)
 	{
 		this.largeDeviceItemWidth = width;

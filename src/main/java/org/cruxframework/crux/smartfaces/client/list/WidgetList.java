@@ -18,7 +18,6 @@ package org.cruxframework.crux.smartfaces.client.list;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
-import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,11 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A list of widgets
  * @author Thiago da Rosa de Bustamante
- *
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WidgetList";
