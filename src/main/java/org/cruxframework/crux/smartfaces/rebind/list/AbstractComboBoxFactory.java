@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBindPathFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDataProviderDataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
@@ -96,7 +97,6 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		}
 		String dataObjectAlias = dataObjectAnnotation.value();
 		JSONObject child = ensureFirstChild(optionRendererElement, true, context.getWidgetId());
-		String dataObjectVariable = createVariableName("value");
 		String bindingContextVariable = createVariableName("context");
 
 		String textAttr = optionRendererElement.optString("text");
@@ -105,10 +105,13 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		out.println("new " + comboBoxRendererClassName + "(){");
 		generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
 		
-		String textExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
-																bindingContextVariable, textAttr, converterDeclarations, "text");	
-		String valueExpression = getDataBindingReadExpression(dataObjectAlias, dataObjectVariable, 
-																bindingContextVariable, valueAttr, converterDeclarations, "value");	
+		HasDataProviderDataBindingProcessor dataBindingProcessor = createDataBindingProcessor(context, dataObject, bindingContextVariable);
+		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
+		
+		String textExpression = getDataBindingReadExpression(dataObjectAlias, bindingContextVariable, textAttr, converterDeclarations, "text", 
+																dataBindingProcessor);	
+		String valueExpression = getDataBindingReadExpression(dataObjectAlias, bindingContextVariable, valueAttr, converterDeclarations, "value", 
+																dataBindingProcessor);	
 
 		if (child != null)
 		{
@@ -116,7 +119,7 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 			
 			if (childName.equals("widget"))
 			{
-				Set<String> converters = generateWidgetCreationForCellByTemplate(out, context, child, dataObject, bindingContextVariable);
+				Set<String> converters = generateWidgetCreationForCellByTemplate(out, context, child, dataObject, bindingContextVariable, dataBindingProcessor);
 				converterDeclarations.addAll(converters);
 			}
 			else if (childName.equals("widgetFactory"))
