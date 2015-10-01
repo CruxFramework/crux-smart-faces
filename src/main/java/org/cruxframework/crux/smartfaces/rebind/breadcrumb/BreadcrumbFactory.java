@@ -132,7 +132,8 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				String uiObjectClassName = BreadcrumbItem.class.getCanonicalName();
 				
 				PropertyBindInfo binding = getWidgetCreator().getObjectDataBinding(text, getWidgetCreator().getWidgetClassName(), 
-																	widgetPropertyPath, true, uiObjectClassName, getUiObjectExpression);
+																	widgetPropertyPath, true, uiObjectClassName, getUiObjectExpression, 
+																	context.getDataBindingProcessor());
 				if (binding != null)
 				{
 					context.registerObjectDataBinding(binding);
@@ -140,8 +141,8 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				}
 				else
 				{
-					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, getWidgetCreator().getWidgetClassName(),
-														widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
+					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, getWidgetCreator().getWidgetClassName(), 
+														widgetPropertyPath, uiObjectClassName, getUiObjectExpression, context.getDataBindingProcessor());
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
