@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.divtable;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.utils.JsUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -31,13 +33,6 @@ public class DivRow extends FlowPanel
 {
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 
-	public static native void setClassContent(String className, String classContent) /*-{
-		var style = document.createElement('style');
-		style.type = 'text/css';
-		style.innerHTML = '.' + className +' { '+ classContent +' }';
-		$doc.getElementsByTagName('head')[0].appendChild(style);
-	}-*/;
-
 	public DivRow()
 	{
 		setStyleName("row");
@@ -51,14 +46,25 @@ public class DivRow extends FlowPanel
 		return column;
 	}
 
+	public int getColumnCount()
+	{
+		return getChildren().size();
+	}
+	
 	public void insert(IsWidget widget, int columnIndex) 
 	{
+		insert(widget, columnIndex, null);	
+	}
+
+	public void insert(IsWidget widget, int columnIndex, String styleName) 
+	{
+		assert(columnIndex >= 0) : "column index has to be positive.";
 		FlowPanel column = null;
-		if(columnIndex < 0 || columnIndex >= getChildren().size())
+		if(columnIndex >= getChildren().size())
 		{
 			//create a new column.
 			column = add(widget, columnIndex);
-			setStyleProperties(column, columnIndex);	
+			setStyleProperties(column, columnIndex, styleName);	
 		}
 		else
 		{
@@ -66,15 +72,23 @@ public class DivRow extends FlowPanel
 			column = (FlowPanel) getWidget(columnIndex);
 			column.clear();
 			column.add(widget);
-			setStyleProperties(column, columnIndex);
+			setStyleProperties(column, columnIndex, styleName);
 		}
 	}
-
-	private void setStyleProperties(final FlowPanel column, int columnIndex)
+	
+	private void setStyleProperties(final FlowPanel column, int columnIndex, String styleName)
 	{
 		Element element = column.getElement();
-		element.addClassName("column");
-
+		if(StringUtils.isEmpty(styleName))
+		{
+			element.addClassName("column");	
+		}
+		else
+		{
+			element.addClassName(styleName);
+			return;
+		}
+		
 		String columnName = "column_" + columnIndex;
 		int columnClassesIndex = columnClasses.indexOf(columnName);
 		if(columnClassesIndex >= 0)
@@ -82,9 +96,9 @@ public class DivRow extends FlowPanel
 			element.addClassName(columnClasses.get(columnClassesIndex));
 		} else
 		{
-			setClassContent(columnName, "order: " + String.valueOf(columnIndex));
+			JsUtils.appendCSSToHead(columnName, "order: " + String.valueOf(columnIndex));
 			element.addClassName(columnName);
 			columnClasses.insert(columnIndex, columnName);
 		}
-	}	
+	}
 }

@@ -37,18 +37,8 @@ import com.google.gwt.user.client.ui.Widget;
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 {
-	public class DataGridColumnGroup
-	{
-		private Array<Column<?>> columns;
-
-		public void addColumn(Column<?> widgetColumn)
-		{
-			columns.add(widgetColumn);
-		}
-	}
 	private static final String STYLE_DISABLED = "--disabled";
 	private static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
-
 	private boolean enabled;
 	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
 
@@ -77,9 +67,23 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		return enabled;
 	}
 
-	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
+	/**
+	 * Define a column group in order to set a specific header to each group.
+	 * @param dataGridColumnGroup
+	 */
+	public ColumnGroup newColumGroup(Widget header)
 	{
-		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
+		return new ColumnGroup(header);
+	}
+	
+	/**
+	 * Inserts a new column.
+	 * @param dataFactory
+	 * @return
+	 */
+	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory, String key)
+	{
+		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory, key);
 		addColumn(column);
 		return column;
 	}
@@ -128,6 +132,10 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		setEnableColumns(enabled);
 	}
 
+	/**
+	 * Define a select strategy.
+	 * @param selectStrategy
+	 */
 	public void setSelectStrategy(final SelectStrategy selectStrategy)
 	{
 		this.selectStrategy = selectStrategy;
