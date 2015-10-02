@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,10 +17,11 @@ package org.cruxframework.crux.smartfaces.client.divtable;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
-import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * 
  * This is a simple row based in divs.
  */
-public class DivRow extends FlowPanel 
+public class DivRow extends SelectableFlowPanel 
 {
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 
@@ -96,7 +97,7 @@ public class DivRow extends FlowPanel
 			element.addClassName(columnClasses.get(columnClassesIndex));
 		} else
 		{
-			JsUtils.appendCSSToHead(columnName, "order: " + String.valueOf(columnIndex));
+			StyleInjector.inject("."+columnName+"{"+("order: " + String.valueOf(columnIndex))+"}");
 			element.addClassName(columnName);
 			columnClasses.insert(columnIndex, columnName);
 		}

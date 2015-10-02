@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.WidgetCollection;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
 
 /**
@@ -42,34 +43,43 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 								IndexedPanel.ForIsWidget, InsertPanel.ForIsWidget, HasEnabled, 
 								Focusable
 {
+	private static class ExposedFlowPanel extends FlowPanel
+	{
+		@Override
+		protected WidgetCollection getChildren()
+		{
+			return super.getChildren();
+		}
+	}
 	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
 	private static FocusImpl focusImpl = FocusImpl.getFocusImplForPanel();
-	private FlowPanel panel;
 
+	private ExposedFlowPanel panel;
+	
 	public SelectableFlowPanel()
 	{
-		this(new FlowPanel());
+		this(new ExposedFlowPanel());
 	}
 
-	public SelectableFlowPanel(SelectHandler buttonSelectHandler) 
-	{
-		this();
-		addSelectHandler(buttonSelectHandler);
-	}
-		
-	protected SelectableFlowPanel(FlowPanel panel)
+	protected SelectableFlowPanel(ExposedFlowPanel panel)
 	{
 		this.panel = panel;
 		makeFocusable(panel.getElement());
 		initWidget(this.panel);
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
+		
+	public SelectableFlowPanel(SelectHandler buttonSelectHandler) 
+	{
+		this();
+		addSelectHandler(buttonSelectHandler);
+	}
 
 	public void add(IsWidget w)
 	{
 		panel.add(w);
 	}
-
+	
 	@Override
     public void add(Widget w)
     {
@@ -86,6 +96,14 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	public HandlerRegistration addFocusHandler(FocusHandler handler)
 	{
 		return addDomHandler(handler, FocusEvent.getType());
+	}
+
+	/**
+	 * @return 
+	 */
+	protected WidgetCollection getChildren() 
+	{
+		return panel.getChildren();
 	}
 
 	public int getTabIndex() 
@@ -135,6 +153,11 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 		return getSelectEventsHandler().isEnabled();
 	}
 
+	protected void makeFocusable(Element e)
+	{
+	    e.setTabIndex(0);
+	}
+
 	@Override
     public boolean remove(int index)
     {
@@ -145,18 +168,18 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	{
 		return panel.remove(w);
 	}
-
+	
 	public void select()
 	{
 		setFocus(true);
 		super.select();
 	}
-	
+
 	public void setAccessKey(char key)
 	{
 		focusImpl.setAccessKey(getElement(), key);
 	}
-
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -186,10 +209,5 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	public void setTabIndex(int index)
 	{
 		focusImpl.setTabIndex(getElement(), index);
-	}
-	
-	protected void makeFocusable(Element e)
-	{
-	    e.setTabIndex(0);
 	}
 }

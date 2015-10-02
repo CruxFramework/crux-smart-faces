@@ -24,3 +24,8 @@
 {
 	width: 100px;
 }
+
+.row--selected
+{
+	background: blue;
+}
