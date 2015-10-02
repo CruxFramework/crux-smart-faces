@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,7 +21,6 @@ import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
-import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,31 +36,15 @@ import com.google.gwt.user.client.ui.Widget;
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 {
-	public class DataGridColumnGroup
-	{
-		private Array<Column<?>> columns;
-
-		public void addColumn(Column<?> widgetColumn)
-		{
-			columns.add(widgetColumn);
-		}
-	}
 	private static final String STYLE_DISABLED = "--disabled";
 	private static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
-
 	private boolean enabled;
-	private SelectStrategy selectStrategy = SelectStrategy.SINGLE;
 
 	public DataGrid(PagedDataProvider<T> dataProvider, boolean autoLoadData)
 	{
 		super(dataProvider, autoLoadData);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
-	}
-
-	public SelectStrategy getSelectStrategy()
-	{
-		return selectStrategy;
 	}
 
 	@Override
@@ -77,9 +60,23 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		return enabled;
 	}
 
-	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
+	/**
+	 * Define a column group in order to set a specific header to each group.
+	 * @param dataGridColumnGroup
+	 */
+	public ColumnGroup newColumGroup(Widget header)
 	{
-		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
+		return new ColumnGroup(header);
+	}
+	
+	/**
+	 * Inserts a new column.
+	 * @param dataFactory
+	 * @return
+	 */
+	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory, String key)
+	{
+		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory, key);
 		addColumn(column);
 		return column;
 	}
@@ -126,10 +123,5 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 			getContentPanel().addStyleDependentName(STYLE_DISABLED);
 		}
 		setEnableColumns(enabled);
-	}
-
-	public void setSelectStrategy(final SelectStrategy selectStrategy)
-	{
-		this.selectStrategy = selectStrategy;
 	}
 }

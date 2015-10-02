@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,13 +23,34 @@ package org.cruxframework.crux.smartfaces.client.grid;
  */
 public interface Type 
 {
-	public static enum SelectStrategy
+	public static enum RowSelectStrategy
 	{
-		SINGLE,
-		SINGLE_RADIOBUTTON_COLUMN,
-		SINGLE_CUSTOM_COLUMN,
-		MULTIPLE,
-		MULTIPLE_CHECKBOX_COLUMN,
-		MULTIPLE_CUSTOM_COLUMN;
+		unselectable,
+		single,
+		singleRadioButton,
+		singleCheckBox,
+		multiple,	
+		multipleCheckBox,
+		multipleCheckBoxSelectAll;
+		
+		public boolean isSingle()
+		{
+			return 
+				this.equals(single) 
+				||
+				this.equals(singleRadioButton)
+				||
+				this.equals(singleCheckBox);
+		}
+		
+		public boolean isMultiple()
+		{
+			return 
+				this.equals(multiple) 
+				||
+				this.equals(multipleCheckBox)
+				||
+				this.equals(multipleCheckBoxSelectAll);
+		}
 	}
 }

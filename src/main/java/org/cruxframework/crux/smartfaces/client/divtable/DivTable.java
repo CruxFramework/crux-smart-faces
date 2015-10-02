@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -50,6 +50,16 @@ public class DivTable extends Composite
 	{
 		rows.clear();
 		table.clear();
+	}
+
+	public DivRow getRow(int index)
+	{
+		if(rows == null || rows.isEmpty())
+		{
+			return null;
+		}
+		
+		return rows.get(index);
 	}
 
 	public int getRowCount()
@@ -106,8 +116,13 @@ public class DivTable extends Composite
 		rows.remove(rowIndex);
 		table.remove(rowIndex);
 	}
-
+	
 	public DivRow setWidget(int row, int column, IsWidget widget)
+	{
+		return setWidget(row, column, widget, null);
+	}
+
+	public DivRow setWidget(int row, int column, IsWidget widget, String styleName)
 	{
 		DivRow rowList;
 
@@ -120,7 +135,7 @@ public class DivTable extends Composite
 			rowList = rows.get(row);
 		}
 
-		rowList.insert(widget, column);
+		rowList.insert(widget, column, styleName);
 
 		return rowList;
 	}
