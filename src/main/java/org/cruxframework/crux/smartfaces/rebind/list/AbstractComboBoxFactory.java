@@ -108,9 +108,10 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		HasDataProviderDataBindingProcessor dataBindingProcessor = createDataBindingProcessor(context, dataObject, bindingContextVariable);
 		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
 		
-		String textExpression = getDataBindingReadExpression(dataObjectAlias, bindingContextVariable, textAttr, converterDeclarations, "text", 
+		String resultVariable = createVariableName("result");
+		String textExpression = getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, textAttr, converterDeclarations, "text", 
 																dataBindingProcessor);	
-		String valueExpression = getDataBindingReadExpression(dataObjectAlias, bindingContextVariable, valueAttr, converterDeclarations, "value", 
+		String valueExpression = getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, valueAttr, converterDeclarations, "value", 
 																dataBindingProcessor);	
 
 		if (child != null)
@@ -139,11 +140,15 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 			out.println("}");
 		}
 		out.println("@Override public " + getValueType() + " getValue(" + dataObjectName + " " + dataObjectVariable + "){");
-		out.println("return " + valueExpression + ";");
+		out.println(getValueType() + " " + resultVariable + ";");
+		out.println(valueExpression + ";");
+		out.println("return " + resultVariable + ";");
 		out.println("}");
 		
 		out.println("@Override public String getText(" + dataObjectName + " " + dataObjectVariable + "){");
-		out.println("return " + textExpression + ";");
+		out.println("String " + resultVariable + ";");
+		out.println(textExpression + ";");
+		out.println("return " + resultVariable + ";");
 		out.println("}");
 		
 		for (String converterDeclaration : converterDeclarations)
