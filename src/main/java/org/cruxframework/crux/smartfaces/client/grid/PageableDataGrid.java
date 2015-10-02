@@ -437,7 +437,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 
 	private Array<Row> rows = CollectionFactory.createArray();
 	
-	private RowSelectStrategy rowSelectStrategy = RowSelectStrategy.multiple;
+	private RowSelectStrategy rowSelectStrategy = RowSelectStrategy.single;
 
 	/**
 	 * @param dataProvider the dataprovider.
@@ -456,22 +456,39 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			@Override
 			public void onDataSelection(DataSelectionEvent<T> event)
 			{
-				//selection strategy
-				if(rowSelectStrategy.isMultiple())
+				Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
+				
+				if(changedRecords != null)
 				{
-					Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
-					
-					if(changedRecords != null)
+					//selection strategy
+					if(rowSelectStrategy.isSingle())
 					{
-						for(int i=0;i<changedRecords.size();i++)
+						DataProviderRecord<T>[] selectedRecords = getDataProvider().getSelectedRecords();
+						
+						if(selectedRecords != null)
 						{
-							DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
-							
-							int dataProviderRowIndex = getDataProvider().indexOf(dataProviderRecord.getRecordObject());
-							PageableDataGrid<T>.Row row = rows.get(getCurrentRowIndex(dataProviderRowIndex));
-							row.selected = dataProviderRecord.isSelected();
-							row.refresh();
+							for(int i=0;i<selectedRecords.length;i++)
+							{
+								if(changedRecords.indexOf(selectedRecords[i]) < 0)
+								{
+									int dataProviderRowIndex = getDataProvider().indexOf(selectedRecords[i].getRecordObject());
+									PageableDataGrid<T>.Row row = rows.get(getCurrentRowIndex(dataProviderRowIndex));
+									row.selected = false;
+									selectedRecords[i].setSelected(false, false);
+									row.refresh();
+								}
+							}
 						}
+					}
+				
+					for(int i=0;i<changedRecords.size();i++)
+					{
+						DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
+						
+						int dataProviderRowIndex = getDataProvider().indexOf(dataProviderRecord.getRecordObject());
+						PageableDataGrid<T>.Row row = rows.get(getCurrentRowIndex(dataProviderRowIndex));
+						row.selected = dataProviderRecord.isSelected();
+						row.refresh();
 					}
 				}
 			}
