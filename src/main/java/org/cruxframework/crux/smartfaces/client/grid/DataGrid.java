@@ -17,7 +17,6 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
@@ -74,7 +73,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param dataFactory
 	 * @return
 	 */
-	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory, String key)
+	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(GridDataFactory<V,T> dataFactory, String key)
 	{
 		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory, key);
 		addColumn(column);
@@ -86,7 +85,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		Array<PageableDataGrid<T>.Column<?>> columns = getColumns();
 		int sizeColumns = columns.size();
 
-		Array<PageableDataGrid<T>.Row> rows = getRows();
+		Array<Row<T>> rows = getCurrentPageRows();
 		int sizeRows = rows.size();
 
 		if(sizeColumns <= 0 || sizeRows <= 0)

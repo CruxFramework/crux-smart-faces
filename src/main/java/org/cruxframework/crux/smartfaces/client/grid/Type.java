@@ -27,30 +27,35 @@ public interface Type
 	{
 		unselectable,
 		single,
-		singleRadioButton,
-		singleCheckBox,
-		multiple,	
-		multipleCheckBox,
-		multipleCheckBoxSelectAll;
+		//singleRadioButton,
+		//singleCheckBox,
+		multiple	
+		//multipleCheckBox,
+		//multipleCheckBoxSelectAll
+		;
 		
 		public boolean isSingle()
 		{
 			return 
-				this.equals(single) 
+				this.equals(single);
+				/*
 				||
 				this.equals(singleRadioButton)
 				||
 				this.equals(singleCheckBox);
+				*/
 		}
 		
 		public boolean isMultiple()
 		{
 			return 
-				this.equals(multiple) 
+				this.equals(multiple);
+				/*
 				||
 				this.equals(multipleCheckBox)
 				||
 				this.equals(multipleCheckBoxSelectAll);
+				*/
 		}
 	}
 }
