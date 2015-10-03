@@ -11,18 +11,18 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public class Row<T>
 {
+	T dataObject;
+	int dataProviderRowIndex;
+	DivRow divRow;
+	boolean editing;
 	/**
 	 * 
 	 */
 	private final PageableDataGrid<T> grid;
-	T dataObject;
-	int dataProviderRowIndex;
-	boolean editing;
 	int index;
 	private T oldDataObject;
-	boolean selected;
-	DivRow divRow;
 	HandlerRegistration onSelectionHandlerRegistration;
+	boolean selected;
 
 	public Row(PageableDataGrid<T> pageableDataGrid, T dataObject, int index, int dataProviderRowIndex)
 	{

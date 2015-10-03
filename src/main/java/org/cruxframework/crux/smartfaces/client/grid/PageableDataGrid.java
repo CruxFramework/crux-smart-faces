@@ -249,6 +249,8 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 	}
 
+	private static Array<String> columnClasses = CollectionFactory.createArray();
+
 	private static String getStyleProperties(String type, int index, int classIndex)
 	{
 		String typeClassName = type+"_" + classIndex;
@@ -259,8 +261,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 		return type + " " + typeClassName;
 	}
-
-	private static Array<String> columnClasses = CollectionFactory.createArray();
 	
 	Array<Column<?>> columns = CollectionFactory.createArray();
 
@@ -290,27 +290,45 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		
 		handleRowRefreshCache(dataProvider);
 	}
-
-	private void handleRowRefreshCache(final PagedDataProvider<T> dataProvider)
+	
+	/**
+	 * @param column the column to be added.
+	 */
+	public void addColumn(Column<?> column)
 	{
-		dataProvider.addDataLoadedHandler(new DataLoadedHandler() 
+		columns.add(column);
+	}
+
+	@Override
+	protected void clear()
+	{
+		for (int index = 0; index < getColumns().size(); index++)
 		{
-			@Override
-			public void onLoaded(DataLoadedEvent event) 
-			{
-				dataProvider.addPageRequestedHandler(new PageRequestedHandler() 
-				{
-					@Override
-					public void onPageRequested(PageRequestedEvent event) 
-					{
-						if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
-						{
-							refreshRowCache();
-						}
-					}
-				});
-			}
-		});
+			PageableDataGrid<T>.Column<?> dataGridColumn = getColumns().get(index);
+			dataGridColumn.clear();
+		}
+		getPagePanel().clear();
+	}
+
+	@Override
+	protected void clearRange(int pageStart)
+	{
+		while (getPagePanel().getRowCount() > pageStart)
+		{
+			getPagePanel().removeRow(pageStart);
+		}
+	}
+
+	@Override
+	public void commit() 
+	{
+		for(int i=0; i<rows.size();i++)
+		{
+			rows.get(i).makeChanges();
+		}
+
+		super.commit();
+		refreshRowCache();
 	}
 
 	private void configSelectionStrategy(final PagedDataProvider<T> dataProvider)
@@ -365,34 +383,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 	}
 
-	/**
-	 * @param column the column to be added.
-	 */
-	public void addColumn(Column<?> column)
-	{
-		columns.add(column);
-	}
-
-	@Override
-	protected void clear()
-	{
-		for (int index = 0; index < getColumns().size(); index++)
-		{
-			PageableDataGrid<T>.Column<?> dataGridColumn = getColumns().get(index);
-			dataGridColumn.clear();
-		}
-		getPagePanel().clear();
-	}
-
-	@Override
-	protected void clearRange(int pageStart)
-	{
-		while (getPagePanel().getRowCount() > pageStart)
-		{
-			getPagePanel().removeRow(pageStart);
-		}
-	}
-
 	private void createHeader(final PageableDataGrid<T>.Column<?> column)
 	{
 		SelectableFlowPanel headerWrapper = new SelectableFlowPanel();
@@ -428,32 +418,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 	}
 
-	private void handleSelectionStrategy(final int dataProviderRowIndex, final DivRow divRow, Row<T> row)
-	{
-		if(row.onSelectionHandlerRegistration == null)
-		{
-			HandlerRegistration selectHandler = divRow.addSelectHandler(new SelectHandler()
-			{
-				@Override
-				public void onSelect(SelectEvent event)
-				{
-					boolean selected = divRow.getStyleName().contains("-selected");
-					getDataProvider().select(dataProviderRowIndex, !selected);
-				}
-			});
-			row.onSelectionHandlerRegistration = selectHandler;
-		}
-
-		if(row.selected)
-		{
-			divRow.addStyleDependentName("-selected");
-		}
-		else
-		{
-			divRow.removeStyleDependentName("-selected");
-		}
-	}
-
 	void drawColumns(Row<T> row)
 	{
 		//iterate over the columns to render the body (and the header)
@@ -472,7 +436,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			column.render();
 		}
 	}
-	
+
 	/**
 	 * @return the column given its key and 'null' case none were found.
 	 */
@@ -501,11 +465,45 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 	{
 		return columns;
 	}
-
+	
 	@Override
 	protected FlowPanel getContentPanel()
 	{
 		return contentPanel;
+	}
+
+	//This should not be exposed as it only returns rows for the current page
+	//and is used for internal purposes.
+	protected Row<T> getCurrentPageRow(T boundObject)
+	{
+		int rowIndex = getDataProvider().indexOf(boundObject);
+		if(rowIndex < 0)
+		{
+			return null;
+		}
+		return rows.get(getCurrentRowIndex(rowIndex));
+	}
+
+	/**
+	 * @return all the table rows. 
+	 */
+	public Array<Row<T>> getCurrentPageRows()
+	{
+		return rows;
+	}
+
+	private int getCurrentRowIndex(int dataProviderRowIndex)
+	{
+		int index;
+		if(PageableDataGrid.this.pager != null && PageableDataGrid.this.pager.supportsInfiniteScroll())
+		{
+			index = dataProviderRowIndex;					
+		}
+		else
+		{
+			index = dataProviderRowIndex % getDataProvider().getPageSize();
+		}
+		return index;
 	}
 
 	@Override
@@ -535,46 +533,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			}
 		};
 	}
-
-	private int getCurrentRowIndex(int dataProviderRowIndex)
-	{
-		int index;
-		if(PageableDataGrid.this.pager != null && PageableDataGrid.this.pager.supportsInfiniteScroll())
-		{
-			index = dataProviderRowIndex;					
-		}
-		else
-		{
-			index = dataProviderRowIndex % getDataProvider().getPageSize();
-		}
-		return index;
-	}
 	
-	//This should not be exposed as it only returns rows for the current page
-	//and is used for internal purposes.
-	protected Row<T> getCurrentPageRow(T boundObject)
-	{
-		int rowIndex = getDataProvider().indexOf(boundObject);
-		if(rowIndex < 0)
-		{
-			return null;
-		}
-		return rows.get(getCurrentRowIndex(rowIndex));
-	}
-	
-	/**
-	 * @return all the table rows. 
-	 */
-	public Array<Row<T>> getCurrentPageRows()
-	{
-		return rows;
-	}
-
 	public RowSelectStrategy getRowSelectStrategy()
 	{
 		return rowSelectStrategy;
 	}
-
+	
 	private void handleHeaderInsertion(final PageableDataGrid<T>.Column<?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.index == 0 && column.row.index == 0)
@@ -615,6 +579,54 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				divRow.removeStyleName("even");
 				divRow.addStyleName("header");
 			}
+		}
+	}
+
+	private void handleRowRefreshCache(final PagedDataProvider<T> dataProvider)
+	{
+		dataProvider.addDataLoadedHandler(new DataLoadedHandler() 
+		{
+			@Override
+			public void onLoaded(DataLoadedEvent event) 
+			{
+				dataProvider.addPageRequestedHandler(new PageRequestedHandler() 
+				{
+					@Override
+					public void onPageRequested(PageRequestedEvent event) 
+					{
+						if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
+						{
+							refreshRowCache();
+						}
+					}
+				});
+			}
+		});
+	}
+
+	private void handleSelectionStrategy(final int dataProviderRowIndex, final DivRow divRow, Row<T> row)
+	{
+		if(row.onSelectionHandlerRegistration == null)
+		{
+			HandlerRegistration selectHandler = divRow.addSelectHandler(new SelectHandler()
+			{
+				@Override
+				public void onSelect(SelectEvent event)
+				{
+					boolean selected = divRow.getStyleName().contains("-selected");
+					getDataProvider().select(dataProviderRowIndex, !selected);
+				}
+			});
+			row.onSelectionHandlerRegistration = selectHandler;
+		}
+
+		if(row.selected)
+		{
+			divRow.addStyleDependentName("-selected");
+		}
+		else
+		{
+			divRow.removeStyleDependentName("-selected");
 		}
 	}
 
@@ -711,15 +723,9 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 	}
 
 	@Override
-	public void commit() 
+	protected void setForEdition(int index, T object)
 	{
-		for(int i=0; i<rows.size();i++)
-		{
-			rows.get(i).makeChanges();
-		}
-
-		super.commit();
-		refreshRowCache();
+		super.setForEdition(index, object);
 	}
 	
 	public void setRowSelectStrategy(RowSelectStrategy rowSelectStrategy)

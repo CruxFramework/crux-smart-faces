@@ -20,11 +20,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class Column<T, V extends IsWidget>
 {
 	/**
-	 * 
-	 */
-	private final PageableDataGrid<T> grid;
-	
-	/**
 	 * Encapsulate the comparator adding a variable to indicate if the ordering should be
 	 * ascending or descending.
 	 * @author samuel.cardoso
@@ -36,7 +31,7 @@ public class Column<T, V extends IsWidget>
 		private Comparator<T> comparator;
 		private short multiplier = -1; 
 	}
-
+	
 	public class ColumnGroup
 	{
 		@SuppressWarnings("unused")
@@ -67,11 +62,16 @@ public class Column<T, V extends IsWidget>
 			return columnGroup;
 		}
 	}
-	
+
 	private ColumnComparator<T> columnComparator;
+	
 	private ColumnGroup columnGroup;
 	private GridDataFactory<V, T> dataFactory;
 	private CellEditor<T, ?> editableCell;
+	/**
+	 * 
+	 */
+	private final PageableDataGrid<T> grid;
 	private IsWidget headerWidget;
 	private int index = 0;
 	private String key;
