@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Define the row data type.
@@ -26,58 +25,27 @@ public class Column<T, V extends IsWidget>
 	 *
 	 * @param <T>
 	 */
-	private static class ColumnComparator<T>
+	static class ColumnComparator<T>
 	{
-		private Comparator<T> comparator;
-		private short multiplier = -1; 
+		Comparator<T> comparator;
+		short multiplier = -1; 
 	}
 	
-	public class ColumnGroup
-	{
-		@SuppressWarnings("unused")
-		private ColumnGroup columnGroupParent;
-		Widget header;
-		int index = Integer.MAX_VALUE;
-		
-		protected ColumnGroup(Widget header)
-		{
-			this.header = header;
-		}
-		
-		public void addColumn(Column<T, V> column)
-		{
-			//find out the smaller index
-			if(column.index < index)
-			{
-				index = column.index;
-			}
-			column.columnGroup = ColumnGroup.this;
-		}
-
-		//TODO: implement it!
-		public ColumnGroup newColumGroup(Widget header)
-		{
-			ColumnGroup columnGroup = new ColumnGroup(header);
-			columnGroup.columnGroupParent = this;
-			return columnGroup;
-		}
-	}
-
-	private ColumnComparator<T> columnComparator;
+	ColumnComparator<T> columnComparator;
 	
-	private ColumnGroup columnGroup;
+	ColumnGroup<T> columnGroup;
 	private GridDataFactory<V, T> dataFactory;
 	private CellEditor<T, ?> editableCell;
 	/**
 	 * 
 	 */
 	private final PageableDataGrid<T> grid;
-	private IsWidget headerWidget;
-	private int index = 0;
-	private String key;
+	IsWidget headerWidget;
+	int index = 0;
+	String key;
 	private ArrayList<String> keys = new ArrayList<String>();
-	private Row<T> row;
-	private boolean sortable = false;
+	Row<T> row;
+	boolean sortable = false;
 
 	public Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<V, T> dataFactory, String key)
 	{
@@ -91,7 +59,7 @@ public class Column<T, V extends IsWidget>
 
 	public Column<T, V> add()
 	{
-		//////grid.addColumn(this);
+		grid.addColumn(this);
 		return this;
 	}
 	
@@ -124,7 +92,7 @@ public class Column<T, V extends IsWidget>
 		return row;
 	}
 
-	private void render() 
+	void render() 
 	{
 		if(row.isEditing() && editableCell != null)
 		{
@@ -199,9 +167,9 @@ public class Column<T, V extends IsWidget>
 				//uses all the comparators that were added when uses clicks in the column header.
 				while((compareResult == 0) && (index != grid.linkedComparators.size()))
 				{
-				//////ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
-				//////compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
-				//////index++;
+				ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
+				compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
+				index++;
 				}
 				return compareResult;
 			}

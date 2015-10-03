@@ -62,10 +62,11 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	/**
 	 * Define a column group in order to set a specific header to each group.
 	 * @param dataGridColumnGroup
+	 * @return 
 	 */
-	public ColumnGroup newColumGroup(Widget header)
+	public ColumnGroup<T> newColumGroup(Widget header)
 	{
-		return new ColumnGroup(header);
+		return new ColumnGroup<T>(header);
 	}
 	
 	/**
@@ -73,16 +74,16 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param dataFactory
 	 * @return
 	 */
-	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(GridDataFactory<V,T> dataFactory, String key)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<V,T> dataFactory, String key)
 	{
-		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory, key);
+		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
 		addColumn(column);
 		return column;
 	}
 
 	private void setEnableColumns(boolean enabled) 
 	{
-		Array<PageableDataGrid<T>.Column<?>> columns = getColumns();
+		Array<Column<T, ?>> columns = getColumns();
 		int sizeColumns = columns.size();
 
 		Array<Row<T>> rows = getCurrentPageRows();
