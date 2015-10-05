@@ -21,8 +21,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Define the row data type.
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
+ * @param <T> the Data Object type.
  */
 public class Row<T>
 {

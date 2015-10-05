@@ -16,10 +16,9 @@
 package org.cruxframework.crux.smartfaces.client.grid;
 
 /**
+ * Define the grid Types.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 public interface Type 
 {

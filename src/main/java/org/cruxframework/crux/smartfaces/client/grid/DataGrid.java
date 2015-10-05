@@ -26,11 +26,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * Implements a div grid based widget.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <T>
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
+ * @param <T> the Data Object type.
  */
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled

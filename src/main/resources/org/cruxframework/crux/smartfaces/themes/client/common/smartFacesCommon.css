@@ -608,6 +608,76 @@ body
 }
 
 /******************************************************************************
+    DivTable
+*******************************************************************************/
+
+.faces-DivTable 
+{
+}
+
+.faces-DivTable .arrowUp,
+.faces-DivTable .arrowDown
+{
+	background:svgIconArrow transparent no-repeat center center;
+	border:none;
+	background-size:100% 100%, 70% auto;
+	color:rgba(0,0,0,0);
+	padding:5px;
+}
+
+.faces-DivTable .columnGroupHeader
+{
+	margin: 0 auto;
+}
+
+.faces-DivTable .arrowUp
+{
+	-webkit-transform: rotate(90deg);	
+}
+
+.faces-DivTable .arrowDown
+{
+	-webkit-transform: rotate(-90deg);
+}
+
+.faces-DivTable .row 
+{
+	 line-height: 25px;
+}
+
+.faces-DivTable .headerRow
+{
+	background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+.faces-DivTable .header 
+{
+	border: solid 1px black;
+}
+
+.faces-DivTable .column
+{
+	width: 100px;
+	border: solid 1px #EEEEEE;
+	vertical-align: middle;
+}
+
+.faces-DivTable .row--selected:not\(\rowOdd\), .faces-DivTable .row--selected:not\(\rowEven\)
+{
+	background: #9FB7E5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+.faces-DivTable .rowOdd
+{
+	background: #F4F5F5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+/******************************************************************************
+    DataGrid
+*******************************************************************************/
+
+
+/******************************************************************************
     Crux Image
 *******************************************************************************/
 .faces-Image

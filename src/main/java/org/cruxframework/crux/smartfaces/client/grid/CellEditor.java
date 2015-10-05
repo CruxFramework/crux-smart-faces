@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Handles how the cell should render in the edition mode.
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <T> the DataObject type.
+ * @param <T> the Data Object type.
  * @param <K> the property type inside of DataObject.
  */
 public abstract class CellEditor<T, K> implements WidgetFactory<T>

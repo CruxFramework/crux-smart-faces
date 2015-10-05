@@ -18,6 +18,12 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Defines a group of column type.
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ *
+ * @param <T> the Data Object type
+ */
 public class ColumnGroup<T>
 {
 	@SuppressWarnings("unused")

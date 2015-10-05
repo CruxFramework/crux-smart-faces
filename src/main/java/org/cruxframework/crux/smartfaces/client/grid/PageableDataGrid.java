@@ -32,12 +32,11 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
-import org.cruxframework.crux.core.shared.Experimental;
-import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Column.ColumnComparator;
 import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
+import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 
 import com.google.gwt.dom.client.StyleInjector;
@@ -46,15 +45,20 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Implements a div grid based widget.
+ * Implements a pageable div grid based widget.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 {
+	private static final String SYTLE_FACES_DATAGRID_HEADER = "header";
+
+	private static final String FACES_SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
+	
+	private static final String FACES_SYTLE_DATAGRID_COLUMNGROUP_HEADER = "columnGroupHeader";
+
+	private static final String SYTLE_FACES_DATAGRID_HEADER_ROW = "headerRow";
+
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 
 	private static String getStyleProperties(String type, int index, int classIndex)
@@ -67,17 +71,17 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		}
 		return type + " " + typeClassName;
 	}
-	
+
 	Array<Column<T, ?>> columns = CollectionFactory.createArray();
 
 	private FlowPanel contentPanel = new FlowPanel();
-
+	
 	private DivTable headerSection = new DivTable();
 	
 	LinkedList<ColumnComparator<T>> linkedComparators = new LinkedList<ColumnComparator<T>>();
 
 	Array<Row<T>> rows = CollectionFactory.createArray();
-	
+
 	private RowSelectStrategy rowSelectStrategy = RowSelectStrategy.single;
 
 	/**
@@ -288,7 +292,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 
 	//This should not be exposed as it only returns rows for the current page
 	//and is used for internal purposes.
-	protected Row<T> getCurrentPageRow(T boundObject)
+	private Row<T> getCurrentPageRow(T boundObject)
 	{
 		int rowIndex = getDataProvider().indexOf(boundObject);
 		if(rowIndex < 0)
@@ -355,6 +359,10 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		};
 	}
 	
+	/**
+	 * @return the row selection strategy. For instance,
+	 * unselectable, single, multiple and so on.
+	 */
 	public RowSelectStrategy getRowSelectStrategy()
 	{
 		return rowSelectStrategy;
@@ -378,27 +386,25 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			if(columnGroupTable == null)
 			{
 				columnGroupTable = new DivTable();
+				headerSection.addStyleName(SYTLE_FACES_DATAGRID_HEADER);
 				columnGroupTable.setWidget(0, 0, column.columnGroup.header);			
-				column.columnGroup.header.getParent().setStyleName("");
-				if(!columnGroupTable.getStyleName().contains("header"))
-				{
-					columnGroupTable.removeStyleName("even");
-					columnGroupTable.addStyleName("header");
-				}
+				column.columnGroup.header.getParent().setStyleName(FACES_SYTLE_DATAGRID_COLUMNGROUP_HEADER);
+				columnGroupTable.addStyleName(SYTLE_FACES_DATAGRID_HEADER_ROW);
 				
 				headerSection.setWidget(0, column.columnGroup.index, columnGroupTable);
-				columnGroupTable.getParent().setStyleName(getStyleProperties("columnGroup", column.columnGroup.index, column.index-column.columnGroup.index));
+				columnGroupTable.getParent().setStyleName(
+					getStyleProperties(FACES_SYTLE_DATAGRID_COLUMNGROUP, column.columnGroup.index, column.index-column.columnGroup.index));
 			}
 			
-			columnGroupTable.setWidget(1, column.index-column.columnGroup.index, headerWrapper, getStyleProperties("column", column.index, column.index));
+			columnGroupTable.setWidget(1, column.index-column.columnGroup.index, headerWrapper, 
+				getStyleProperties(DivRow.STYLES_FACES_GRID_COLUMN, column.index, column.index));
 		}
 		else
 		{
 			DivRow divRow = headerSection.setWidget(0, column.index, headerWrapper);
-			if(!divRow.getStyleName().contains("header"))
+			if(!divRow.getStyleName().contains(SYTLE_FACES_DATAGRID_HEADER_ROW))
 			{
-				divRow.removeStyleName("even");
-				divRow.addStyleName("header");
+				divRow.addStyleName(SYTLE_FACES_DATAGRID_HEADER_ROW);
 			}
 		}
 	}
@@ -457,19 +463,11 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		{
 			FlowPanel wrapperButtons = new FlowPanel();
 			
-			//create button UP
-			final Button arrowUp = new Button();
-			arrowUp.setText("U");
-			arrowUp.addStyleName("arrowUp");
-			wrapperButtons.add(arrowUp);
+			//create arrow button
+			final Image arrow = new Image();
+			arrow.setStyleName("arrowUp");
+			wrapperButtons.add(arrow);
 
-			//create button Down
-			final Button arrowDown = new Button();
-			arrowDown.setVisible(false);
-			arrowDown.setText("D");
-			arrowDown.addStyleName("arrowDown");
-			wrapperButtons.add(arrowDown);
-			
 			//create buttons
 			headerWrapper.add(wrapperButtons);
 
@@ -490,13 +488,11 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			{
 				if(column.columnComparator.multiplier > 0)
 				{
-					arrowUp.setVisible(false);
-					arrowDown.setVisible(true);
+					arrow.setStyleName("arrowDown");
 				}
 				else
 				{
-					arrowUp.setVisible(true);
-					arrowDown.setVisible(false);
+					arrow.setStyleName("arrowUp");
 				}
 			}
 		}
@@ -549,6 +545,9 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		super.setForEdition(index, object);
 	}
 	
+	/**
+	 * @param rowSelectStrategy the new row selection strategy.
+	 */
 	public void setRowSelectStrategy(RowSelectStrategy rowSelectStrategy)
 	{
 		assert(rowSelectStrategy != null) : "the selection strategy cannot be null.";

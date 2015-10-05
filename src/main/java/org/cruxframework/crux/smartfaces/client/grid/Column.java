@@ -22,15 +22,11 @@ import java.util.Comparator;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Define the row data type.
- * @author samuel.cardoso
- *
- */
-/**
  * Define the column data type.
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <V>
+ * @param <V> the Data Object type.
+ * @param <V> the cell Widget.
  */
 public class Column<T, V extends IsWidget>
 {
