@@ -139,54 +139,62 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 
 	private void configSelectionStrategy(final PagedDataProvider<T> dataProvider)
 	{
-		if(!rowSelectStrategy.equals(RowSelectStrategy.unselectable))
+		if(rowSelectStrategy.equals(RowSelectStrategy.unselectable))
 		{
-			dataProvider.addDataSelectionHandler(new DataSelectionHandler<T>()
+			return;
+		}
+		
+		dataProvider.addDataSelectionHandler(new DataSelectionHandler<T>()
+		{
+			@Override
+			public void onDataSelection(DataSelectionEvent<T> event)
 			{
-				@Override
-				public void onDataSelection(DataSelectionEvent<T> event)
+				Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
+				
+				if(changedRecords != null)
 				{
-					Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
-					
-					if(changedRecords != null)
+					//if single strategy clear all the previous selections
+					if(rowSelectStrategy.isSingle())
 					{
-						//if single strategy clear all the previous selections
-						if(rowSelectStrategy.isSingle())
-						{
-							DataProviderRecord<T>[] selectedRecords = getDataProvider().getSelectedRecords();
-							
-							if(selectedRecords != null)
-							{
-								for(int i=0;i<selectedRecords.length;i++)
-								{
-									if(changedRecords.indexOf(selectedRecords[i]) < 0)
-									{
-										selectedRecords[i].setSelected(false, false);
-										//if there's a row in this page, refresh it.
-										//TODO change strategy to remove only the last record
-										Row<T> row = getCurrentPageRow(selectedRecords[i].getRecordObject());
-										if(row != null)
-										{
-											row.selected = false;
-											row.refresh();
-										}
-									}
-								}
-							}
-						}
+						unselectOldRecords(changedRecords);
+					}
+					
+					for(int i=0;i<changedRecords.size();i++)
+					{
+						DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
 						
-						for(int i=0;i<changedRecords.size();i++)
+						Row<T> row = getCurrentPageRow(dataProviderRecord.getRecordObject());
+						row.selected = dataProviderRecord.isSelected();
+						row.refresh();
+					}
+				}
+			}
+
+			private void unselectOldRecords(Array<DataProviderRecord<T>> changedRecords)
+			{
+				DataProviderRecord<T>[] selectedRecords = getDataProvider().getSelectedRecords();
+				
+				if(selectedRecords != null)
+				{
+					for(int i=0;i<selectedRecords.length;i++)
+					{
+						if(changedRecords.indexOf(selectedRecords[i]) < 0)
 						{
-							DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
-							
-							Row<T> row = getCurrentPageRow(dataProviderRecord.getRecordObject());
-							row.selected = dataProviderRecord.isSelected();
+							selectedRecords[i].setSelected(false, false);
+						}
+					}
+					if(rows != null)
+					{
+						for(int i=0;i<rows.size();i++)
+						{
+							Row<T> row = rows.get(i);
+							row.selected = false;
 							row.refresh();
 						}
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	private void createHeader(final Column<T, ?> column)
@@ -287,7 +295,14 @@ public class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		{
 			return null;
 		}
-		return rows.get(getCurrentRowIndex(rowIndex));
+		try
+		{
+			return rows.get(getCurrentRowIndex(rowIndex));
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 	/**
