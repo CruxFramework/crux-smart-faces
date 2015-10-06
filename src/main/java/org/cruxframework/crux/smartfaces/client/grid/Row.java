@@ -31,16 +31,13 @@ public class Row<T>
 	int dataProviderRowIndex;
 	DivRow divRow;
 	boolean editing;
-	/**
-	 * 
-	 */
-	private final PageableDataGrid<T> grid;
 	int index;
-	private T oldDataObject;
 	HandlerRegistration onSelectionHandlerRegistration;
 	boolean selected;
+	private final PageableDataGrid<T> grid;
+	private T oldDataObject;
 
-	public Row(PageableDataGrid<T> pageableDataGrid, T dataObject, int index, int dataProviderRowIndex)
+	protected Row(PageableDataGrid<T> pageableDataGrid, T dataObject, int index, int dataProviderRowIndex)
 	{
 		grid = pageableDataGrid;
 		this.dataObject = dataObject;
@@ -90,14 +87,6 @@ public class Row<T>
 	}
 
 	/**
-	 * Refreshes the all the row columns. 
-	 */
-	void refresh()
-	{
-		grid.drawColumns(this);
-	}
-
-	/**
 	 * Undo the changes for a single row.
 	 */
 	public void undoChanges()
@@ -106,5 +95,13 @@ public class Row<T>
 		grid.getDataProvider().set(dataProviderRowIndex, dataObject);
 		editing = false;
 		refresh();
+	}
+
+	/**
+	 * Refreshes the all the row columns. 
+	 */
+	void refresh()
+	{
+		grid.drawColumns(this);
 	}
 }

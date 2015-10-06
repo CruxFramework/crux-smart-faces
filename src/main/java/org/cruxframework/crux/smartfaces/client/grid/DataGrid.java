@@ -16,7 +16,6 @@
 package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.collection.Array;
-import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
@@ -38,18 +37,10 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	private static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
 	private boolean enabled;
 
-	public DataGrid(PagedDataProvider<T> dataProvider, boolean autoLoadData)
+	public DataGrid()
 	{
-		super(dataProvider, autoLoadData);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
-	}
-
-	@Override
-	protected DivTable initializePagePanel() 
-	{
-		DivTable divTable = super.initializePagePanel();
-		return divTable;
 	}
 
 	@Override
@@ -67,7 +58,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	{
 		return new ColumnGroup<T>(header);
 	}
-	
+
 	/**
 	 * Inserts a new column.
 	 * @param dataFactory
@@ -78,6 +69,28 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
 		addColumn(column);
 		return column;
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+		if(!enabled)
+		{
+			getContentPanel().addStyleDependentName(STYLE_DISABLED);
+		}
+		else
+		{
+			getContentPanel().addStyleDependentName(STYLE_DISABLED);
+		}
+		setEnableColumns(enabled);
+	}
+
+	@Override
+	protected DivTable initializePagePanel() 
+	{
+		DivTable divTable = super.initializePagePanel();
+		return divTable;
 	}
 
 	private void setEnableColumns(boolean enabled) 
@@ -107,20 +120,5 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 				}
 			}
 		}
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		this.enabled = enabled;
-		if(!enabled)
-		{
-			getContentPanel().addStyleDependentName(STYLE_DISABLED);
-		}
-		else
-		{
-			getContentPanel().addStyleDependentName(STYLE_DISABLED);
-		}
-		setEnableColumns(enabled);
 	}
 }

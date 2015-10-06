@@ -26,12 +26,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ColumnGroup<T>
 {
-	@SuppressWarnings("unused")
-	private ColumnGroup<T> columnGroupParent;
 	Widget header;
 	int index = Integer.MAX_VALUE;
+	@SuppressWarnings("unused")
+	private ColumnGroup<T> columnGroupParent;
 	
-	public ColumnGroup(Widget header)
+	protected ColumnGroup(Widget header)
 	{
 		this.header = header;
 	}
