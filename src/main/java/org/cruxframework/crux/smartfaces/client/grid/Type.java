@@ -24,26 +24,14 @@ public interface Type
 {
 	public static enum RowSelectStrategy
 	{
-		unselectable,
+		multiple,
+//		multipleCheckBox,
+//		multipleCheckBoxSelectAll,
 		single,
-		//singleRadioButton,
-		//singleCheckBox,
-		multiple	
-		//multipleCheckBox,
-		//multipleCheckBoxSelectAll
+//		singleCheckBox,	
+//		singleRadioButton,
+		unselectable
 		;
-		
-		public boolean isSingle()
-		{
-			return 
-				this.equals(single);
-				/*
-				||
-				this.equals(singleRadioButton)
-				||
-				this.equals(singleCheckBox);
-				*/
-		}
 		
 		public boolean isMultiple()
 		{
@@ -54,6 +42,18 @@ public interface Type
 				this.equals(multipleCheckBox)
 				||
 				this.equals(multipleCheckBoxSelectAll);
+				*/
+		}
+		
+		public boolean isSingle()
+		{
+			return 
+				this.equals(single);
+				/*
+				||
+				this.equals(singleRadioButton)
+				||
+				this.equals(singleCheckBox);
 				*/
 		}
 	}

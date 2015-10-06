@@ -47,27 +47,6 @@ public abstract class CellEditor<T, K> implements WidgetFactory<T>
 		this.autoRefreshRow = autoRefreshRow;
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	private void maybeAddHandlerToUpdateRow(final PageableDataGrid<T> grid, final int rowIndex, final T dataObject,
-		final IsWidget widget)
-	{
-		try
-		{
-			((HasValue<K>) widget).addValueChangeHandler(new ValueChangeHandler<K>()
-			{
-				@Override
-				public void onValueChange(ValueChangeEvent<K> event)
-				{
-					CellEditor.this.setProperty(dataObject, event.getValue());
-					if(autoRefreshRow)
-					{
-						grid.rows.get(rowIndex).makeChanges();
-					}
-				}
-			});
-		} catch (ClassCastException e){}
-	}
-
 	/**
 	 * Renders the cell.
 	 * @param grid
@@ -99,4 +78,25 @@ public abstract class CellEditor<T, K> implements WidgetFactory<T>
 	 * @param object the new value to be inserted in the dataObject. 
 	 */
 	public abstract void setProperty(T dataObject, K object);
+
+	@SuppressWarnings({ "unchecked" })
+	private void maybeAddHandlerToUpdateRow(final PageableDataGrid<T> grid, final int rowIndex, final T dataObject,
+		final IsWidget widget)
+	{
+		try
+		{
+			((HasValue<K>) widget).addValueChangeHandler(new ValueChangeHandler<K>()
+			{
+				@Override
+				public void onValueChange(ValueChangeEvent<K> event)
+				{
+					CellEditor.this.setProperty(dataObject, event.getValue());
+					if(autoRefreshRow)
+					{
+						grid.rows.get(rowIndex).makeChanges();
+					}
+				}
+			});
+		} catch (ClassCastException e){}
+	}
 }

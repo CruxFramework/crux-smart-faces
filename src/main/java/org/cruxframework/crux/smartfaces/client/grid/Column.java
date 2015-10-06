@@ -30,36 +30,19 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class Column<T, V extends IsWidget>
 {
-	/**
-	 * Encapsulate the comparator adding a variable to indicate if the ordering should be
-	 * ascending or descending.
-	 * @author samuel.cardoso
-	 *
-	 * @param <T>
-	 */
-	static class ColumnComparator<T>
-	{
-		Comparator<T> comparator;
-		short multiplier = -1; 
-	}
-	
 	ColumnComparator<T> columnComparator;
-	
 	ColumnGroup<T> columnGroup;
-	private GridDataFactory<V, T> dataFactory;
-	private CellEditor<T, ?> editableCell;
-	/**
-	 * 
-	 */
-	private final PageableDataGrid<T> grid;
 	IsWidget headerWidget;
 	int index = 0;
 	String key;
-	private ArrayList<String> keys = new ArrayList<String>();
 	Row<T> row;
 	boolean sortable = false;
+	private GridDataFactory<V, T> dataFactory;
+	private CellEditor<T, ?> editableCell;
+	private final PageableDataGrid<T> grid;
+	private ArrayList<String> keys = new ArrayList<String>();
 
-	public Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<V, T> dataFactory, String key)
+	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<V, T> dataFactory, String key)
 	{
 		this.grid = pageableDataGrid;
 		assert(!keys.contains(key)): "key must be unique.";
@@ -74,7 +57,7 @@ public class Column<T, V extends IsWidget>
 		grid.addColumn(this);
 		return this;
 	}
-	
+
 	/**
 	 * Clear the column content.
 	 */
@@ -82,7 +65,7 @@ public class Column<T, V extends IsWidget>
 	{
 		row = null;
 	}
-
+	
 	/**
 	 * @return the data factory.
 	 */
@@ -102,6 +85,61 @@ public class Column<T, V extends IsWidget>
 	public Row<T> getRow() 
 	{
 		return row;
+	}
+
+	public Column<T, V> setCellEditor(CellEditor<T, ?> editableCell)
+	{
+		this.editableCell = editableCell;
+		return this;
+	}
+
+	public Column<T, V> setComparator(Comparator<T> comparator)
+	{
+		this.columnComparator = new ColumnComparator<T>();
+		columnComparator.comparator = comparator;
+		columnComparator.multiplier = 1;
+		return this;
+	}
+
+	public Column<T, V> setDataFactory(GridDataFactory<V, T> dataFactory)
+	{
+		this.dataFactory = dataFactory;
+		return this;
+	}
+
+	public Column<T, V> setHeaderWidget(IsWidget headerWidget)
+	{
+		this.headerWidget = headerWidget;
+		return this;
+	}
+
+	public Column<T, V> setSortable(boolean sortable)
+	{
+		this.sortable = sortable;
+		return this;
+	}
+	
+	public void sort()
+	{
+		assert(grid.getDataProvider() != null) :"No dataProvider set for this component.";
+		grid.refreshRowCache();
+		grid.getDataProvider().sort(new Comparator<T>()
+		{
+			@Override
+			public int compare(T o1, T o2)
+			{
+				int compareResult = 0;
+				int index = 0;
+				//uses all the comparators that were added when uses clicks in the column header.
+				while((compareResult == 0) && (index != grid.linkedComparators.size()))
+				{
+				ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
+				compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
+				index++;
+				}
+				return compareResult;
+			}
+		});
 	}
 
 	void render() 
@@ -133,58 +171,16 @@ public class Column<T, V extends IsWidget>
 		grid.drawCell(grid, row.index, index, row.dataProviderRowIndex, widget);
 	}
 
-	public Column<T, V> setCellEditor(CellEditor<T, ?> editableCell)
+	/**
+	 * Encapsulate the comparator adding a variable to indicate if the ordering should be
+	 * ascending or descending.
+	 * @author samuel.cardoso
+	 *
+	 * @param <T>
+	 */
+	static class ColumnComparator<T>
 	{
-		this.editableCell = editableCell;
-		return this;
-	}
-	
-	public Column<T, V> setComparator(Comparator<T> comparator)
-	{
-		this.columnComparator = new ColumnComparator<T>();
-		columnComparator.comparator = comparator;
-		columnComparator.multiplier = 1;
-		return this;
-	}
-
-	public Column<T, V> setDataFactory(GridDataFactory<V, T> dataFactory)
-	{
-		this.dataFactory = dataFactory;
-		return this;
-	}
-
-	public Column<T, V> setHeaderWidget(IsWidget headerWidget)
-	{
-		this.headerWidget = headerWidget;
-		return this;
-	}
-
-	public Column<T, V> setSortable(boolean sortable)
-	{
-		this.sortable = sortable;
-		return this;
-	}
-
-	public void sort()
-	{
-		assert(grid.getDataProvider() != null) :"No dataProvider set for this component.";
-		grid.refreshRowCache();
-		grid.getDataProvider().sort(new Comparator<T>()
-		{
-			@Override
-			public int compare(T o1, T o2)
-			{
-				int compareResult = 0;
-				int index = 0;
-				//uses all the comparators that were added when uses clicks in the column header.
-				while((compareResult == 0) && (index != grid.linkedComparators.size()))
-				{
-				ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
-				compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
-				index++;
-				}
-				return compareResult;
-			}
-		});
+		Comparator<T> comparator;
+		short multiplier = -1; 
 	}
 }

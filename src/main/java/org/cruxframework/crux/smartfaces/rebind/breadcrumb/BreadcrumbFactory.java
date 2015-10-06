@@ -163,7 +163,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 	})
 	public static class BreadcrumbItemLabelWidgetProcessor extends WidgetChildProcessor<BreadcrumbContext> {}
 
-	@TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="breadcrumbItem")
+	@TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="breadcrumbItem", applyDeviceFilters=true)
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="name", required=true, supportsI18N=true),
 		@TagAttributeDeclaration("viewName"),
