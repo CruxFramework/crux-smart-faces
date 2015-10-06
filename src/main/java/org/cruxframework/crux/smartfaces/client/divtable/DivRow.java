@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.divtable;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 
 import com.google.gwt.dom.client.Element;
@@ -33,10 +34,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class DivRow extends SelectableFlowPanel 
 {
 	private static Array<String> columnClasses = CollectionFactory.createArray();
-
+	public static final String STYLES_FACES_GRID_ROW = "row";
+	public static final String STYLES_FACES_GRID_COLUMN = "column";
+	
 	public DivRow()
 	{
-		setStyleName("row");
+		setStyleName(STYLES_FACES_GRID_ROW);
+		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableRow());
 	}
 
 	public FlowPanel add(IsWidget widget, int columnIndex) 
@@ -82,7 +86,7 @@ public class DivRow extends SelectableFlowPanel
 		Element element = column.getElement();
 		if(StringUtils.isEmpty(styleName))
 		{
-			element.addClassName("column");	
+			element.addClassName(STYLES_FACES_GRID_COLUMN);	
 		}
 		else
 		{
@@ -90,7 +94,7 @@ public class DivRow extends SelectableFlowPanel
 			return;
 		}
 		
-		String columnName = "column_" + columnIndex;
+		String columnName = STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
 		int columnClassesIndex = columnClasses.indexOf(columnName);
 		if(columnClassesIndex >= 0)
 		{

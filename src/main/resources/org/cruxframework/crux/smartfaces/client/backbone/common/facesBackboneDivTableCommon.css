@@ -1,0 +1,17 @@
+.facesDivTableContainer 
+{
+	display: inline-flex;
+	flex-direction: column;
+}
+
+.facesDivTableRow
+{
+	display: flex;
+	flex-direction: row;
+}
+
+.facesDivTableHeaderRow 
+{
+	display: inline-flex;
+	flex-direction: row;
+}

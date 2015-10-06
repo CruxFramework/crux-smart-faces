@@ -31,14 +31,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DivTable extends Composite
 {
+	public static final String STYLE_FACES_ROW_ODD = "rowOdd";
+	public static final String STYLE_FACES_ROW_EVEN = "rowEven";
+	private static final String STYLES_FACES_GRID = "faces-DivTable";
 	private ArrayList<DivRow> rows = new ArrayList<DivRow>();
 	private FlowPanel table = new FlowPanel();
 
 	public DivTable()
 	{
-		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		initWidget(table);
-		setStyleName("table-container");
+		setStyleName(STYLES_FACES_GRID);
+		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableContainer());
 	}
 
 	public void add(Widget widget)
@@ -99,11 +102,11 @@ public class DivTable extends Composite
 
 		if(index%2 == 0)
 		{
-			row.addStyleName("even");
+			row.addStyleName(STYLE_FACES_ROW_EVEN);
 		}
 		else
 		{
-			row.addStyleName("odd");
+			row.addStyleName(STYLE_FACES_ROW_ODD);
 		}
 
 		rows.add(index, row);

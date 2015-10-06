@@ -17,7 +17,6 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
@@ -27,11 +26,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * Implements a div grid based widget.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <T>
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
+ * @param <T> the Data Object type.
  */
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
@@ -63,10 +61,11 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	/**
 	 * Define a column group in order to set a specific header to each group.
 	 * @param dataGridColumnGroup
+	 * @return 
 	 */
-	public ColumnGroup newColumGroup(Widget header)
+	public ColumnGroup<T> newColumGroup(Widget header)
 	{
-		return new ColumnGroup(header);
+		return new ColumnGroup<T>(header);
 	}
 	
 	/**
@@ -74,19 +73,19 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param dataFactory
 	 * @return
 	 */
-	public <V extends IsWidget> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory, String key)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<V,T> dataFactory, String key)
 	{
-		PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory, key);
+		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
 		addColumn(column);
 		return column;
 	}
 
 	private void setEnableColumns(boolean enabled) 
 	{
-		Array<PageableDataGrid<T>.Column<?>> columns = getColumns();
+		Array<Column<T, ?>> columns = getColumns();
 		int sizeColumns = columns.size();
 
-		Array<PageableDataGrid<T>.Row> rows = getRows();
+		Array<Row<T>> rows = getCurrentPageRows();
 		int sizeRows = rows.size();
 
 		if(sizeColumns <= 0 || sizeRows <= 0)

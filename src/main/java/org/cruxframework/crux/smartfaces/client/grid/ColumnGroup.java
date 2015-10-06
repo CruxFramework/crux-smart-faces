@@ -13,48 +13,44 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
- * Define the grid Types.
+ * Defines a group of column type.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
+ * @param <T> the Data Object type
  */
-public interface Type 
+public class ColumnGroup<T>
 {
-	public static enum RowSelectStrategy
+	@SuppressWarnings("unused")
+	private ColumnGroup<T> columnGroupParent;
+	Widget header;
+	int index = Integer.MAX_VALUE;
+	
+	public ColumnGroup(Widget header)
 	{
-		unselectable,
-		single,
-		//singleRadioButton,
-		//singleCheckBox,
-		multiple	
-		//multipleCheckBox,
-		//multipleCheckBoxSelectAll
-		;
-		
-		public boolean isSingle()
+		this.header = header;
+	}
+	
+	public void addColumn(Column<T, ?> column)
+	{
+		//find out the smaller index
+		if(column.index < index)
 		{
-			return 
-				this.equals(single);
-				/*
-				||
-				this.equals(singleRadioButton)
-				||
-				this.equals(singleCheckBox);
-				*/
+			index = column.index;
 		}
-		
-		public boolean isMultiple()
-		{
-			return 
-				this.equals(multiple);
-				/*
-				||
-				this.equals(multipleCheckBox)
-				||
-				this.equals(multipleCheckBoxSelectAll);
-				*/
-		}
+		column.columnGroup = ColumnGroup.this;
+	}
+
+	//TODO: implement it!
+	public ColumnGroup<T> newColumGroup(Widget header)
+	{
+		ColumnGroup<T> columnGroup = new ColumnGroup<T>(header);
+		columnGroup.columnGroupParent = this;
+		return columnGroup;
 	}
 }
