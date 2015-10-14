@@ -461,18 +461,24 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 				
 				if (childName.equals("column"))
 				{
-					String column = createColumn(out, context, dataObject, child);
-					if (!StringUtils.isEmpty(groupVar))
+					if (targetsDevice(child))
 					{
-						out.println(groupVar + ".addColumn(" + column + ");");
+						String column = createColumn(out, context, dataObject, child);
+						if (!StringUtils.isEmpty(groupVar))
+						{
+							out.println(groupVar + ".addColumn(" + column + ");");
+						}
 					}
 				}
 				else if (childName.equals("columnGroup"))
 				{
-					String columnGroup = createColumnGroup(out, context, dataObject, child);
-					if (!StringUtils.isEmpty(groupVar))
+					if (targetsDevice(child))
 					{
-						out.println(groupVar + ".addColumnGroup(" + columnGroup + ");");
+						String columnGroup = createColumnGroup(out, context, dataObject, child);
+						if (!StringUtils.isEmpty(groupVar))
+						{
+							out.println(groupVar + ".addColumnGroup(" + columnGroup + ");");
+						}
 					}
 				}
 			}
