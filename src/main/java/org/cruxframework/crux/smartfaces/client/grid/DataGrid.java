@@ -50,16 +50,6 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	}
 
 	/**
-	 * Define a column group in order to set a specific header to each group.
-	 * @param dataGridColumnGroup
-	 * @return 
-	 */
-	public ColumnGroup<T> newColumGroup(Widget header)
-	{
-		return new ColumnGroup<T>(header);
-	}
-
-	/**
 	 * Inserts a new column.
 	 * @param dataFactory
 	 * @return
@@ -69,6 +59,18 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
 		addColumn(column);
 		return column;
+	}
+ 
+	/**
+	 * Define a column group in order to set a specific header to each group.
+	 * @param dataGridColumnGroup
+	 * @return 
+	 */
+	public ColumnGroup<T> newColumnGroup(String key)
+	{
+		ColumnGroup<T> columnGroup = new ColumnGroup<T>(key);
+		addColumnGroup(columnGroup);
+		return columnGroup;
 	}
 	
 	@Override

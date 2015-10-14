@@ -49,7 +49,7 @@ public class Column<T, W extends IsWidget>
 		this.key = key;
 		assert(dataFactory != null): "dataFactory must not be null";
 		this.dataFactory = dataFactory;
-		this.index = grid.columns != null ? grid.columns.size() : 0;
+		this.index = grid.getColumns() != null ? grid.getColumns().size() : 0;
 	}
 
 	public Column<T, W> add()

@@ -44,6 +44,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.smartfaces.client.grid.CellEditor;
 import org.cruxframework.crux.smartfaces.client.grid.Column;
+import org.cruxframework.crux.smartfaces.client.grid.ColumnGroup;
 import org.cruxframework.crux.smartfaces.client.grid.DataGrid;
 import org.cruxframework.crux.smartfaces.client.grid.GridDataFactory;
 import org.cruxframework.crux.smartfaces.client.grid.Row;
@@ -87,7 +88,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		out.println("final " + className + " " + context.getWidget() + " = new " + className + "();");
 		
-		createColumns(out, context);
+		createColumns(out, context, context.getWidgetElement(), null);
 	}
 	
 	protected String createColumn(SourcePrinter out, WidgetCreatorContext context, JClassType dataObject, JSONObject columnElement)
@@ -103,12 +104,26 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	    createColumnEditor(out, context, columnElement, columnVar, dataObject);
 	    return columnVar;
     }
+	
+	protected String createColumnGroup(SourcePrinter out, WidgetCreatorContext context, JClassType dataObject, JSONObject columnGroupElement)
+	{
+		String key = columnGroupElement.optString("key");
+		String columnGroupVar = createVariableName("columnGroup");
+		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
+		String columnGroupClassName = ColumnGroup.class.getCanonicalName()+"<" + dataObjectName + ">";
+		out.println(columnGroupClassName + " " + columnGroupVar + " = " + context.getWidget()+".newColumnGroup(" + EscapeUtils.quote(key) + ");");
+		
+	    createColumnHeader(out, context, columnGroupElement, columnGroupVar);
+		createColumns(out, context, columnGroupElement, columnGroupVar);
+		
+		return columnGroupVar;
+	}
 
 	protected String createColumnByProperty(SourcePrinter out, WidgetCreatorContext context, JSONObject columnElement, JClassType dataObject)
     {
 		String columnVar = createVariableName("column");
 		String key = columnElement.optString("key");
-		String tooltip = getDeclaredMessage(columnElement.optString("tooltip"));
+		String tooltip = columnElement.optString("tooltip");
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String widgetClassName = Label.class.getCanonicalName();
 		String rowClassName = Row.class.getCanonicalName();
@@ -139,6 +154,8 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
 		
+		boolean hasTooltip = createGetTooltipMethod(out, dataBindingProcessor, converterDeclarations, tooltip, dataObjectName, dataObjectAlias);
+		
 		out.println("public " + widgetClassName + " createData("+dataObjectName+" "+dataObjectVariable+", final "+rowClassName+"<"+dataObjectName+"> row){");
 		
 		out.println(valueType.getParameterizedQualifiedSourceName() + " " + resultVariable + ";");
@@ -146,11 +163,11 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		boolean isStringType = valueType.getQualifiedSourceName().equals(String.class.getCanonicalName());
 		
-		if (!StringUtils.isEmpty(tooltip))
+		if (hasTooltip)
 		{
 			String widgetVar = createVariableName("widget");
 			out.println(widgetClassName + " " + widgetVar + " = new " + widgetClassName + "(" + (!isStringType?"\"\"+" +resultVariable: resultVariable) + ");");
-			out.println(widgetVar + ".setTitle(" + tooltip + ");");
+			out.println(widgetVar + ".setTitle(getTooltip("+dataObjectVariable+"));");
 			out.println("return " + widgetVar + ";");
 		}
 		else
@@ -164,6 +181,33 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		return columnVar;
     }
 
+	protected boolean createGetTooltipMethod(SourcePrinter out, HasDataProviderDataBindingProcessor dataBindingProcessor, 
+											Set<String> converterDeclarations, String tooltip, String dataObjectName, String dataObjectAlias)
+	{
+		if (StringUtils.isEmpty(tooltip))
+		{
+			return false;
+		}
+		
+		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
+		out.println("String getTooltip("+dataObjectName+" "+dataObjectVariable+"){");
+		String resultVariable = createVariableName("result");
+		StringBuilder tooltipExpression = new StringBuilder(); 
+
+		String bindingContextVariable = dataBindingProcessor.getBindingContextVariable();
+		JType tooltipType = getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, 
+			tooltip, converterDeclarations, Label.class.getCanonicalName(), "title", 
+			dataBindingProcessor, tooltipExpression);	
+
+		out.println(tooltipType.getParameterizedQualifiedSourceName() + " " + resultVariable + ";");
+		out.println(tooltipExpression + ";");
+		out.println("return " + resultVariable + ";");
+		out.println("}");
+		
+		return true;
+	}
+	
+	
 	protected String createColumnByWidget(SourcePrinter out, WidgetCreatorContext context, JSONObject columnElement, JClassType dataObject)
 	{
 		String widgetClassName = IsWidget.class.getCanonicalName();
@@ -188,15 +232,11 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 					if (childName.equals("widget"))
 					{
 						out.println("new " + widgetFactoryClassName + "(){");
-						String bindingContextVariable = "_context";
+						String bindingContextVariable = createVariableName("_context");
 					    generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
-						Set<String> converterDeclarations = generateWidgetCreationForCellByTemplate(out, context, child, 
+						generateWidgetCreationForCellByTemplate(out, context, child, 
 																				dataObject, bindingContextVariable, columnElement,
 																				widgetClassName);
-					    for (String converterDeclaration : converterDeclarations)
-				        {
-					    	out.println(converterDeclaration);
-					    }
 						out.println("}");
 					}
 					else if (childName.equals("widgetFactory"))
@@ -408,10 +448,10 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		}
     }
 	
-	protected void createColumns(SourcePrinter out, WidgetCreatorContext context)
+	protected void createColumns(SourcePrinter out, WidgetCreatorContext context, JSONObject parent, String groupVar)
 	{
 		JClassType dataObject = getDataObject(context);
-		JSONArray children = ensureChildren(context.getWidgetElement(), false, context.getWidgetId());
+		JSONArray children = ensureChildren(parent, false, context.getWidgetId());
 		if (children != null)
 		{
 			for (int i = 0; i < children.length(); i++)
@@ -421,11 +461,19 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 				
 				if (childName.equals("column"))
 				{
-					createColumn(out, context, dataObject, child);
+					String column = createColumn(out, context, dataObject, child);
+					if (!StringUtils.isEmpty(groupVar))
+					{
+						out.println(groupVar + ".addColumn(" + column + ");");
+					}
 				}
-				else
+				else if (childName.equals("columnGroup"))
 				{
-					// columngroup
+					String columnGroup = createColumnGroup(out, context, dataObject, child);
+					if (!StringUtils.isEmpty(groupVar))
+					{
+						out.println(groupVar + ".addColumnGroup(" + columnGroup + ");");
+					}
 				}
 			}
 		}
@@ -440,26 +488,35 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	 * @param bindingContextVariable
 	 * @return
 	 */
-	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, WidgetCreatorContext context, JSONObject child, 
+	protected void generateWidgetCreationForCellByTemplate(SourcePrinter out, WidgetCreatorContext context, JSONObject child, 
 						JClassType dataObject, String bindingContextVariable, JSONObject columnElement, String widgetClassName)
     {
 		HasDataProviderDataBindingProcessor bindingProcessor = createDataBindingProcessor(context, dataObject, bindingContextVariable);
 		child = ensureFirstChild(child, false, context.getWidgetId());
-		String tooltip = getDeclaredMessage(columnElement.optString("tooltip"));
+		String tooltip = columnElement.optString("tooltip");
 
 		String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
 		String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
-		out.println("public "+widgetClassName+" createData("+dataObjectClassName+" "+bindingProcessor.getCollectionObjectReference() + 
+		String dataObjectAlias = getDataObjectAlias(dataObject);
+		
+		boolean hasTooltip = createGetTooltipMethod(out, bindingProcessor, bindingProcessor.getConverterDeclarations(), tooltip, 
+			dataObjectClassName, dataObjectAlias);
+		
+		String dataObjectVariable = bindingProcessor.getCollectionObjectReference();
+		out.println("public "+widgetClassName+" createData("+dataObjectClassName+" "+dataObjectVariable + 
 								", "+rowClassName+" row){");
 	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
-		if (!StringUtils.isEmpty(tooltip))
+		if (hasTooltip)
 		{
-			out.println(childWidget + ".setTitle(" + tooltip + ");");
+			out.println(childWidget + ".setTitle(getTooltip("+dataObjectVariable+"));");
 		}
 	    out.println("return "+childWidget+";");
 	    out.println("}");
 	    
-	    return bindingProcessor.getConverterDeclarations();
+	    for (String converterDeclaration : bindingProcessor.getConverterDeclarations())
+        {
+	    	out.println(converterDeclaration);
+	    }
     }
 	
 	protected void generateWidgetCreationForCellOnController(SourcePrinter out, WidgetCreatorContext context, JSONObject child,
@@ -467,7 +524,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
     {
 	    try
 	    {
-			String tooltip = getDeclaredMessage(columnElement.optString("tooltip"));
+			String tooltip = columnElement.optString("tooltip");
 	        String onCreateWidget = child.getString("onCreateWidget");
 	    	Event event = EventFactory.getEvent("onCreateWidget", onCreateWidget);
 	    	if (event != null)
@@ -492,7 +549,15 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	    	};
 	    	
 	    	String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
+			String dataObjectAlias = getDataObjectAlias(dataObject);
 			String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
+
+			String bindingContextVariable = createVariableName("_context");
+		    generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
+			HasDataProviderDataBindingProcessor dataBindingProcessor = createDataBindingProcessor(context, dataObject, bindingContextVariable);
+			boolean hasTooltip = createGetTooltipMethod(out, dataBindingProcessor, dataBindingProcessor.getConverterDeclarations(), 
+													tooltip, dataObjectClassName, dataObjectAlias);
+
 			out.println("public "+widgetClassName+" createData("+dataObjectClassName+" value, "+rowClassName+" row){");
 
 			String childWidget = createVariableName("widget");
@@ -501,13 +566,20 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 				getContext(), getView(), controllerAccessHandler, getDevice(), false);
 			
 			out.println(";");
-			if (!StringUtils.isEmpty(tooltip))
+			if (hasTooltip)
 			{
-				out.println(childWidget + ".setTitle(" + tooltip + ");");
+				String dataObjectVariable = dataBindingProcessor.getCollectionObjectReference();
+				out.println(childWidget + ".setTitle(getTooltip("+dataObjectVariable+"));");
 			}
 	    	
 	    	out.print("return "+childWidget+";");
 	    	out.println("}");
+	    	
+		    for (String converterDeclaration : dataBindingProcessor.getConverterDeclarations())
+	        {
+		    	out.println(converterDeclaration);
+		    }
+	    	
 	    }
 	    catch (JSONException e)
 	    {
@@ -557,7 +629,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="key", required=true, supportsI18N=false, supportsResources=false, 
 			supportsDataBinding=false,  
-			description="The column key, used to identify its column on this grid."),
+			description="The column key, used to identify the column on this grid."),
 		@TagAttributeDeclaration(value="property", supportsI18N=false, supportsResources=false, supportsDataBinding=true,  
 			description="The expression used to bind the column value from the dataProvider object"),
 		@TagAttributeDeclaration(value="tooltip", supportsI18N=true, supportsResources=true, 
@@ -569,9 +641,24 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	})
 	public static class ColumnProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
 	
+	@TagConstraints(tagName="columnGroup", applyDeviceFilters=true)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="key", required=true, supportsI18N=false, supportsResources=false, 
+			supportsDataBinding=false,  
+			description="The column key, used to identify the column on this grid."),
+		@TagAttributeDeclaration(value="header", supportsI18N=true, supportsResources=true, 
+			description="The column header.")
+	})
+	@TagChildren({
+		@TagChild(HeaderCreator.class),
+		@TagChild(value=DataGridChildrenProcessor.class)
+	})
+	public static class ColumnGroupProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
+	
 	@TagConstraints(minOccurs="1", maxOccurs="unbounded")
 	@TagChildren({
-		@TagChild(value=ColumnProcessor.class, autoProcess=false)
+		@TagChild(value=ColumnProcessor.class, autoProcess=false), 
+		@TagChild(value=ColumnGroupProcessor.class, autoProcess=false), 
 	})
 	public static class DataGridChildrenProcessor extends ChoiceChildProcessor<WidgetCreatorContext>{}
 
