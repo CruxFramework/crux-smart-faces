@@ -16,7 +16,7 @@
 
 package org.cruxframework.crux.smartfaces.client.grid;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Defines a group of column type.
@@ -26,17 +26,24 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ColumnGroup<T>
 {
-	Widget header;
+	ColumnGroup<T> columnGroupParent;
+	IsWidget header;
 	int index = Integer.MAX_VALUE;
-	@SuppressWarnings("unused")
-	private ColumnGroup<T> columnGroupParent;
+	String key;
 	
-	protected ColumnGroup(Widget header)
+	protected ColumnGroup(String key)
 	{
-		this.header = header;
+		this.key = key;
+	}
+
+	//TODO: implement it!
+	public ColumnGroup<T> addColumGroup(ColumnGroup<T> columnGroup)
+	{
+		columnGroup.columnGroupParent = this;
+		return this;
 	}
 	
-	public void addColumn(Column<T, ?> column)
+	public ColumnGroup<T> addColumn(Column<T, ?> column)
 	{
 		//find out the smaller index
 		if(column.index < index)
@@ -44,13 +51,17 @@ public class ColumnGroup<T>
 			index = column.index;
 		}
 		column.columnGroup = ColumnGroup.this;
+		return this;
+	}
+	
+	public IsWidget getHeaderWidget()
+	{
+		return header;
 	}
 
-	//TODO: implement it!
-	public ColumnGroup<T> newColumGroup(Widget header)
+	public ColumnGroup<T> setHeaderWidget(IsWidget header)
 	{
-		ColumnGroup<T> columnGroup = new ColumnGroup<T>(header);
-		columnGroup.columnGroupParent = this;
-		return columnGroup;
+		this.header = header;
+		return this;
 	}
 }

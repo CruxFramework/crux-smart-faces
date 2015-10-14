@@ -93,7 +93,7 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		DataObject dataObjectAnnotation = dataObject.getAnnotation(DataObject.class);
 		if (dataObjectAnnotation == null)
 		{
-			throw new CruxGeneratorException("Invaid dataObject: "+dataObject.getQualifiedSourceName());
+			throw new CruxGeneratorException("Invalid dataObject: "+dataObject.getQualifiedSourceName());
 		}
 		String dataObjectAlias = dataObjectAnnotation.value();
 		JSONObject child = ensureFirstChild(optionRendererElement, true, context.getWidgetId());
@@ -109,10 +109,14 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
 		
 		String resultVariable = createVariableName("result");
-		String textExpression = getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, textAttr, converterDeclarations, "text", 
-																dataBindingProcessor);	
-		String valueExpression = getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, valueAttr, converterDeclarations, "value", 
-																dataBindingProcessor);	
+		StringBuilder textExpression = new StringBuilder(); 
+		getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, textAttr, converterDeclarations, 
+															getWidgetClassName(), "text", 
+															dataBindingProcessor, textExpression);	
+		StringBuilder valueExpression = new StringBuilder();
+		getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, valueAttr, converterDeclarations, 
+															getWidgetClassName(),"value", 
+															dataBindingProcessor, valueExpression);	
 
 		if (child != null)
 		{
@@ -165,7 +169,7 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		@TagAttributeDeclaration(value="text", required=true)
 	})
 	@TagChildren({
-		@TagChild(value=WidgetListChildCreator.class, autoProcess=false)
+		@TagChild(value=WidgetChildCreator.class, autoProcess=false)
 	})
 	public static class OptionsProcessor extends WidgetChildProcessor<WidgetCreatorContext>
 	{
@@ -176,6 +180,6 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		@TagChild(WidgetFactoryChildCreator.class),
 		@TagChild(WidgetFactoryControllerChildCreator.class)
 	})
-	public static class WidgetListChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
+	public static class WidgetChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
 	
 }
