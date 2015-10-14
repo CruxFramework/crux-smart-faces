@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Define the column data type.
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <V> the Data Object type.
- * @param <V> the cell Widget.
+ * @param <T> the Data Object type.
+ * @param <W> the cell Widget.
  */
-public class Column<T, V extends IsWidget>
+public class Column<T, W extends IsWidget>
 {
 	ColumnComparator<T> columnComparator;
 	ColumnGroup<T> columnGroup;
@@ -37,12 +37,12 @@ public class Column<T, V extends IsWidget>
 	String key;
 	Row<T> row;
 	boolean sortable = false;
-	private GridDataFactory<V, T> dataFactory;
+	private GridDataFactory<T, W> dataFactory;
 	private CellEditor<T, ?> editableCell;
 	private final PageableDataGrid<T> grid;
 	private ArrayList<String> keys = new ArrayList<String>();
 
-	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<V, T> dataFactory, String key)
+	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<T, W> dataFactory, String key)
 	{
 		this.grid = pageableDataGrid;
 		assert(!keys.contains(key)): "key must be unique.";
@@ -52,7 +52,7 @@ public class Column<T, V extends IsWidget>
 		this.index = grid.columns != null ? grid.columns.size() : 0;
 	}
 
-	public Column<T, V> add()
+	public Column<T, W> add()
 	{
 		grid.addColumn(this);
 		return this;
@@ -69,7 +69,7 @@ public class Column<T, V extends IsWidget>
 	/**
 	 * @return the data factory.
 	 */
-	public GridDataFactory<V, T> getDataFactory()
+	public GridDataFactory<T, W> getDataFactory()
 	{
 		return dataFactory;
 	}
@@ -87,13 +87,13 @@ public class Column<T, V extends IsWidget>
 		return row;
 	}
 
-	public Column<T, V> setCellEditor(CellEditor<T, ?> editableCell)
+	public Column<T, W> setCellEditor(CellEditor<T, ?> editableCell)
 	{
 		this.editableCell = editableCell;
 		return this;
 	}
 
-	public Column<T, V> setComparator(Comparator<T> comparator)
+	public Column<T, W> setComparator(Comparator<T> comparator)
 	{
 		this.columnComparator = new ColumnComparator<T>();
 		columnComparator.comparator = comparator;
@@ -101,19 +101,13 @@ public class Column<T, V extends IsWidget>
 		return this;
 	}
 
-	public Column<T, V> setDataFactory(GridDataFactory<V, T> dataFactory)
-	{
-		this.dataFactory = dataFactory;
-		return this;
-	}
-
-	public Column<T, V> setHeaderWidget(IsWidget headerWidget)
+	public Column<T, W> setHeaderWidget(IsWidget headerWidget)
 	{
 		this.headerWidget = headerWidget;
 		return this;
 	}
 
-	public Column<T, V> setSortable(boolean sortable)
+	public Column<T, W> setSortable(boolean sortable)
 	{
 		this.sortable = sortable;
 		return this;
@@ -161,7 +155,7 @@ public class Column<T, V extends IsWidget>
 
 	private void renderToView() 
 	{
-		V widget = dataFactory.createData(row.dataObject, row);
+		W widget = dataFactory.createData(row.dataObject, row);
 
 		if(widget == null)
 		{

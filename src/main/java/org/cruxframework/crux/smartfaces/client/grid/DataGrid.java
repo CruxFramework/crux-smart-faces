@@ -64,7 +64,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param dataFactory
 	 * @return
 	 */
-	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<V,T> dataFactory, String key)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key)
 	{
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
 		addColumn(column);

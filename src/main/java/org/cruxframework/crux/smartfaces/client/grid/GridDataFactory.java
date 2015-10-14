@@ -19,10 +19,10 @@ package org.cruxframework.crux.smartfaces.client.grid;
  * Define a new data factory passing the row as a parameter. 
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
- * @param <V> the widget type.
  * @param <T> the Data Object type.
+ * @param <W> the widget type.
  */
-public interface GridDataFactory<V, T>
+public interface GridDataFactory<T, W>
 {
-	V createData(T value, Row<T> row);
+	W createData(T value, Row<T> row);
 }
