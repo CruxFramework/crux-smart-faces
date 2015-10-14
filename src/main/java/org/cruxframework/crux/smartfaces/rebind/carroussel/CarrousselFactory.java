@@ -53,7 +53,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 	@TagAttribute(value="fixedHeight", type=Boolean.class, defaultValue="true") 
 })
 @TagChildren({
-	@TagChild(value=CarrousselFactory.WidgetListChildCreator.class, autoProcess=false)
+	@TagChild(value=CarrousselFactory.WidgetChildCreator.class, autoProcess=false)
 })
 public class CarrousselFactory extends AbstractPageableFactory<WidgetCreatorContext>
 {

@@ -38,7 +38,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 					description="A list of widgets that use a DataProvider to provide data and a widgetFactory "
 							+ "to bound the data to a widget. This list can be paged by a Pager.")
 @TagChildren({
-	@TagChild(value=WidgetListFactory.WidgetListChildCreator.class, autoProcess=false)
+	@TagChild(value=WidgetListFactory.WidgetChildCreator.class, autoProcess=false)
 })
 public class WidgetListFactory extends AbstractPageableFactory<WidgetCreatorContext>
 {
