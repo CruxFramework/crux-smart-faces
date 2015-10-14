@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 {
-	private static final String STYLE_DISABLED = "--disabled";
+	private static final String STYLE_DISABLED = "-disabled";
 	private static final String STYLE_FACES_DATAGRID = "faces-Datagrid";
 	private boolean enabled;
 
