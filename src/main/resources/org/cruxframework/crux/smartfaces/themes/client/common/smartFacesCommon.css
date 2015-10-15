@@ -613,10 +613,12 @@ body
 
 .faces-DivTable 
 {
+	display: inline-block;
 }
 
 .faces-DivTable .arrowUp,
-.faces-DivTable .arrowDown
+.faces-DivTable .arrowDown,
+.faces-DivTable .arrowUpDown
 {
 	background:svgIconArrow transparent no-repeat center center;
 	border:none;
@@ -638,6 +640,12 @@ body
 .faces-DivTable .arrowDown
 {
 	-webkit-transform: rotate(-90deg);
+}
+
+.faces-DivTable .arrowUpDown
+{
+	-webkit-transform: rotate(-90deg);
+	-webkit-box-reflect: right;
 }
 
 .faces-DivTable .row 
@@ -676,6 +684,10 @@ body
     DataGrid
 *******************************************************************************/
 
+.faces-Datagrid
+{
+	overflow: auto;
+}
 
 /******************************************************************************
     Crux Image

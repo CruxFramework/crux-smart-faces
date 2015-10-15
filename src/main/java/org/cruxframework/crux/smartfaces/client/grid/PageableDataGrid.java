@@ -570,15 +570,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 	{
 		if(column.sortable && (!getDataProvider().isDirty() || getDataProvider() instanceof LazyProvider))
 		{
-			FlowPanel wrapperButtons = new FlowPanel();
-			
 			//create arrow button
 			final Image arrow = new Image();
-			arrow.setStyleName("arrowUp");
-			wrapperButtons.add(arrow);
 
 			//create buttons
-			headerWrapper.add(wrapperButtons);
+			headerWrapper.add(arrow);
 
 			headerWrapper.addSelectHandler(new SelectHandler()
 			{
@@ -592,16 +588,23 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				}
 			});
 			
-			//set up visibility
-			if(column.columnComparator != null)
+			if(!column.sorted)
 			{
-				if(column.columnComparator.multiplier > 0)
+				arrow.setStyleName("arrowUpDown");
+			}
+			else
+			{
+				//set up visibility
+				if(column.columnComparator != null)
 				{
-					arrow.setStyleName("arrowDown");
-				}
-				else
-				{
-					arrow.setStyleName("arrowUp");
+					if(column.columnComparator.multiplier > 0)
+					{
+						arrow.setStyleName("arrowDown");
+					}
+					else
+					{
+						arrow.setStyleName("arrowUp");
+					}
 				}
 			}
 		}
