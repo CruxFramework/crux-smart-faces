@@ -33,11 +33,14 @@ import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.Widge
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDataProviderDataBindingProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
@@ -48,6 +51,7 @@ import org.cruxframework.crux.smartfaces.client.grid.ColumnGroup;
 import org.cruxframework.crux.smartfaces.client.grid.DataGrid;
 import org.cruxframework.crux.smartfaces.client.grid.GridDataFactory;
 import org.cruxframework.crux.smartfaces.client.grid.Row;
+import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONArray;
@@ -71,7 +75,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 @TagChildren({
 	@TagChild(value=DataGridFactory.DataGridChildrenProcessor.class)
 })
-public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContext>
+@TagAttributes({
+	@TagAttribute(value="rowSelectStrategy", type=RowSelectStrategy.class, defaultValue="single")
+})
+public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasEnabledFactory<WidgetCreatorContext>
 {
 	@Override
     public WidgetCreatorContext instantiateContext()
