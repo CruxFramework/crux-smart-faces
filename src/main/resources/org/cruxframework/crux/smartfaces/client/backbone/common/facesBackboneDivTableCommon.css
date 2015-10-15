@@ -1,7 +1,7 @@
 .facesDivTableContainer 
 {
-	display: inline-flex;
 	flex-direction: column;
+	display: table-row;
 }
 
 .facesDivTableRow
