@@ -16,12 +16,15 @@
 package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 
+import org.cruxframework.crux.core.client.css.animation.Animation.Callback;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
+import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
@@ -42,22 +45,31 @@ import com.google.gwt.user.client.ui.Widget;
  * @author wesley.diniz
  *
  */
-public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
+public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer implements HasDialogAnimation
 {
-	private static final String BASE_MENU_DISPOSAL_MENU = "faces-BaseMenuDisposal-Menu";
+	private static final String BASE_MENU_DISPOSAL_MENU = "menu";
+	private static final String CONTENT_MENU_STYLE = "contentPanel";
+	private static final String FOOTER_PANEL_STYLE = "footerPanel";
+	private static final String HEADER_PANEL_STYLE = "headerPanel";
+	private static final String MENU_PANEL_STYLE = "menuPanel";
+	private static final String SMALL_HEADER_PANEL = "smallHeaderPanel";
 
+	protected DialogAnimation animation;
 	protected Panel bodyPanel;
 	protected FooterPanel footerPanel;
 	protected HeaderPanel headerPanel;
 	protected Menu menu;
 	protected Panel menuPanel;
-	protected Panel viewContentPanel;
+	protected Panel viewContentPanel; 
+	
 	private BaseMenuHandler handler = GWT.create(BaseMenuHandler.class);
+
+	private boolean animationEnabled;
 
 	protected BaseMenuDisposal()
 	{
 		super(new FlowPanel(), true);
-		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();//TODO remover isso e usar heranca nos css
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setHistoryControlEnabled(true);
 		createChildWidgets();
 		buildLayout();
@@ -115,9 +127,30 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		return getActiveView();
 	}
 
+	@Override
+	public void setAnimation(DialogAnimation animation)
+	{
+		this.animation = animation;
+		setAnimationEnabled(animation != null);
+	}
+
+	@Override
+	public void setAnimationEnabled(boolean enable)
+	{
+		animationEnabled = enable;
+	}
+	
+	@Override
+	public boolean isAnimationEnabled()
+	{
+	    return animationEnabled && animation != null;
+	}
+
 	public void setMenu(final Menu menu)
 	{
 		this.menu = menu;
+		menuPanel.add(menu);
+		menu.addStyleName(BaseMenuDisposal.BASE_MENU_DISPOSAL_MENU);
 		handler.setMenu(this, menu);
 	}
 
@@ -147,6 +180,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		footerPanel.setStyleName(getFooterStyleName());
 		menuPanel.setStyleName(getMenuPanelStyleName());
 		viewContentPanel.setStyleName(getContentStyleName());
+		setAnimation(DialogAnimation.bounceLeft);
 		setStyleName(getDefaultStyleName());		
     }
 
@@ -160,7 +194,11 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	 * Must be overridden to specify content's style name
 	 * @return styteName
 	 */
-	protected abstract String getContentStyleName();
+	protected String getContentStyleName()
+	{
+		return CONTENT_MENU_STYLE;
+	}
+	
 	/**
 	 * Must be overridden to specify default stylename
 	 * @return styteName
@@ -170,21 +208,33 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	 * Must be overridden to specify footer's stylename
 	 * @return styteName
 	 */
-	protected abstract String getFooterStyleName();
+	protected String getFooterStyleName()
+	{
+		return FOOTER_PANEL_STYLE;
+	}
 
 	/**
 	 * Must be overridden to specify header's style name
 	 * @return styteName
 	 */
-	protected abstract String getHeaderStyleName();
+	protected String getHeaderStyleName()
+	{
+		return HEADER_PANEL_STYLE;		
+	}
 
 	/**
 	 * Must be overridden to specify menu's style name
 	 * @return styteName
 	 */
-	protected abstract String getMenuPanelStyleName();
+	protected String getMenuPanelStyleName()
+	{
+		return MENU_PANEL_STYLE;
+	}
 
-	protected abstract String getSmallHeaderStyleName();
+	protected String getSmallHeaderStyleName()
+	{
+		return SMALL_HEADER_PANEL;		
+	}
 
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
@@ -224,7 +274,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		@Override
 		public void setMenu(final BaseMenuDisposal disposal, Menu menu)
 		{
-			disposal.menuPanel.add(menu);
 			menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
 
 				@Override
@@ -245,10 +294,12 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 
 	static class SmallBaseMenuHandler implements BaseMenuHandler
 	{
+		private boolean menuVisible = false;
+		
 		@Override
 		public void setMenu(final BaseMenuDisposal disposal, final Menu menu)
 		{
-			menu.addStyleName(BaseMenuDisposal.BASE_MENU_DISPOSAL_MENU);
+			disposal.menuPanel.setVisible(menuVisible);
 			menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
 
 				@Override
@@ -269,21 +320,40 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		}
 
 		@Override
-		public void showSmallMenu(BaseMenuDisposal disposal)
+		public void showSmallMenu(final BaseMenuDisposal disposal)
 		{
 			if (disposal.menu != null)
 			{
 				BodyElement body = Document.get().getBody();
-				if (disposal.menu.getParent() == null)
+				if (menuVisible)
 				{
-					body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
-					disposal.menuPanel.add(disposal.menu);
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+					if (disposal.isAnimationEnabled())
+					{
+						disposal.animation.animateExit(disposal.menuPanel, new Callback()
+						{
+							@Override
+							public void onAnimationCompleted()
+							{
+								disposal.menuPanel.setVisible(false);
+							}
+						});
+					}
+					else
+					{
+						disposal.menuPanel.setVisible(false);
+					}
 				} 
 				else
 				{
-					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
-					disposal.menuPanel.remove(disposal.menu);
+					body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+					disposal.menuPanel.setVisible(true);
+					if (disposal.isAnimationEnabled())
+					{
+						disposal.animation.animateEntrance(disposal.menuPanel, null);
+					}
 				}
+				menuVisible = !menuVisible;
 			}
 		}
 	}
