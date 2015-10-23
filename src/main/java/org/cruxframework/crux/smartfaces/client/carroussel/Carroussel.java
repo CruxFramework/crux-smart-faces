@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Carroussel";
-	public static final String PAGE_PANEL_STYLE_NAME = "faces-Carroussel-page";
+	public static final String PAGE_PANEL_STYLE_NAME = "page";
 
 	protected SimplePanel contentPanel = new SimplePanel();
 	protected boolean fixedHeight = true;
