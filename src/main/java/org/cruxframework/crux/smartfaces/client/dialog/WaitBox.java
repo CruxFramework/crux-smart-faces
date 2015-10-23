@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.dialog;
 
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -26,7 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WaitBox extends AbstractDialogBox
 {
-	public static final String DEFAULT_STYLE_NAMES = "faces-WaitBox faces-popup";
+	public static final String DEFAULT_STYLE_NAME = "faces-WaitBox";
+	@Deprecated
+	public static final String DEFAULT_STYLE_NAMES = "faces-WaitBox";
 
 	/**
 	 * Creates a wait box
@@ -42,7 +45,7 @@ public class WaitBox extends AbstractDialogBox
 	 */
 	public WaitBox(boolean movable)
 	{
-		super(movable, false, false, true, DEFAULT_STYLE_NAMES);
+		super(movable, false, false, true, DEFAULT_STYLE_NAME);
 		setWidget(createProgressBar());
 	}
 
@@ -55,6 +58,34 @@ public class WaitBox extends AbstractDialogBox
 		super.setDialogTitle(message);
 	}
 	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesWaitBox());
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesWaitBox());
+		}
+	}
+
+	/**
+	 * Creates a progress bar animation to be inserted in progress box
+	 * @return
+	 */
+	private Widget createProgressBar() 
+	{
+		HTML bar = new HTML("<div class='faces-progressBar-fill'></div>"); //progressBarFill
+		bar.setStyleName("faces-progressBar");
+		return bar;
+	}
+
 	/**
 	 * Shows a wait box
 	 * @param message the text to be displayed
@@ -79,16 +110,5 @@ public class WaitBox extends AbstractDialogBox
 		waitBox.setMessage(message);
 		waitBox.center();
 		return waitBox;
-	}
-
-	/**
-	 * Creates a progress bar animation to be inserted in progress box
-	 * @return
-	 */
-	private Widget createProgressBar() 
-	{
-		HTML bar = new HTML("<div class='faces-progressBar-fill'></div>"); //progressBarFill
-		bar.setStyleName("faces-progressBar");
-		return bar;
 	}	
 }

@@ -37,7 +37,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class QuestionBox extends AbstractDialogBox
 {
-	public static final String DEFAULT_STYLE_NAMES = "faces-QuestionBox faces-popup";
+	public static final String DEFAULT_STYLE_NAME = "faces-QuestionBox";
+	@Deprecated
+	public static final String DEFAULT_STYLE_NAMES = "faces-QuestionBox";
 
 	private HTML msgLabel;
 	private NavPanel buttonsPanel;
@@ -47,7 +49,7 @@ public class QuestionBox extends AbstractDialogBox
 	 */
 	public QuestionBox()
 	{
-		this(true, false, false, DEFAULT_STYLE_NAMES);
+		this(true, false, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -74,7 +76,7 @@ public class QuestionBox extends AbstractDialogBox
 	 */
 	public static QuestionBox show(String title, String message, String[] labels, SelectHandler... handlers)
 	{
-		return show(title, message, true, false, false, DEFAULT_STYLE_NAMES, null, labels, handlers);
+		return show(title, message, true, false, false, DEFAULT_STYLE_NAME, null, labels, handlers);
 	}
 	
 	/**
@@ -87,7 +89,7 @@ public class QuestionBox extends AbstractDialogBox
 	 */
 	public static QuestionBox show(String title, String message, DialogAnimation animation, String[] labels, SelectHandler... handlers)
 	{
-		return show(title, message, true, false, false, DEFAULT_STYLE_NAMES, animation, labels, handlers);
+		return show(title, message, true, false, false, DEFAULT_STYLE_NAME, animation, labels, handlers);
 	}
 
 	/**
@@ -103,7 +105,7 @@ public class QuestionBox extends AbstractDialogBox
 	public static QuestionBox show(String title, String message, boolean movable, boolean resizable, boolean closable, 
 								String[] labels, SelectHandler... handlers)
 	{
-		return show(title, message, movable, resizable, closable, DEFAULT_STYLE_NAMES, null, labels, handlers);
+		return show(title, message, movable, resizable, closable, DEFAULT_STYLE_NAME, null, labels, handlers);
 	}
 	
 	/**
@@ -120,7 +122,7 @@ public class QuestionBox extends AbstractDialogBox
 	public static QuestionBox show(String title, String message, boolean movable, boolean resizable, boolean closable, 
 							DialogAnimation animation, String[] labels, SelectHandler... handlers)
 	{
-		return show(title, message, movable, resizable, closable, DEFAULT_STYLE_NAMES, animation, labels, handlers);
+		return show(title, message, movable, resizable, closable, DEFAULT_STYLE_NAME, animation, labels, handlers);
 	}
 
 
