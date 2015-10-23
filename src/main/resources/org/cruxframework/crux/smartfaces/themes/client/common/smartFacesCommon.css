@@ -78,24 +78,6 @@ body
 	-moz-osx-font-smoothing: grayscale;
 }
 
-/* -------------------- dialogs z-indexes -----------------------*/
-
-.faces-overlay
-{
-	z-index:5;
-}
-
-.faces-popup
-{
-	z-index:6;
-}
-
-.faces-WaitBox
-{
-	z-index:7;
-}
-
-
 /* -------------------- facesLabel -----------------------*/
 
 .faces-Label
@@ -341,7 +323,7 @@ body
 	left:2px;
 }
 
-.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:before
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu--open > .faces-Menu-openCloseTriggerHelper:before
 {
 	display:none;
 }
@@ -363,7 +345,7 @@ body
 	display:none;
 }
 
-.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-ul
+.faces-Menu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu--open > .faces-Menu-ul
 {
 	display:block;
 }
@@ -407,7 +389,7 @@ body
 	display:none;
 }
 
-.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
 	display:block;
 }
@@ -495,7 +477,7 @@ body
 	height:10px;
 }
 
-.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren.faces-Menu--open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
@@ -558,7 +540,7 @@ body
 	background:#aaa;
 }
 
-.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
+.faces-Menu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren.faces-Menu--open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
@@ -734,7 +716,7 @@ body
     padding:10px;
 }
 
-.faces-Menu.faces-Menu-slide .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.faces-Menu.faces-Menu-slide .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
     box-shadow:-1px 0 0 rgba(0,0,0,0.2);   
 }
