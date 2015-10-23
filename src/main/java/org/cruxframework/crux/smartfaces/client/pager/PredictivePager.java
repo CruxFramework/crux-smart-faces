@@ -24,15 +24,15 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A pager which knows the total number of pages.  
- * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante
  */
 public class PredictivePager<T> extends NavigationButtonsPager<T>
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-PredictivePager";
-	private NavPanel panel;
+	public static final String DEFAULT_STYLE_NAME = "faces-PredictivePager";
+	
 	private ListBox listBox;
 	private int pageCount;
+	private NavPanel panel;
 	
 	/**
 	 * Constructor
@@ -50,6 +50,12 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 		
 		this.panel.setStyleName(DEFAULT_STYLE_NAME);
 		initWidget(this.panel);		
+	}
+
+	@Override
+	protected void hideLoading()
+	{
+		listBox.setEnabled(true);		
 	}
 
 	@Override
@@ -76,24 +82,18 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 			listBox.setEnabled(false);
 		}
 	}
-
-	@Override
-	protected void showLoading()
-	{
-		listBox.setEnabled(false);
-	}
-	
-	@Override
-	protected void hideLoading()
-	{
-		listBox.setEnabled(true);		
-	}
 	
 	@Override
 	protected void setInteractionEnabled(boolean enabled) 
 	{
 		super.setInteractionEnabled(enabled);
 		listBox.setEnabled(enabled);
+	}
+	
+	@Override
+	protected void showLoading()
+	{
+		listBox.setEnabled(false);
 	}
 	
 	/**

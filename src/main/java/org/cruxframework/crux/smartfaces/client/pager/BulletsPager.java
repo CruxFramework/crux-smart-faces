@@ -24,8 +24,6 @@ import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
-import com.google.gwt.dom.client.Style.BorderStyle;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.Timer;
@@ -41,9 +39,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class BulletsPager<T> extends AbstractPager<T> 
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-BulletsPager";
-	public static final String STYLE_BULLET = "faces-BulletsPager-Bullet";
+	public static final String STYLE_BULLET = "bullet";
 
-	private static final String ACTIVE_STYLE_SUFFIX = "-Active";
+	private static final String ACTIVE_STYLE_SUFFIX = "-active";
 
 	protected AutoTransiteTimer<T> autoTransiteTimer;
 	protected boolean autoTransitionEnabled = true;
@@ -128,11 +126,6 @@ public class BulletsPager<T> extends AbstractPager<T>
 	{
 		Label bullet = new Label();
 		bullet.setStyleName(STYLE_BULLET);
-		bullet.getElement().getStyle().setBorderWidth(1, Unit.PX);
-		bullet.getElement().getStyle().setBorderColor("red");
-		bullet.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);;
-		bullet.setWidth("15px");
-		bullet.setHeight("15px");
 		bullet.addSelectHandler(new SelectHandler() 
 		{
 			@Override

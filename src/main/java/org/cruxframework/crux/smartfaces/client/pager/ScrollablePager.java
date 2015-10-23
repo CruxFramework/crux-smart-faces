@@ -44,8 +44,6 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";
 
-	private static final String STYLE_SCROLLABLE_PAGER_PAGER_LOADING = "faces-ScrollablePager--pagerLoading";
-	
 	private int lastRequestedPage = 0;
 	private int lastScrollPos = 0;
 	private DivElement loadingElement;
@@ -64,7 +62,6 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 		// Handle scroll events.
 		scrollable.addScrollHandler(new ScrollHandler()
 		{
-
 			public void onScroll(ScrollEvent event)
 			{
 				// If scrolling up, ignore the event.
@@ -172,7 +169,7 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 		if (loadingElement == null)
 		{
 			loadingElement = Document.get().createDivElement();
-			loadingElement.setClassName(STYLE_SCROLLABLE_PAGER_PAGER_LOADING);
+			loadingElement.setClassName(getLoaderStyleName());
 			Document.get().getBody().appendChild(loadingElement);
 		}
     }
