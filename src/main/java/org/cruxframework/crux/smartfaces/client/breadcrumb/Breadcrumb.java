@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
+import org.cruxframework.crux.core.client.utils.DOMUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.image.Image;
@@ -29,6 +30,7 @@ import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -43,10 +45,10 @@ import com.google.gwt.user.client.ui.HasEnabled;
 public class Breadcrumb extends Composite implements HasEnabled
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Breadcrumb";
-	public static final String STYLE_BREADCRUMB_ITEM = "faces-Breadcrumb-Item";
-	public static final String STYLE_BREADCRUMB_SEPARATOR = "faces-Breadcrumb-Separator";
-	private static final String STYLE_BREADCRUMB_DISABLED_SUFFIX = "-Disabled";
-	private static final String STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX = "-Active";
+	public static final String STYLE_BREADCRUMB_ITEM = "item";
+	public static final String STYLE_BREADCRUMB_SEPARATOR = "separator";
+	private static final String STYLE_BREADCRUMB_DISABLED_SUFFIX = "-disabled";
+	private static final String STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX = "-active";
 
 	private HandlerRegistration activateHandler;
 	private boolean activateItemsOnSelectionEnabled = true;
@@ -391,6 +393,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	public Breadcrumb setDividerImage(Image divider)
 	{
 		dividerImage = divider;
+		mainPanel.updateDividers();
 		return this;
 	}
 
@@ -403,6 +406,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	public Breadcrumb setDividerText(String divider)
 	{
 		dividerText = divider;
+		mainPanel.updateDividers();
 		return this;
 	}
 
@@ -676,6 +680,18 @@ public class Breadcrumb extends Composite implements HasEnabled
 				}
 			}
 			item.getElement().removeFromParent();
+		}
+		
+		protected void updateDividers()
+		{
+			NodeList<Element> separators = DOMUtils.getElementsByClassName(listElement, STYLE_BREADCRUMB_SEPARATOR);
+			
+			for (int i = 0; i < separators.getLength(); i++)
+			{
+				Element separator = separators.getItem(i);
+				separator.removeAllChildren();
+				separator.appendChild(breadcrumb.createDivider());
+			}
 		}
 	}	
 }
