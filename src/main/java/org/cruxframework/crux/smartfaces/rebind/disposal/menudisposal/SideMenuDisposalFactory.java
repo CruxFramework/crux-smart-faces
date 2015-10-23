@@ -73,7 +73,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 		return new DisposalLayoutContext();
 	}
 
-	@TagConstraints(minOccurs="0")
+	@TagConstraints(minOccurs="0", maxOccurs="unbounded")
 	@TagChildren({
 		@TagChild(SideMenuDisposalFactory.ViewProcessor.class),
 		@TagChild(SideMenuDisposalFactory.LayoutSmallHeaderProcessor.class),
@@ -136,8 +136,6 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 	public static class LayoutHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 	}
-
-	
 	
 	static enum SideDisposalMenuType
 	{
