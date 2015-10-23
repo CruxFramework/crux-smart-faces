@@ -300,11 +300,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	
 	protected abstract void setValueByObject(T obj);
 	
-	private void showList()
-	{
-		popup.showRelativeTo(textBox);
-	}
-	
 	private void createVisualComponents(OptionsRenderer<V, T> optionsRenderer)
 	{
 		this.optionsRenderer = optionsRenderer;
@@ -366,6 +361,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			}
 		}, SelectComboItemEvent.getType());
 		setStyleName(DEFAULT_STYLE_NAME);
+	}
+	
+	private void showList()
+	{
+		popup.showRelativeTo(textBox);
 	}
 	
 	/**

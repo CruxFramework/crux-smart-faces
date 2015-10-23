@@ -632,7 +632,6 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 	static class Box extends ValueBox<Number> implements HasPasteHandlers
 	{
-		@SuppressWarnings("deprecation")
         public Box(NumberRenderer renderer)
 		{
 			super(Document.get().createTextInputElement(), renderer, renderer);
