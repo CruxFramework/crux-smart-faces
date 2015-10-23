@@ -40,7 +40,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 {
-	public static final String DEFAULT_STYLE_NAMES = "faces-MessageBox faces-popup";
+	public static final String DEFAULT_STYLE_NAME = "faces-MessageBox";
+	@Deprecated
+	public static final String DEFAULT_STYLE_NAMES = "faces-MessageBox";
 
 	public static enum MessageType
 	{
@@ -55,7 +57,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public MessageBox()
 	{
-		this(true, true, true, false, DEFAULT_STYLE_NAMES);
+		this(true, true, true, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -81,7 +83,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type)
 	{
-		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAMES, null);
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, null);
 	}
 	
 	/**
@@ -92,7 +94,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type, DialogAnimation animation)
 	{
-		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAMES, animation);
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
 	
 	/**
@@ -158,7 +160,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, 
 								boolean closable, boolean modal)
 	{
-		return show(title, message, type, movable, resizable, closable, modal, DEFAULT_STYLE_NAMES, null);
+		return show(title, message, type, movable, resizable, closable, modal, DEFAULT_STYLE_NAME, null);
 	}
 	
 	/**

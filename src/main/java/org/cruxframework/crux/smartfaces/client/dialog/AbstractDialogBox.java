@@ -42,41 +42,32 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A simple dialog box built upon DIV elements.
- * @author Gesse Dafe
+ * Base class to create dialog boxes.
  * @author Thiago da Rosa de Bustamante
  */
 public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
-	public static final String DEFAULT_STYLE_NAMES = "faces-DialogBox faces-popup";
-	private static final int MIN_WIDTH = 100;
-	private static final int MIN_HEIGHT = 50;
-	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
+	@Deprecated
+	public static final String DEFAULT_STYLE_NAMES = "faces-DialogBox";
+
 	private static HandlerRegistration closeHandler;
+	private static final int MIN_HEIGHT = 50;
+	private static final int MIN_WIDTH = 100;
+	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
+
+	private static final String STYLE_POPUP_BODY = "faces-popup-body";
+	private static final String STYLE_POPUP_CLOSE = "faces-popup-close";
+	private static final String STYLE_POPUP_DRAGGER = "faces-popup-dragger";
+	private static final String STYLE_POPUP_HEADER = "faces-popup-header";
+	private static final String STYLE_POPUP_RESIZER = "faces-popup-resizer";
+	private static final String STYLE_POPUP_SPLIT = "faces-popup-split";
+	private static final String STYLE_POPUP_TITLE = "faces-popup-title";
+	
 	private SimplePanel body = new SimplePanel();
-	private HTML title = new HTML();
 	private Button closeBtn = new Button();
 	private Label moveHandle;
 	private Label resizeHandle;
-	
-	/**
-	 * Constructor
-	 */
-	public AbstractDialogBox()
-	{
-		this(true, true, true, false, DEFAULT_STYLE_NAMES);
-	}
-	
-	/**
-	 * Constructor
-	 * @param movable
-	 * @param resizable
-	 * @param closable
-	 */
-	public AbstractDialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
-	{
-		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAMES);
-	}
+	private HTML title = new HTML();
 	
 	/**
 	 * Constructor
@@ -90,14 +81,13 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	{
 		super(false, modal);
 		setStyleName(baseStyleName);
-		setGlassStyleName("faces-overlay");
 
 		FlowPanel topBar = prepareTopBar(movable, closable);
 		
-		body.setStyleName("faces-popup-body");
+		body.setStyleName(STYLE_POPUP_BODY);
 
 		FlowPanel split = new FlowPanel();
-		split.setStyleName("faces-popup-split");
+		split.setStyleName(STYLE_POPUP_SPLIT);
 		split.add(topBar);
 		split.add(body);
 		
@@ -131,56 +121,53 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		}
 	}
 
-	/**
-	 * Prepares the handle used to resize the dialog
-	 * @return
-	 */
-	private Label prepareResizer() 
+	@Override
+	public void clear() 
 	{
-		Label resizer = new Label();
-		resizer.setStyleName("faces-popup-resizer");
-		return resizer;
+		body.clear();
 	}
 
-	/**
-	 * Creates the dialog's title bar 
-	 * @param movable
-	 * @param closable
-	 * @return
-	 */
-	private FlowPanel prepareTopBar(boolean movable, boolean closable) 
+	@Override
+	public int getAbsoluteHeight()
 	{
-		FlowPanel topBar = new FlowPanel();
-		topBar.setStyleName("faces-popup-header");
-		
-		title.setStyleName("faces-popup-title");
-		topBar.add(title);
-		
-		if(movable)
+		return getElement().getOffsetHeight();
+	}
+	
+	@Override
+	public int getAbsoluteWidth()
+	{
+		return getElement().getOffsetWidth();
+	}
+	
+	@Override
+	public Label getHandle(DragAndDropFeature feature)
+	{
+		if(DragAndDropFeature.MOVE.equals(feature))
 		{
-			moveHandle = new Label();
-			moveHandle.setStyleName("faces-popup-dragger");
-			topBar.add(moveHandle);
-		}		
-		
-		if(closable)
-		{
-			if(closable)
-			{
-				closeBtn.setStyleName("faces-popup-close");
-				closeBtn.addSelectHandler(new SelectHandler() 
-				{
-					@Override
-					public void onSelect(SelectEvent event) 
-					{
-						hide();
-					}
-				});
-				topBar.add(closeBtn);
-			}
+			return moveHandle;
 		}
-		
-		return topBar;
+		else
+		{
+			return resizeHandle;
+		}
+	}
+	
+	@Override
+	public Widget getWidget() 
+	{
+		return body.getWidget();
+	}
+	
+	@Override
+	public boolean remove(IsWidget child) 
+	{
+		return body.remove(child);
+	}
+	
+	@Override
+	public boolean remove(Widget w) 
+	{
+		return body.remove(w);
 	}
 	
 	/**
@@ -201,74 +188,25 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	{
 		title.setText(text);
 	}
+		
+	@Override
+	public void setDimensions(int w, int h)
+	{
+		setPixelSize(w, h);
+	}
 	
 	@Override
 	public void setWidget(IsWidget w) 
 	{
 		body.setWidget(w);
 	}
-	
+
 	@Override
 	public void setWidget(Widget w) 
 	{
 		body.setWidget(w);
 	}
-	
-	@Override
-	public boolean remove(Widget w) 
-	{
-		return body.remove(w);
-	}
-	
-	@Override
-	public boolean remove(IsWidget child) 
-	{
-		return body.remove(child);
-	}
-	
-	@Override
-	public void clear() 
-	{
-		body.clear();
-	}
-		
-	@Override
-	public Widget getWidget() 
-	{
-		return body.getWidget();
-	}
-	
-	@Override
-	public Label getHandle(DragAndDropFeature feature)
-	{
-		if(DragAndDropFeature.MOVE.equals(feature))
-		{
-			return moveHandle;
-		}
-		else
-		{
-			return resizeHandle;
-		}
-	}
 
-	@Override
-	public void setDimensions(int w, int h)
-	{
-		setPixelSize(w, h);
-	}
-
-	@Override
-	public int getAbsoluteWidth()
-	{
-		return getElement().getOffsetWidth();
-	}
-
-	@Override
-	public int getAbsoluteHeight()
-	{
-		return getElement().getOffsetHeight();
-	}
-	
 	@Override
 	public void show()
 	{
@@ -281,6 +219,58 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	{
 	    super.hide(autoClosed);
 	    openDialogs.remove(this);
+	}
+	
+	/**
+	 * Prepares the handle used to resize the dialog
+	 * @return
+	 */
+	private Label prepareResizer() 
+	{
+		Label resizer = new Label();
+		resizer.setStyleName(STYLE_POPUP_RESIZER);
+		return resizer;
+	}
+
+	/**
+	 * Creates the dialog's title bar 
+	 * @param movable
+	 * @param closable
+	 * @return
+	 */
+	private FlowPanel prepareTopBar(boolean movable, boolean closable) 
+	{
+		FlowPanel topBar = new FlowPanel();
+		topBar.setStyleName(STYLE_POPUP_HEADER);
+		
+		title.setStyleName(STYLE_POPUP_TITLE);
+		topBar.add(title);
+		
+		if(movable)
+		{
+			moveHandle = new Label();
+			moveHandle.setStyleName(STYLE_POPUP_DRAGGER);
+			topBar.add(moveHandle);
+		}		
+		
+		if(closable)
+		{
+			if(closable)
+			{
+				closeBtn.setStyleName(STYLE_POPUP_CLOSE);
+				closeBtn.addSelectHandler(new SelectHandler() 
+				{
+					@Override
+					public void onSelect(SelectEvent event) 
+					{
+						hide();
+					}
+				});
+				topBar.add(closeBtn);
+			}
+		}
+		
+		return topBar;
 	}
 	
 	/**

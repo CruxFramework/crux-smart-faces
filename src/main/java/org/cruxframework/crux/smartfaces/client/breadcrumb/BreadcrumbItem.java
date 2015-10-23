@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.breadcrumb;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
@@ -118,14 +119,30 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		return addHandler(handler, SelectEvent.getType());
 	}
 	
+	/**
+	 * Verify if the current user has permission to select this item
+	 * 
+	 * @param role user role
+	 */
 	public void checkEditPermission(String role)
 	{
-		
+		if (!Permissions.hasRole(role))
+		{
+			Permissions.markAsUnauthorizedForEdition(this);
+		}
 	}
 
+	/**
+	 * Verify if the current user has permission to see this item.
+	 * 
+	 * @param user role
+	 */
 	public void checkViewPermission(String role)
 	{
-		
+		if (!Permissions.hasRole(role))
+		{
+			Permissions.markAsUnauthorizedForViewing(this);
+		}
 	}
 	
 	@Override

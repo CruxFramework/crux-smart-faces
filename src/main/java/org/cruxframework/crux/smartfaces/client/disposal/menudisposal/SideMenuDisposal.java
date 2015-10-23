@@ -33,12 +33,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
 	
-	private static final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
-	private static final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
-	private static final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
-	private static final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
 	private static final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
-	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
 	
 	private LayoutBuilder layoutBuilder = null;
 	
@@ -78,40 +73,11 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		getLayoutBuilder().buildLayout(this);
 	}
 	@Override
-	protected String getContentStyleName()
-	{
-		return CONTENT_MENU_STYLE;
-	}
-	@Override
 	protected String getDefaultStyleName()
 	{
 		return DEFAULT_STYLE_NAME;
 	}
-	
-	@Override
-	protected String getFooterStyleName()
-	{
-		return FOOTER_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getHeaderStyleName()
-	{
-		return HEADER_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getMenuPanelStyleName()
-	{
-		return MENU_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getSmallHeaderStyleName()
-	{
-		return SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL;
-	}
-	
+			
 	private LayoutBuilder getLayoutBuilder()
 	{
 		if(layoutBuilder == null)

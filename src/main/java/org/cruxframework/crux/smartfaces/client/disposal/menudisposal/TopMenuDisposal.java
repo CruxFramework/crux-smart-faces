@@ -34,12 +34,6 @@ public class TopMenuDisposal extends BaseMenuDisposal
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-TopMenuDisposal";
 
-	private static final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-contentPanel";
-	private static final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-footerPanel";
-	private static final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-headerPanel";
-	private static final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-menuPanel";
-	private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
-
 	private LayoutBuilder layoutBuilder = null;
 
 	@Override
@@ -70,40 +64,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	}
 
 	@Override
-	protected String getContentStyleName()
-	{
-		
-		return CONTENT_PANEL_STYLE;
-	}
-
-	@Override
 	protected String getDefaultStyleName()
 	{
 		return DEFAULT_STYLE_NAME;
-	}
-
-	@Override
-	protected String getFooterStyleName()
-	{
-		return FOOTER_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getHeaderStyleName()
-	{
-		return HEADER_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getMenuPanelStyleName()
-	{
-		return MENU_PANEL_STYLE;
-	}
-	
-	@Override
-	protected String getSmallHeaderStyleName()
-	{
-		return TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL;
 	}
 	
 	private LayoutBuilder getLayoutBuilder()

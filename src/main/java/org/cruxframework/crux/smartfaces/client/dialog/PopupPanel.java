@@ -21,7 +21,6 @@ import java.util.List;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
-import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 
@@ -68,36 +67,36 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
-	private static final String FACES_POPUP_CONTENT = "faces-popup-content";
-	
 	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
+	
+	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
 
-	private PopupCentralizer popupCentralizer = GWT.create(PopupCentralizer.class);
-
+	private static final String FACES_POPUP_CONTENT = "faces-popup-content";
 	/**
 	 * Coordinates the times that the glass is called.  
 	 */
 	private static int numberCalls = 0;
+	private static final String STYLE_POPUP = "faces-popup";
 	
-	private HandlerRegistration nativePreviewHandlerRegistration;
-	private HandlerRegistration historyHandlerRegistration;
-	private boolean autoHideOnHistoryEvents;
-	private boolean showing;
-	private boolean animationEnabled;
-	private boolean modal;
-	private boolean autoHide;
-	private FastList<Element> autoHidePartners;
-	private Element glass;
-	private String glassStyleName = DEFAULT_GLASS_STYLE_NAME;
-	private boolean glassShowing;
-	private Element containerElement;
-	private DialogAnimation animation;
 	private boolean animating;
+	private DialogAnimation animation;
+	private boolean animationEnabled;
+	private boolean autoHide;
+	private boolean autoHideOnHistoryEvents;
+	private FastList<Element> autoHidePartners;
+	private Element containerElement;
+	private Element glass;
+	private boolean glassShowing;
+	private String glassStyleName = DEFAULT_GLASS_STYLE_NAME;
+	private HandlerRegistration historyHandlerRegistration;
 	private int left = -1;
-	private int top = -1;
+	private boolean modal;
+	private HandlerRegistration nativePreviewHandlerRegistration;
+	private PopupCentralizer popupCentralizer = GWT.create(PopupCentralizer.class);
 
-	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
-	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
+	private boolean showing;
+	private int top = -1;
 
 	/**
 	 * Creates an empty popup panel. A child widget must be added to it before
@@ -133,7 +132,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public PopupPanel(boolean autoHide, boolean modal)
 	{
-		FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		
 		this.autoHide = autoHide;
 		this.autoHideOnHistoryEvents = autoHide;
@@ -181,23 +180,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		setStyleName(getContainerElement(), FACES_POPUP_CONTENT);
 	}
 
-	@Override
-	public void setStyleName(String style, boolean add)
-	{
-		super.setStyleName(style, add);
-		if (!add)
-		{
-		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
-		}
-	}
-	
-	@Override
-	public void setStyleName(String style)
-	{
-	    super.setStyleName(style);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
-	}
-		
 	/**
 	 * Mouse events that occur within an autoHide partner will not hide a panel
 	 * set to autoHide.
@@ -214,74 +196,17 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		autoHidePartners.add(partner);
 	}
-
-	/**
-	 * Remove an autoHide partner.
-	 * 
-	 * @param partner
-	 *            the auto hide partner to remove
-	 */
-	public void removeAutoHidePartner(Element partner)
+	
+	@Override
+	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
 	{
-		assert partner != null : "partner cannot be null";
-		if (autoHidePartners != null)
-		{
-			autoHidePartners.remove(partner);
-		}
+		return addHandler(handler, CloseEvent.getType());
 	}
-
-	/**
-	 * Determines whether or not this popup is showing.
-	 * 
-	 * @return <code>true</code> if the popup is showing
-	 * @see #show()
-	 * @see #hide()
-	 */
-	public boolean isShowing()
+		
+	@Override
+	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
 	{
-		return showing;
-	}
-
-	/**
-	 * Determines if the popup is animating or not
-	 * 
-	 * @return <code>true</code> if the popup is running a animation
-	 */
-	public boolean isAnimating() 
-	{
-		return animating;
-	}
-
-	/**
-	 * Shows the popup and attach it to the page. It must have a child widget
-	 * before this method is called.
-	 */
-	public void show()
-	{
-		doShow(isAnimationEnabled());
-	}
-
-	/**
-	 * Normally, the popup is positioned directly below the relative target,
-	 * with its left edge aligned with the left edge of the target. Depending on
-	 * the width and height of the popup and the distance from the target to the
-	 * bottom and right edges of the window, the popup may be displayed directly
-	 * above the target, and/or its right edge may be aligned with the right
-	 * edge of the target.
-	 * 
-	 * @param target
-	 *            the target to show the popup below
-	 */
-	public final void showRelativeTo(final UIObject target)
-	{
-		setVisible(false);
-		doShow(false);
-		setPosition(getLeftRelativeObject(target), getTopRelativeObject(target));
-		setVisible(true);
-		if (isAnimationEnabled())
-		{
-			runEntranceAnimation(null);
-		}
+		return addHandler(handler, OpenEvent.getType());
 	}
 
 	/**
@@ -318,7 +243,17 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				}
 			}
 		}
-	}	
+	}
+
+	/**
+	 * Gets the style name to be used on the glass element. 
+	 * 
+	 * @return the glass element's style name
+	 */
+	public String getGlassStyleName()
+	{
+		return glassStyleName;
+	}
 
 	/**
 	 * Hides the popup and detaches it from the page. This has no effect if it
@@ -330,75 +265,19 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	}
 
 	/**
-	 * Sets the style name to be used on the glass element. 
+	 * Determines if the popup is animating or not
 	 * 
-	 * @param glassStyleName
-	 *            the glass element's style name
+	 * @return <code>true</code> if the popup is running a animation
 	 */
-	public void setGlassStyleName(String glassStyleName)
+	public boolean isAnimating() 
 	{
-		this.glassStyleName = glassStyleName;
-		if (glass != null)
-		{
-			glass.setClassName(glassStyleName);
-			glass.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesOverlay());
-		}
-	}
-
-	/**
-	 * Gets the style name to be used on the glass element. 
-	 * 
-	 * @return the glass element's style name
-	 */
-	public String getGlassStyleName()
-	{
-		return glassStyleName;
-	}	
-
-	@Override
-	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
-	{
-		return addHandler(handler, CloseEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
-	{
-		return addHandler(handler, OpenEvent.getType());
-	}
-
-	/**
-	 * Defines the animation used to animate popup entrances and exits
-	 * @param animation
-	 */
-	public void setAnimation(DialogAnimation animation)
-	{
-		this.animation = animation;
-		setAnimationEnabled(animation != null);
+		return animating;
 	}
 
 	@Override
 	public boolean isAnimationEnabled()
 	{
 		return animationEnabled;
-	}
-
-	@Override
-	public void setAnimationEnabled(boolean enable)
-	{
-		animationEnabled = enable;
-	}
-
-	/**
-	 * Enable or disable the autoHide feature. When enabled, the popup will be
-	 * automatically hidden when the user clicks outside of it.
-	 * 
-	 * @param autoHide
-	 *            true to enable autoHide, false to disable
-	 */
-	public void setAutoHideEnabled(boolean autoHide)
-	{
-		this.autoHide = autoHide;
 	}
 
 	/**
@@ -410,7 +289,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	public boolean isAutoHideEnabled()
 	{
 		return autoHide;
-	}
+	}	
 
 	/**
 	 * Returns <code>true</code> if the popup should be automatically hidden
@@ -434,76 +313,15 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	}
 
 	/**
-	 * Enable or disable autoHide on history change events. When enabled, the
-	 * popup will be automatically hidden when the history token changes, such
-	 * as when the user presses the browser's back button. Disabled by default.
+	 * Determines whether or not this popup is showing.
 	 * 
-	 * @param enabled
-	 *            true to enable, false to disable
-	 */
-	public void setAutoHideOnHistoryEventsEnabled(boolean enabled)
-	{
-		this.autoHideOnHistoryEvents = enabled;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	protected com.google.gwt.user.client.Element getContainerElement()
-	{
-		return containerElement.cast();
-	}
-
-	/**
-	 * Sets the popup's position relative to the browser's client area. The
-	 * popup's position may be set before calling {@link #show()}.
-	 * 
-	 * @param left
-	 *            the left position, in pixels
-	 * @param top
-	 *            the top position, in pixels
-	 */
-	public void setPosition(int left, int top)
-	{
-		if (popupCentralizer.isCentralized())
-		{
-			uncentralizeMe();
-		}
-
-		// Account for the difference between absolute position and the
-		// body's positioning context.
-		Document document = Document.get();
-		left -= document.getBodyOffsetLeft();
-		top -= document.getBodyOffsetTop();
-
-		this.left = left;
-		this.top = top;
-		setPopupPositionStyle(left, top);
-	}
-
-	/**
-	 * Sets whether this object is visible. This method just sets the
-	 * <code>visibility</code> style attribute. You need to call {@link #show()}
-	 * to actually attached/detach the {@link PopupPanel} to the page.
-	 * 
-	 * @param visible
-	 *            <code>true</code> to show the object, <code>false</code> to
-	 *            hide it
+	 * @return <code>true</code> if the popup is showing
 	 * @see #show()
 	 * @see #hide()
 	 */
-	@Override
-	public void setVisible(boolean visible)
+	public boolean isShowing()
 	{
-		// We use visibility here instead of UIObject's default of display
-		// Because the panel is absolutely positioned, this will not create
-		// "holes" in displayed contents and it allows normal layout passes
-		// to occur so the size of the PopupPanel can be reliably determined.
-		getElement().getStyle().setVisibility(visible?Visibility.VISIBLE:Visibility.HIDDEN);
-
-		if (glass != null)
-		{
-			glass.getStyle().setVisibility(visible?Visibility.VISIBLE:Visibility.HIDDEN);
-		}
+		return showing;
 	}	
 
 	/**
@@ -520,17 +338,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		return !getElement().getStyle().getVisibility().equals(Visibility.HIDDEN.getCssName());
 	}
-
-	/**
-	 * Fires a blur event to the element.
-	 * @param elt the element.
-	 */
-	private native void blur(Element elt) /*-{
-	    // Issue 2390: blurring the body causes IE to disappear to the background
-	    if (elt.blur && elt != $doc.body) {
-	      elt.blur();
-	    }
-	  }-*/;
 
 	@Override
 	public void onPreviewNativeEvent(NativePreviewEvent event)
@@ -625,6 +432,203 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 	}
 
+	/**
+	 * Remove an autoHide partner.
+	 * 
+	 * @param partner
+	 *            the auto hide partner to remove
+	 */
+	public void removeAutoHidePartner(Element partner)
+	{
+		assert partner != null : "partner cannot be null";
+		if (autoHidePartners != null)
+		{
+			autoHidePartners.remove(partner);
+		}
+	}
+
+	/**
+	 * Defines the animation used to animate popup entrances and exits
+	 * @param animation
+	 */
+	public void setAnimation(DialogAnimation animation)
+	{
+		this.animation = animation;
+		setAnimationEnabled(animation != null);
+	}
+
+	@Override
+	public void setAnimationEnabled(boolean enable)
+	{
+		animationEnabled = enable;
+	}
+
+	/**
+	 * Enable or disable the autoHide feature. When enabled, the popup will be
+	 * automatically hidden when the user clicks outside of it.
+	 * 
+	 * @param autoHide
+	 *            true to enable autoHide, false to disable
+	 */
+	public void setAutoHideEnabled(boolean autoHide)
+	{
+		this.autoHide = autoHide;
+	}
+
+	/**
+	 * Enable or disable autoHide on history change events. When enabled, the
+	 * popup will be automatically hidden when the history token changes, such
+	 * as when the user presses the browser's back button. Disabled by default.
+	 * 
+	 * @param enabled
+	 *            true to enable, false to disable
+	 */
+	public void setAutoHideOnHistoryEventsEnabled(boolean enabled)
+	{
+		this.autoHideOnHistoryEvents = enabled;
+	}
+
+	/**
+	 * Sets the style name to be used on the glass element. 
+	 * 
+	 * @param glassStyleName
+	 *            the glass element's style name
+	 */
+	public void setGlassStyleName(String glassStyleName)
+	{
+		this.glassStyleName = glassStyleName;
+		if (glass != null)
+		{
+			glass.setClassName(glassStyleName);
+			glass.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesOverlay());
+		}
+	}
+
+	/**
+	 * Sets the popup's position relative to the browser's client area. The
+	 * popup's position may be set before calling {@link #show()}.
+	 * 
+	 * @param left
+	 *            the left position, in pixels
+	 * @param top
+	 *            the top position, in pixels
+	 */
+	public void setPosition(int left, int top)
+	{
+		if (popupCentralizer.isCentralized())
+		{
+			uncentralizeMe();
+		}
+
+		// Account for the difference between absolute position and the
+		// body's positioning context.
+		Document document = Document.get();
+		left -= document.getBodyOffsetLeft();
+		top -= document.getBodyOffsetTop();
+
+		this.left = left;
+		this.top = top;
+		setPopupPositionStyle(left, top);
+	}
+
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(STYLE_POPUP);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
+	}
+
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(STYLE_POPUP);
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPopup());
+		}
+	}
+
+	/**
+	 * Sets whether this object is visible. This method just sets the
+	 * <code>visibility</code> style attribute. You need to call {@link #show()}
+	 * to actually attached/detach the {@link PopupPanel} to the page.
+	 * 
+	 * @param visible
+	 *            <code>true</code> to show the object, <code>false</code> to
+	 *            hide it
+	 * @see #show()
+	 * @see #hide()
+	 */
+	@Override
+	public void setVisible(boolean visible)
+	{
+		// We use visibility here instead of UIObject's default of display
+		// Because the panel is absolutely positioned, this will not create
+		// "holes" in displayed contents and it allows normal layout passes
+		// to occur so the size of the PopupPanel can be reliably determined.
+		getElement().getStyle().setVisibility(visible?Visibility.VISIBLE:Visibility.HIDDEN);
+
+		if (glass != null)
+		{
+			glass.getStyle().setVisibility(visible?Visibility.VISIBLE:Visibility.HIDDEN);
+		}
+	}
+
+	/**
+	 * Shows the popup and attach it to the page. It must have a child widget
+	 * before this method is called.
+	 */
+	public void show()
+	{
+		doShow(isAnimationEnabled());
+	}	
+
+	/**
+	 * Normally, the popup is positioned directly below the relative target,
+	 * with its left edge aligned with the left edge of the target. Depending on
+	 * the width and height of the popup and the distance from the target to the
+	 * bottom and right edges of the window, the popup may be displayed directly
+	 * above the target, and/or its right edge may be aligned with the right
+	 * edge of the target.
+	 * 
+	 * @param target
+	 *            the target to show the popup below
+	 */
+	public final void showRelativeTo(final UIObject target)
+	{
+		setVisible(false);
+		doShow(false);
+		setPosition(getLeftRelativeObject(target), getTopRelativeObject(target));
+		setVisible(true);
+		if (isAnimationEnabled())
+		{
+			runEntranceAnimation(null);
+		}
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	protected com.google.gwt.user.client.Element getContainerElement()
+	{
+		return containerElement.cast();
+	}
+
+	/**
+	 * Hides the popup and detaches it from the page. This has no effect if it
+	 * is not currently showing.
+	 * 
+	 * @param autoClosed
+	 *            the value that will be passed to
+	 *            {@link CloseHandler#onClose(CloseEvent)} when the popup is
+	 *            closed
+	 */
+	protected void hide(final boolean autoClosed)
+	{
+		doHide(true, autoClosed, isAnimationEnabled());
+	}
+
 	@Override
 	protected void onUnload()
 	{
@@ -642,43 +646,22 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	}
 
 	/**
-	 * Hides the popup and detaches it from the page. This has no effect if it
-	 * is not currently showing.
-	 * 
-	 * @param autoClosed
-	 *            the value that will be passed to
-	 *            {@link CloseHandler#onClose(CloseEvent)} when the popup is
-	 *            closed
+	 * Fires a blur event to the element.
+	 * @param elt the element.
 	 */
-	protected void hide(final boolean autoClosed)
-	{
-		doHide(true, autoClosed, isAnimationEnabled());
-	}
+	private native void blur(Element elt) /*-{
+	    // Issue 2390: blurring the body causes IE to disappear to the background
+	    if (elt.blur && elt != $doc.body) {
+	      elt.blur();
+	    }
+	  }-*/;
 
-	private void runEntranceAnimation(final StateChangeCallback callback)
+	private void centralizeMe()
 	{
-		animating = true;
-		getDialogAnimation().animateEntrance(this, new Animation.Callback()
-		{
-			@Override
-			public void onAnimationCompleted()
-			{
-				animating = false;
-				if (callback != null)
-				{
-					callback.onStateChange();
-				}
-			}
-		});
-	}
+		popupCentralizer.centralize(this);
 
-	private DialogAnimation getDialogAnimation()
-	{
-		if (animation == null)
-		{
-			animation = DialogAnimation.bounce;
-		}
-		return animation;
+		left = -1;
+		top = -1;
 	}
 
 	private void doHide(boolean fireEvent, final boolean autoClosed, boolean animated)
@@ -706,43 +689,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			setState(false, false, animated, null);
 		}
-	}
-
-	private void fixPositionToCenter()
-	{
-		int left = getPopupLeftToCenter(false);
-		int top = getPopupTopToCenter(false);
-		setPosition(left, top);
-	}
-
-	/**
-	 * Gets the popup's left position relative to the browser's center area.
-	 * @param includeScroll if true include the window scroll 
-	 * @return the popup's left position
-	 */
-	private int getPopupLeftToCenter(boolean includeScroll)
-	{
-		int windowLeft = includeScroll?Window.getScrollLeft():0;
-		int windowWidth = Window.getClientWidth();
-		int centerLeft = (windowWidth / 2) + windowLeft;
-
-		int offsetWidth = getOffsetWidth();
-		return centerLeft - (offsetWidth / 2);
-	}
-
-	/**
-	 * Gets the popup's top position relative to the browser's center area.
-	 * @param includeScroll if true include the window scroll 
-	 * @return the popup's top position
-	 */
-	private int getPopupTopToCenter(boolean includeScroll)
-	{
-		int windowTop = includeScroll?Window.getScrollTop():0;
-		int windowHeight = Window.getClientHeight();
-		int centerTop = (windowHeight / 2) + windowTop;
-
-		int offsetHeight = getOffsetHeight();
-		return centerTop - (offsetHeight / 2);
 	}
 
 	private void doShow(final boolean animated)
@@ -795,17 +741,236 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 	}
 
-	private void centralizeMe()
+	/**
+	 * Does the event target one of the partner elements?
+	 * 
+	 * @param event
+	 *            the native event
+	 * @return true if the event targets a partner
+	 */
+	private boolean eventTargetsPartner(NativeEvent event)
 	{
-		popupCentralizer.centralize(this);
+		if (autoHidePartners == null)
+		{
+			return false;
+		}
 
-		left = -1;
-		top = -1;
+		EventTarget target = event.getEventTarget();
+		if (Element.is(target))
+		{
+			for (int i=0; i < autoHidePartners.size(); i++)
+			{
+				Element elem = autoHidePartners.get(i);
+				if (elem.isOrHasChild(Element.as(target)))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
-	private void uncentralizeMe()
+	/**
+	 * Does the event target this popup?
+	 * 
+	 * @param event
+	 *            the native event
+	 * @return true if the event targets the popup
+	 */
+	private boolean eventTargetsPopup(NativeEvent event)
 	{
-		popupCentralizer.descentralize(this);
+		EventTarget target = event.getEventTarget();
+		if (Element.is(target))
+		{
+			return getElement().isOrHasChild(Element.as(target));
+		}
+		return false;
+	}
+
+	private void fixPositionToCenter()
+	{
+		int left = getPopupLeftToCenter(false);
+		int top = getPopupTopToCenter(false);
+		setPosition(left, top);
+	}
+
+	private DialogAnimation getDialogAnimation()
+	{
+		if (animation == null)
+		{
+			animation = DialogAnimation.bounce;
+		}
+		return animation;
+	}
+
+	private int getLeftRelativeObject(final UIObject relativeObject)
+	{
+		int offsetWidth = getOffsetWidth();
+		int relativeElemOffsetWidth = relativeObject.getOffsetWidth();
+		int offsetWidthDiff = offsetWidth - relativeElemOffsetWidth;
+		int left;
+
+		if (LocaleInfo.getCurrentLocale().isRTL())
+		{ // RTL case
+
+			int relativeElemAbsoluteLeft = relativeObject.getAbsoluteLeft();
+			left = relativeElemAbsoluteLeft - offsetWidthDiff;
+			if (offsetWidthDiff > 0)
+			{
+				int windowRight = Window.getClientWidth() + Window.getScrollLeft();
+				int windowLeft = Window.getScrollLeft();
+
+				int relativeElemLeftValForRightEdge = relativeElemAbsoluteLeft + relativeElemOffsetWidth;
+				int distanceToWindowRight = windowRight - relativeElemLeftValForRightEdge;
+				int distanceFromWindowLeft = relativeElemLeftValForRightEdge - windowLeft;
+				if (distanceFromWindowLeft < offsetWidth && distanceToWindowRight >= offsetWidthDiff)
+				{
+					left = relativeElemAbsoluteLeft;
+				}
+			}
+		}
+		else
+		{ // LTR case
+
+			left = relativeObject.getAbsoluteLeft();
+			if (offsetWidthDiff > 0)
+			{
+				int windowRight = Window.getClientWidth() + Window.getScrollLeft();
+				int windowLeft = Window.getScrollLeft();
+				int distanceToWindowRight = windowRight - left;
+				int distanceFromWindowLeft = left - windowLeft;
+				if (distanceToWindowRight < offsetWidth && distanceFromWindowLeft >= offsetWidthDiff)
+				{
+					left -= offsetWidthDiff;
+				}
+			}
+		}
+		return left;
+	}
+
+	/**
+	 * Gets the popup's left position relative to the browser's center area.
+	 * @param includeScroll if true include the window scroll 
+	 * @return the popup's left position
+	 */
+	private int getPopupLeftToCenter(boolean includeScroll)
+	{
+		int windowLeft = includeScroll?Window.getScrollLeft():0;
+		int windowWidth = Window.getClientWidth();
+		int centerLeft = (windowWidth / 2) + windowLeft;
+
+		int offsetWidth = getOffsetWidth();
+		return centerLeft - (offsetWidth / 2);
+	}
+
+	/**
+	 * Gets the popup's top position relative to the browser's center area.
+	 * @param includeScroll if true include the window scroll 
+	 * @return the popup's top position
+	 */
+	private int getPopupTopToCenter(boolean includeScroll)
+	{
+		int windowTop = includeScroll?Window.getScrollTop():0;
+		int windowHeight = Window.getClientHeight();
+		int centerTop = (windowHeight / 2) + windowTop;
+
+		int offsetHeight = getOffsetHeight();
+		return centerTop - (offsetHeight / 2);
+	}
+
+	private int getTopRelativeObject(final UIObject relativeObject)
+	{
+		int offsetHeight = getOffsetHeight();
+		int top = relativeObject.getAbsoluteTop();
+
+		int windowTop = Window.getScrollTop();
+		int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+
+		int distanceFromWindowTop = top - windowTop;
+		int distanceToWindowBottom = windowBottom - (top + relativeObject.getOffsetHeight());
+
+		if (distanceToWindowBottom < offsetHeight && distanceFromWindowTop >= offsetHeight)
+		{
+			top -= offsetHeight;
+		}
+		else
+		{
+			top += relativeObject.getOffsetHeight();
+		}
+		return top;
+	}
+
+	/**
+	 * Show or hide the glass.
+	 */
+	private void maybeShowGlass()
+	{
+		BodyElement body = Document.get().getBody();
+		if (isShowing())
+		{
+			if (modal)
+			{
+				try
+				{
+					body.appendChild(glass);
+					if(numberCalls == 0)
+					{
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
+					}
+					glassShowing = true;	
+				}
+				finally
+				{
+					numberCalls++;	
+				}
+			}
+		}
+		else if (glassShowing)
+		{
+			try
+			{
+				body.removeChild(glass);
+				if(numberCalls == 1)
+				{
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
+					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
+				}
+				glassShowing = false;	
+			}
+			finally
+			{
+				numberCalls--;	
+			}
+			
+		}
+	}
+
+	private void removePopupFromDOM()
+	{
+		if (popupCentralizer.isCentralized())
+		{
+			fixPositionToCenter();
+		}
+		RootPanel.get().remove(PopupPanel.this);
+		setPopupPositionStyle(left, top);		
+	}
+
+	private void runEntranceAnimation(final StateChangeCallback callback)
+	{
+		animating = true;
+		getDialogAnimation().animateEntrance(this, new Animation.Callback()
+		{
+			@Override
+			public void onAnimationCompleted()
+			{
+				animating = false;
+				if (callback != null)
+				{
+					callback.onStateChange();
+				}
+			}
+		});
 	}
 
 	private void setPopupPositionStyle(int left, int top)
@@ -878,106 +1043,9 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 	}
 
-	private void removePopupFromDOM()
+	private void uncentralizeMe()
 	{
-		if (popupCentralizer.isCentralized())
-		{
-			fixPositionToCenter();
-		}
-		RootPanel.get().remove(PopupPanel.this);
-		setPopupPositionStyle(left, top);		
-	}
-
-	/**
-	 * Show or hide the glass.
-	 */
-	private void maybeShowGlass()
-	{
-		BodyElement body = Document.get().getBody();
-		if (isShowing())
-		{
-			if (modal)
-			{
-				try
-				{
-					body.appendChild(glass);
-					if(numberCalls == 0)
-					{
-						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
-						body.addClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
-					}
-					glassShowing = true;	
-				}
-				finally
-				{
-					numberCalls++;	
-				}
-			}
-		}
-		else if (glassShowing)
-		{
-			try
-			{
-				body.removeChild(glass);
-				if(numberCalls == 1)
-				{
-					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnscrollable());
-					body.removeClassName(FacesBackboneResourcesCommon.INSTANCE.css().facesUnselectable());
-				}
-				glassShowing = false;	
-			}
-			finally
-			{
-				numberCalls--;	
-			}
-			
-		}
-	}
-
-	/**
-	 * Does the event target one of the partner elements?
-	 * 
-	 * @param event
-	 *            the native event
-	 * @return true if the event targets a partner
-	 */
-	private boolean eventTargetsPartner(NativeEvent event)
-	{
-		if (autoHidePartners == null)
-		{
-			return false;
-		}
-
-		EventTarget target = event.getEventTarget();
-		if (Element.is(target))
-		{
-			for (int i=0; i < autoHidePartners.size(); i++)
-			{
-				Element elem = autoHidePartners.get(i);
-				if (elem.isOrHasChild(Element.as(target)))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Does the event target this popup?
-	 * 
-	 * @param event
-	 *            the native event
-	 * @return true if the event targets the popup
-	 */
-	private boolean eventTargetsPopup(NativeEvent event)
-	{
-		EventTarget target = event.getEventTarget();
-		if (Element.is(target))
-		{
-			return getElement().isOrHasChild(Element.as(target));
-		}
-		return false;
+		popupCentralizer.descentralize(this);
 	}
 
 	/**
@@ -1017,76 +1085,17 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 	}
 
-	private int getLeftRelativeObject(final UIObject relativeObject)
+	/**
+	 * Add a default close handler that will be appended to each created object
+	 * @param defaultCloseHandler
+	 */
+	public static void addDefaultCloseHandler(CloseHandler<PopupPanel> defaultCloseHandler) 
 	{
-		int offsetWidth = getOffsetWidth();
-		int relativeElemOffsetWidth = relativeObject.getOffsetWidth();
-		int offsetWidthDiff = offsetWidth - relativeElemOffsetWidth;
-		int left;
-
-		if (LocaleInfo.getCurrentLocale().isRTL())
-		{ // RTL case
-
-			int relativeElemAbsoluteLeft = relativeObject.getAbsoluteLeft();
-			left = relativeElemAbsoluteLeft - offsetWidthDiff;
-			if (offsetWidthDiff > 0)
-			{
-				int windowRight = Window.getClientWidth() + Window.getScrollLeft();
-				int windowLeft = Window.getScrollLeft();
-
-				int relativeElemLeftValForRightEdge = relativeElemAbsoluteLeft + relativeElemOffsetWidth;
-				int distanceToWindowRight = windowRight - relativeElemLeftValForRightEdge;
-				int distanceFromWindowLeft = relativeElemLeftValForRightEdge - windowLeft;
-				if (distanceFromWindowLeft < offsetWidth && distanceToWindowRight >= offsetWidthDiff)
-				{
-					left = relativeElemAbsoluteLeft;
-				}
-			}
-		}
-		else
-		{ // LTR case
-
-			left = relativeObject.getAbsoluteLeft();
-			if (offsetWidthDiff > 0)
-			{
-				int windowRight = Window.getClientWidth() + Window.getScrollLeft();
-				int windowLeft = Window.getScrollLeft();
-				int distanceToWindowRight = windowRight - left;
-				int distanceFromWindowLeft = left - windowLeft;
-				if (distanceToWindowRight < offsetWidth && distanceFromWindowLeft >= offsetWidthDiff)
-				{
-					left -= offsetWidthDiff;
-				}
-			}
-		}
-		return left;
-	}
-
-	private int getTopRelativeObject(final UIObject relativeObject)
-	{
-		int offsetHeight = getOffsetHeight();
-		int top = relativeObject.getAbsoluteTop();
-
-		int windowTop = Window.getScrollTop();
-		int windowBottom = Window.getScrollTop() + Window.getClientHeight();
-
-		int distanceFromWindowTop = top - windowTop;
-		int distanceToWindowBottom = windowBottom - (top + relativeObject.getOffsetHeight());
-
-		if (distanceToWindowBottom < offsetHeight && distanceFromWindowTop >= offsetHeight)
+		if(defaultCloseHandlers == null)
 		{
-			top -= offsetHeight;
+			defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
 		}
-		else
-		{
-			top += relativeObject.getOffsetHeight();
-		}
-		return top;
-	}
-
-	private static interface StateChangeCallback
-	{
-		void onStateChange();
+		defaultCloseHandlers.add(defaultCloseHandler);
 	}
 
 	/**
@@ -1102,19 +1111,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		defaultOpenHandlers.add(defaultOpenHandler);
 	}
 
-	/**
-	 * Add a default close handler that will be appended to each created object
-	 * @param defaultCloseHandler
-	 */
-	public static void addDefaultCloseHandler(CloseHandler<PopupPanel> defaultCloseHandler) 
-	{
-		if(defaultCloseHandlers == null)
-		{
-			defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
-		}
-		defaultCloseHandlers.add(defaultCloseHandler);
-	}
-	
 	public static abstract class PopupCentralizer
 	{
 		boolean centralized = false;
@@ -1147,6 +1143,11 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			this.centralized = centralized;
 		}
+	}
+	
+	private static interface StateChangeCallback
+	{
+		void onStateChange();
 	}
 
 }

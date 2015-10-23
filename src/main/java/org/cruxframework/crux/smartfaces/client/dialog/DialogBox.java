@@ -20,18 +20,19 @@ import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * A simple dialog box built upon DIV elements.
- * @author Gesse Dafe
+ * A simple dialog box that can contain an widget.
  * @author Thiago da Rosa de Bustamante
  */
 public class DialogBox extends AbstractDialogBox
 {
+	public static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
+
 	/**
 	 * Constructor
 	 */
 	public DialogBox()
 	{
-		super(true, true, true, false, DEFAULT_STYLE_NAMES);
+		this(true, true, true, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -42,7 +43,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public DialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
 	{
-		super(movable, resizable, closable, modal, DEFAULT_STYLE_NAMES);
+		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -64,7 +65,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public static DialogBox show(IsWidget widget)
 	{
-		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAMES, null);
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, null);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public static DialogBox show(IsWidget widget, DialogAnimation animation)
 	{
-		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAMES, animation);
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
 
 	/**
@@ -92,6 +93,22 @@ public class DialogBox extends AbstractDialogBox
 		return show(title, widget, movable, resizable, closable, modal, styleName, null);
 	}
 
+	/**
+	 * Shows a dialog box
+	 * @param title the dilog box title.
+	 * @param widget the content widget displayed by this dialog
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param animation animates the dialog while showing or hiding
+	 */
+	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, 
+		boolean modal, DialogAnimation animation)
+	{
+		return show(title, widget, movable, resizable, closable, modal, DEFAULT_STYLE_NAME, animation);
+	}
+	
 	/**
 	 * Shows a dialog box
 	 * @param title the dilog box title.

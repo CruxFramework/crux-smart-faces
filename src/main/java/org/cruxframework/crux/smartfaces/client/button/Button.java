@@ -108,6 +108,7 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 	    super.select();
 	}
 
+	@Override
 	public void setAccessKey(char key)
 	{
 		button.setAccessKey(key);
@@ -120,6 +121,7 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		button.setEnabled(enabled);
 	}
 
+	@Override
 	public void setFocus(boolean focused)
 	{
 		button.setFocus(focused);
@@ -137,6 +139,7 @@ public class Button extends SelectableWidget implements HasHTML, HasSafeHtml, Ha
 		button.setHTML(html);
 	}
 	
+	@Override
 	public void setTabIndex(int index)
 	{
 		button.setTabIndex(index);
