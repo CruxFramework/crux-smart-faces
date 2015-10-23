@@ -23,18 +23,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * A pager which does not know the total number of pages. So, it can only move the cursor to next or to previous page.  
- * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante
  */
 public class SequentialPager<T> extends NavigationButtonsPager<T>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
-	private static final String STYLE_CURRENT_PAGE_LABEL = "faces-SequentialPager-CurrentPageLabel";
+	private static final String STYLE_CURRENT_PAGE_LABEL = "currentPage";
 	
-	private NavPanel panel;
 	private SimplePanel infoPanel;
-	private Button previousButton = createPreviousButton();
 	private Button nextButton = createNextButton();
+	private NavPanel panel;
+	private Button previousButton = createPreviousButton();
 	
 	/**
 	 * Constructor
@@ -42,8 +41,6 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 	public SequentialPager()
 	{
 		this.panel = new NavPanel();
-//		this.panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-//		this.panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		this.infoPanel = new SimplePanel();
 		this.infoPanel.setWidget(createCurrentPageLabel("" + 0));
 		
@@ -56,6 +53,15 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 		initWidget(this.panel);		
 	}
 
+	/**
+	 * @see org.cruxframework.crux.widgets.client.paging.AbstractPager#hideLoading()
+	 */
+	@Override
+	protected void hideLoading()
+	{
+		// does nothing
+	}
+
 	@Override
 	protected void onUpdate()
 	{
@@ -63,7 +69,7 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 		this.infoPanel.clear();
 		this.infoPanel.add(currentPageLabel);
 	}
-
+	
 	@Override
 	protected void setInteractionEnabled(boolean enabled) 
 	{
@@ -80,15 +86,6 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 	{
 		this.infoPanel.clear();
 		this.infoPanel.add(createCurrentPageLabel("..."));
-	}
-	
-	/**
-	 * @see org.cruxframework.crux.widgets.client.paging.AbstractPager#hideLoading()
-	 */
-	@Override
-	protected void hideLoading()
-	{
-		// does nothing
 	}
 	
 	/**

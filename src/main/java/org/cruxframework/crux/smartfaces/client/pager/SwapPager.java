@@ -44,9 +44,8 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SwapPager";
 
-	private static final String STYLE_SWAP_PAGER_BACK_PANEL = "faces-SwapPager-BackPanel";
-	private static final String STYLE_SWAP_PAGER_NEXT_PANEL = "faces-SwapPager-NextPanel";
-	private static final String STYLE_SWAP_PAGER_PAGER_LOADING = "faces-SwapPager--pagerLoading";
+	private static final String STYLE_BACK_PANEL = "backPanel";
+	private static final String STYLE_NEXT_PANEL = "nextPanel";
 
 	private SwapAnimation animationBackward = SwapAnimation.fade;
 	private SwapAnimation animationForward = SwapAnimation.fade;
@@ -68,7 +67,7 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 		swapPanel = new SwapPanel();
 		
 		backPanel = new SimplePanel();
-		backPanel.setStyleName(STYLE_SWAP_PAGER_BACK_PANEL);
+		backPanel.setStyleName(STYLE_BACK_PANEL);
 		backButton = new Button();
 		backButton.addSelectHandler(new SelectHandler() 
 		{
@@ -91,7 +90,7 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 		backPanel.add(backButton);
 		
 		nextPanel = new SimplePanel();
-		nextPanel.setStyleName(STYLE_SWAP_PAGER_NEXT_PANEL);
+		nextPanel.setStyleName(STYLE_NEXT_PANEL);
 		nextButton = new Button();
 		nextButton.addSelectHandler(new SelectHandler() 
 		{
@@ -275,7 +274,7 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 		if (loadingElement == null)
 		{
 			loadingElement = Document.get().createDivElement();
-			loadingElement.setClassName(STYLE_SWAP_PAGER_PAGER_LOADING);
+			loadingElement.setClassName(getLoaderStyleName());
 			Document.get().getBody().appendChild(loadingElement);
 		}
     }

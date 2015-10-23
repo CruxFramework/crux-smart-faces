@@ -24,14 +24,145 @@ import org.cruxframework.crux.smartfaces.client.button.Button;
 /**
  * Base implementation for navigation-buttons-based pager
  * @author Thiago da Rosa de Bustamante
- * @author Gesse S. F. Dafe
  */
 public abstract class NavigationButtonsPager<T> extends AbstractPager<T> 
 {
-	private Button previousButton;
-	private Button nextButton;
+	private static final String STYLE_FIRST_BUTTON = "firstButton";
+	private static final String STYLE_LAST_BUTTON = "lastButton";
+	private static final String STYLE_NEXT_BUTTON = "nextButton";
+	private static final String STYLE_PREVIOUS_BUTTON = "previousButton";
+	
 	private Button firstButton;
 	private Button lastButton;
+	private Button nextButton;
+	private Button previousButton;
+	
+	/**
+	 * Creates the "first page" navigation button
+	 * @return
+	 */
+	protected Button createFirstPageButton()
+	{
+		final NavigationButtonsPager<T> pager = this;
+		
+		Button panel = createNavigationButton(STYLE_FIRST_BUTTON, 
+			new SelectHandler()
+			{			
+				public void onSelect(SelectEvent event)
+				{
+					if(isEnabled())
+					{
+						PageEvent pageEvent = PageEvent.fire(pager, 1);
+						if(!pageEvent.isCanceled())
+						{
+							firstPage();
+						}
+					}
+				}
+			}
+		);
+		
+		this.firstButton = panel;
+		
+		return panel;
+	}
+	
+	/**
+	 * Creates the "last page" navigation button
+	 * @return
+	 */
+	protected Button createLastPageButton()
+	{
+		final NavigationButtonsPager<T> pager = this;
+		
+		Button label = createNavigationButton(STYLE_LAST_BUTTON, 
+			new SelectHandler()
+			{			
+				public void onSelect(SelectEvent event)
+				{
+					if(isEnabled())
+					{
+						PageEvent pageEvent = PageEvent.fire(pager, getPageCount());
+						if(!pageEvent.isCanceled())
+						{
+							lastPage();
+						}
+					}
+				}
+			}
+		);
+		
+		this.lastButton = label;
+		
+		return label;
+	}
+	
+	/**
+	 * Creates the "next page" navigation button
+	 * @return
+	 */
+	protected Button createNextButton()
+	{
+		final NavigationButtonsPager<T> pager = this;
+		
+		Button panel = createNavigationButton(STYLE_NEXT_BUTTON, 
+			new SelectHandler()
+			{			
+				public void onSelect(SelectEvent event)
+				{
+					if(isEnabled())
+					{
+						PageEvent pageEvent = PageEvent.fire(pager, getCurrentPage() + 1);
+						if(!pageEvent.isCanceled())
+						{
+							if(hasNextPage())
+							{
+								nextPage();
+							}
+						}
+					}
+				}
+			}
+		);
+		
+		this.nextButton = panel;
+		nextButton.setText(" ");
+		
+		return panel;
+	}
+	
+	/**
+	 * Creates the "previous page" navigation button
+	 * @return
+	 */
+	protected Button createPreviousButton()
+	{
+		final NavigationButtonsPager<T> pager = this;
+		
+		Button panel = createNavigationButton(STYLE_PREVIOUS_BUTTON, 
+			new SelectHandler() 
+			{
+				public void onSelect(SelectEvent event)
+				{
+					if(isEnabled())
+					{
+						PageEvent pageEvent = PageEvent.fire(pager, getCurrentPage() - 1);
+						if(!pageEvent.isCanceled())
+						{
+							if(getCurrentPage() > 1)
+							{
+								previousPage();
+							}
+						}
+					}
+				}
+			}
+		);
+		
+		this.previousButton = panel;
+		
+		return panel;
+	}
 	
 	@Override
 	protected void onUpdate()
@@ -83,133 +214,6 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T>
 				this.lastButton.removeStyleDependentName(DISABLED);
 			}
 		}
-	}
-	
-	/**
-	 * Creates the "previous page" navigation button
-	 * @return
-	 */
-	protected Button createPreviousButton()
-	{
-		final NavigationButtonsPager<T> pager = this;
-		
-		Button panel = createNavigationButton("previousButton", 
-			new SelectHandler() 
-			{
-				public void onSelect(SelectEvent event)
-				{
-					if(isEnabled())
-					{
-						PageEvent pageEvent = PageEvent.fire(pager, getCurrentPage() - 1);
-						if(!pageEvent.isCanceled())
-						{
-							if(getCurrentPage() > 1)
-							{
-								previousPage();
-							}
-						}
-					}
-				}
-			}
-		);
-		
-		this.previousButton = panel;
-		
-		return panel;
-	}
-	
-	/**
-	 * Creates the "next page" navigation button
-	 * @return
-	 */
-	protected Button createNextButton()
-	{
-		final NavigationButtonsPager<T> pager = this;
-		
-		Button panel = createNavigationButton("nextButton", 
-			new SelectHandler()
-			{			
-				public void onSelect(SelectEvent event)
-				{
-					if(isEnabled())
-					{
-						PageEvent pageEvent = PageEvent.fire(pager, getCurrentPage() + 1);
-						if(!pageEvent.isCanceled())
-						{
-							if(hasNextPage())
-							{
-								nextPage();
-							}
-						}
-					}
-				}
-			}
-		);
-		
-		this.nextButton = panel;
-		nextButton.setText(" ");
-		
-		return panel;
-	}
-	
-	/**
-	 * Creates the "first page" navigation button
-	 * @return
-	 */
-	protected Button createFirstPageButton()
-	{
-		final NavigationButtonsPager<T> pager = this;
-		
-		Button panel = createNavigationButton("firstButton", 
-			new SelectHandler()
-			{			
-				public void onSelect(SelectEvent event)
-				{
-					if(isEnabled())
-					{
-						PageEvent pageEvent = PageEvent.fire(pager, 1);
-						if(!pageEvent.isCanceled())
-						{
-							firstPage();
-						}
-					}
-				}
-			}
-		);
-		
-		this.firstButton = panel;
-		
-		return panel;
-	}
-	
-	/**
-	 * Creates the "last page" navigation button
-	 * @return
-	 */
-	protected Button createLastPageButton()
-	{
-		final NavigationButtonsPager<T> pager = this;
-		
-		Button label = createNavigationButton("lastButton", 
-			new SelectHandler()
-			{			
-				public void onSelect(SelectEvent event)
-				{
-					if(isEnabled())
-					{
-						PageEvent pageEvent = PageEvent.fire(pager, getPageCount());
-						if(!pageEvent.isCanceled())
-						{
-							lastPage();
-						}
-					}
-				}
-			}
-		);
-		
-		this.lastButton = label;
-		
-		return label;
 	}
 	
 	@Override
