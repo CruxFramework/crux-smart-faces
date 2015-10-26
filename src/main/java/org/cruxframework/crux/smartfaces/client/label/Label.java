@@ -32,12 +32,14 @@ import com.google.gwt.user.client.ui.HasWordWrap;
  */
 public class Label extends SelectableWidget implements HasDirectionalText, HasWordWrap, HasAutoHorizontalAlignment
 {
+	public static final String DEFAULT_STYLE_NAME = "faces-Label";
+	
 	private InternalLabel label;
 
 	public Label()
 	{
 		this(new InternalLabel());
-		setStyleName("faces-Label");
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Label(String text)

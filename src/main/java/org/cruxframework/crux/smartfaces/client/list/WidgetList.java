@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WidgetList";
-	private static final String PAGE_PANEL_STYLE_NAME = "faces-WidgetList-page";
+	private static final String PAGE_PANEL_STYLE_NAME = "page";
 	
 	protected SimplePanel contentPanel = new SimplePanel();
 	protected final WidgetFactory<T> widgetFactory;

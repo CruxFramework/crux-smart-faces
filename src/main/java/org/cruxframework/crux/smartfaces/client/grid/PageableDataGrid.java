@@ -49,37 +49,30 @@ import com.google.gwt.user.client.ui.IsWidget;
 public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 {
 	private static Array<String> columnClasses = CollectionFactory.createArray();
-
-	private static final String FACES_SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
-	
-	private static final String FACES_SYTLE_DATAGRID_COLUMNGROUP_HEADER = "columnGroupHeader";
-
+	private static int nextTableId = 0;
+	private static final String SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
+	private static final String SYTLE_DATAGRID_COLUMNGROUP_HEADER = "columnGroupHeader";
 	private static final String SYTLE_FACES_DATAGRID_HEADER = "header";
-
 	private static final String SYTLE_FACES_DATAGRID_HEADER_ROW = "headerRow";
 
 	LinkedList<ColumnComparator<T>> linkedComparators = new LinkedList<ColumnComparator<T>>();
-
 	Array<Row<T>> rows = CollectionFactory.createArray();
-	
 	private Array<ColumnGroup<T>> columnGroups = CollectionFactory.createArray();
-
 	private Array<Column<T, ?>> columns = CollectionFactory.createArray();
-	
 	private FlowPanel contentPanel = new FlowPanel();
-	
 	private HandlerRegistration dataSelectionHandler;
-
-	private DivTable headerSection = new DivTable();
-
+	private DivTable headerSection;
 	private HandlerRegistration pageRequestedHandler;
-
 	private RowSelectStrategy rowSelectStrategy = RowSelectStrategy.single;
-
+	private final String tableId;
+	
 	/**
 	 */
 	public PageableDataGrid()
 	{
+		tableId = Integer.toString(nextTableId++);
+		headerSection = new DivTable(tableId);
+		
 		initWidget(contentPanel);
 		getContentPanel().add(headerSection);
 	}
@@ -366,7 +359,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 	@Override
 	protected DivTable initializePagePanel()
 	{
-		DivTable divTable = new DivTable();
+		DivTable divTable = new DivTable(tableId);
 		return divTable;
 	}
 
@@ -499,6 +492,17 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 		return index;
 	}
 
+	private String getStyleProperties(String type, int index, int classIndex)
+	{
+		String typeClassName = tableId + "_" + type+"_" + classIndex;
+		if(columnClasses.indexOf(typeClassName) < 0)
+		{
+			StyleInjector.inject("."+typeClassName+"{"+("order: " + String.valueOf(index))+"}");
+			columnClasses.add(typeClassName);
+		}
+		return type + " " + typeClassName;
+	}
+
 	private void handleHeaderInsertion(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.index == 0 && column.row.index == 0)
@@ -516,15 +520,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			
 			if(columnGroupTable == null)
 			{
-				columnGroupTable = new DivTable();
+				columnGroupTable = new DivTable(tableId);
 				headerSection.addStyleName(SYTLE_FACES_DATAGRID_HEADER);
 				columnGroupTable.setWidget(0, 0, column.columnGroup.header);			
-				column.columnGroup.header.asWidget().getParent().setStyleName(FACES_SYTLE_DATAGRID_COLUMNGROUP_HEADER);
+				column.columnGroup.header.asWidget().getParent().setStyleName(SYTLE_DATAGRID_COLUMNGROUP_HEADER);
 				columnGroupTable.addStyleName(SYTLE_FACES_DATAGRID_HEADER_ROW);
 				
 				headerSection.setWidget(0, column.columnGroup.index, columnGroupTable);
 				columnGroupTable.getParent().setStyleName(
-					getStyleProperties(FACES_SYTLE_DATAGRID_COLUMNGROUP, column.columnGroup.index, column.index-column.columnGroup.index));
+					getStyleProperties(SYTLE_DATAGRID_COLUMNGROUP, column.columnGroup.index, column.index-column.columnGroup.index));
 			}
 			
 			columnGroupTable.setWidget(1, column.index-column.columnGroup.index, headerWrapper, 
@@ -565,7 +569,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 			divRow.removeStyleDependentName("-selected");
 		}
 	}
-
+	
 	private void handleSortEvents(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.sortable && (!getDataProvider().isDirty() || getDataProvider() instanceof LazyProvider))
@@ -608,16 +612,5 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable>
 				}
 			}
 		}
-	}
-	
-	private static String getStyleProperties(String type, int index, int classIndex)
-	{
-		String typeClassName = type+"_" + classIndex;
-		if(columnClasses.indexOf(typeClassName) < 0)
-		{
-			StyleInjector.inject("."+typeClassName+"{"+("order: " + String.valueOf(index))+"}");
-			columnClasses.add(typeClassName);
-		}
-		return type + " " + typeClassName;
 	}
 }

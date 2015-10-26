@@ -33,12 +33,14 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class DivRow extends SelectableFlowPanel 
 {
-	private static Array<String> columnClasses = CollectionFactory.createArray();
-	public static final String STYLES_FACES_GRID_ROW = "row";
 	public static final String STYLES_FACES_GRID_COLUMN = "column";
+	public static final String STYLES_FACES_GRID_ROW = "row";
+	private static Array<String> columnClasses = CollectionFactory.createArray();
+	private final String divTableId;
 	
-	public DivRow()
+	protected DivRow(String divTableId)
 	{
+		this.divTableId = divTableId;
 		setStyleName(STYLES_FACES_GRID_ROW);
 		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableRow());
 	}
@@ -94,12 +96,13 @@ public class DivRow extends SelectableFlowPanel
 			return;
 		}
 		
-		String columnName = STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
+		String columnName = divTableId + "_" + STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
 		int columnClassesIndex = columnClasses.indexOf(columnName);
 		if(columnClassesIndex >= 0)
 		{
 			element.addClassName(columnClasses.get(columnClassesIndex));
-		} else
+		} 
+		else
 		{
 			StyleInjector.inject("."+columnName+"{"+("order: " + String.valueOf(columnIndex))+"}");
 			element.addClassName(columnName);

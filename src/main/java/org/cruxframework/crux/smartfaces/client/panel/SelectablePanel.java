@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.panel;
 
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.select.SelectableWidget;
+import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -36,12 +37,16 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SelectablePanel extends SelectableWidget implements HasAllFocusHandlers, AcceptsOneWidget, HasEnabled,
 														Focusable
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
 	private static FocusImpl focusImpl = FocusImpl.getFocusImplForPanel();
+	
 	private SimplePanel panel;
 
 	public SelectablePanel()

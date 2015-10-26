@@ -19,6 +19,7 @@ import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.storyboard.Storyboard;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -32,7 +33,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * A Carroussel of items that support {@link DataProvider}s to provide a collection of data.
  * @author Thiago da Rosa de Bustamante
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Carroussel";

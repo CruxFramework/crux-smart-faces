@@ -29,6 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  * @param <T> the Data Object type.
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled

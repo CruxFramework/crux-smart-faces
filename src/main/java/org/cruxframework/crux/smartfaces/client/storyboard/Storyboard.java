@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.storyboard;
 
 import java.util.Iterator;
 
+import org.cruxframework.crux.core.shared.Experimental;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -33,7 +35,10 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that distribute a collection of widgets along the screen.
  * @author Thiago da Rosa de Bustamante.
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class Storyboard extends Composite implements HasWidgets.ForIsWidget, IndexedPanel.ForIsWidget, 
 								HasSelectionHandlers<Integer> 
 {
