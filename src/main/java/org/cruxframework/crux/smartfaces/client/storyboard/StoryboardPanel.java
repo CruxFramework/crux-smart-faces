@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 abstract class StoryboardPanel extends Composite
 {
-	private static final String STORYBOARD_ITEM_STYLE_NAME = "faces-Storyboard-Item";
+	private static final String STORYBOARD_ITEM_STYLE_NAME = "item";
 	
 	protected boolean fixedHeight = true;
 	protected boolean fixedWidth = true;

@@ -61,7 +61,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 * @param view - View that will be assigned to the container
 	 * @param lazy - Attaches the view in the container, but only renders when the view is accessed
 	 * @param closeable - If the view can be closed
-	 * @return - Boolean
+	 * @return true if added
 	 */
 	public boolean add(View view, boolean lazy, boolean closeable)
 	{
@@ -78,7 +78,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 * @param lazy - Attaches the view in the container, but only renders when the view is accessed
 	 * @param closeable - If the view can be closed
 	 * @param render - Defines the view should be rendered on the screen
-	 * @return - boolean
+	 * @return true if added
 	 */
 	public boolean add(View view, boolean lazy, boolean closeable, boolean render)
 	{
@@ -97,7 +97,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 * Adds a new view into the container, but does not load the view. 
 	 * @param viewName Name of the View to be added
 	 * @param closeable if true, allow user to close the tab
-	 * @return
+	 * @return true if added
 	 */
 	public boolean addLazy(String viewName, final boolean closeable)
 	{
@@ -109,7 +109,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 * @param viewName Name of the View to be added
 	 * @param viewId ID of the View to be added
 	 * @param closeable if true, allow user to close the tab
-	 * @return
+	 * @return true if added
 	 */
 	public boolean addLazy(String viewName, String viewId, final boolean closeable)
 	{
@@ -127,7 +127,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
     /**
 	 * Adds a new view into the container, but does not load the view. 
 	 * @param view View to be added
-	 * @return
+	 * @return true if added
 	 */
 	public boolean addLazy(View view, final boolean closeable)
 	{
@@ -171,7 +171,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	/** Return the index of view focused.
-	 * @return int - view focused index
+	 * @return view focused index
 	 */
 	public int getFocusedViewIndex()
 	{
@@ -180,7 +180,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 
 	/**
 	 * @param viewId view id
-	 * @return int - index
+	 * @return index
 	 */
 	public int getIndex(String viewId)
 	{
@@ -189,7 +189,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 
 	/**
 	 * @param view - view
-	 * @return int 
+	 * @return view index 
 	 */
 	public int getIndex(View view)
 	{
@@ -198,7 +198,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 
 	/**
 	 * @param viewId view id
-	 * @return Tab - tab containing view
+	 * @return tab containing view
 	 */
 	public Tab getTab(String viewId)
 	{
@@ -208,7 +208,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	
 	/**
 	 * @param tabIndex tab index
-	 * @return String view id
+	 * @return view id
 	 */
 	public String getViewId(int tabIndex)
 	{

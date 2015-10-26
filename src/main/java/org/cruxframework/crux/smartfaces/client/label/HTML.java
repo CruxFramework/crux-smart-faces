@@ -36,12 +36,14 @@ import com.google.gwt.user.client.ui.HasWordWrap;
 public class HTML extends SelectableWidget implements HasDirectionalText, HasWordWrap, 
 											HasAutoHorizontalAlignment, HasDirectionalHtml, HasDirectionalSafeHtml
 {
+	public static final String DEFAULT_STYLE_NAME = "faces-HTML";
+	
 	private InternalHTML internalHTML;
 
 	public HTML()
 	{
 		this(new InternalHTML());
-		setStyleName("faces-HTML");
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public HTML(SafeHtml html)

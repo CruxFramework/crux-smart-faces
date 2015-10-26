@@ -27,20 +27,24 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * 
- * This is a simple table based in divs.
+ * This is a simple table based on divs.
  */
 public class DivTable extends Composite
 {
-	public static final String STYLE_FACES_ROW_ODD = "rowOdd";
-	public static final String STYLE_FACES_ROW_EVEN = "rowEven";
-	private static final String STYLES_FACES_GRID = "faces-DivTable";
+	public static final String STYLE_FACES_GRID = "faces-DivTable";
+	
+	private static final String STYLE_FACES_ROW_EVEN = "rowEven";
+	private static final String STYLE_FACES_ROW_ODD = "rowOdd";
+	
 	private ArrayList<DivRow> rows = new ArrayList<DivRow>();
 	private FlowPanel table = new FlowPanel();
+	private final String tableId;
 
-	public DivTable()
+	public DivTable(String tableId)
 	{
+		this.tableId = tableId;
 		initWidget(table);
-		setStyleName(STYLES_FACES_GRID);
+		setStyleName(STYLE_FACES_GRID);
 		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableContainer());
 	}
 
@@ -91,40 +95,17 @@ public class DivTable extends Composite
 		return ((FlowPanel)rows.get(row).getWidget(column)).getWidget(0);
 	}
 
-	/**
-	 * Replaces the current row or creates a new one.
-	 * @param index 
-	 * @return
-	 */
-	private DivRow insertRow(int index)
-	{
-		DivRow row = new DivRow();
-
-		if(index%2 == 0)
-		{
-			row.addStyleName(STYLE_FACES_ROW_EVEN);
-		}
-		else
-		{
-			row.addStyleName(STYLE_FACES_ROW_ODD);
-		}
-
-		rows.add(index, row);
-		table.insert(row, index);
-		return row;
-	}
-
 	public void removeRow(int rowIndex)
 	{
 		rows.remove(rowIndex);
 		table.remove(rowIndex);
 	}
-	
+
 	public DivRow setWidget(int row, int column, IsWidget widget)
 	{
 		return setWidget(row, column, widget, null);
 	}
-
+	
 	public DivRow setWidget(int row, int column, IsWidget widget, String styleName)
 	{
 		DivRow rowList;
@@ -141,5 +122,28 @@ public class DivTable extends Composite
 		rowList.insert(widget, column, styleName);
 
 		return rowList;
+	}
+
+	/**
+	 * Replaces the current row or creates a new one.
+	 * @param index 
+	 * @return
+	 */
+	private DivRow insertRow(int index)
+	{
+		DivRow row = new DivRow(tableId);
+
+		if(index%2 == 0)
+		{
+			row.addStyleName(STYLE_FACES_ROW_EVEN);
+		}
+		else
+		{
+			row.addStyleName(STYLE_FACES_ROW_ODD);
+		}
+
+		rows.add(index, row);
+		table.insert(row, index);
+		return row;
 	}
 }

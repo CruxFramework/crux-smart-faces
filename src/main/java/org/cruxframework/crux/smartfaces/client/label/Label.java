@@ -26,18 +26,20 @@ import com.google.gwt.user.client.ui.HasDirectionalText;
 import com.google.gwt.user.client.ui.HasWordWrap;
 
 /**
- * A cross device label, that use touch events on touch enabled devices to implement Google Fast Buttons
+ * A cross device Label, that use touch events on touch enabled devices to implement Google Fast Buttons
  * @author Thiago da Rosa de Bustamante
  *
  */
 public class Label extends SelectableWidget implements HasDirectionalText, HasWordWrap, HasAutoHorizontalAlignment
 {
+	public static final String DEFAULT_STYLE_NAME = "faces-Label";
+	
 	private InternalLabel label;
 
 	public Label()
 	{
 		this(new InternalLabel());
-		setStyleName("faces-Label");
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Label(String text)

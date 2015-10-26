@@ -44,11 +44,18 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 {
 	private static final ConditionalImageRenderer conditionalImageRenderer = GWT.create(ConditionalImageRenderer.class);
 	private static final String DEFAULT_STYLE_NAME = "faces-Image";
+	private static final String STYLE_DISABLED_SUFIX = "-disabled";
 	private com.google.gwt.user.client.ui.Image image;
+	
 	public Image()
 	{
 		this(new com.google.gwt.user.client.ui.Image());
 		setStyleName(DEFAULT_STYLE_NAME);
+	}
+
+	public Image(ImageElement element)
+	{
+		this(new InternalImage(element));
 	}
 
 	public Image(ImageResource resource)
@@ -57,13 +64,19 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
-	public Image(String url)
+	public Image(SafeUri url)
 	{
 		this(new com.google.gwt.user.client.ui.Image(url));
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
-	public Image(SafeUri url)
+	public Image(final SafeUri url, final int left, final int top, final int width, final int height)
+	{
+		this(new com.google.gwt.user.client.ui.Image(url, left, top, width, height));
+		setStyleName(DEFAULT_STYLE_NAME);
+	}
+
+	public Image(String url)
 	{
 		this(new com.google.gwt.user.client.ui.Image(url));
 		setStyleName(DEFAULT_STYLE_NAME);
@@ -74,115 +87,11 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		this(new com.google.gwt.user.client.ui.Image(url, left, top, width, height));
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
-
-	public Image(final SafeUri url, final int left, final int top, final int width, final int height)
-	{
-		this(new com.google.gwt.user.client.ui.Image(url, left, top, width, height));
-		setStyleName(DEFAULT_STYLE_NAME);
-	}
-
-	public Image(ImageElement element)
-	{
-		this(new InternalImage(element));
-	}
 	
 	protected Image(com.google.gwt.user.client.ui.Image image)
 	{
 		this.image = image;
 		initWidget(this.image);
-	}
-	
-	public String getUrl()
-	{
-		return image.getUrl();
-	}
-
-	public int getOriginTop()
-	{
-		return image.getOriginTop();
-	}
-
-	public int getOriginLeft()
-	{
-		return image.getOriginLeft();
-	}
-
-	public String getAltText()
-	{
-		return image.getAltText();
-	}
-
-	public void setAltText(String altText)
-	{
-		image.setAltText(altText);
-	}
-
-	public void setResource(ImageResource resource)
-	{
-		image.setResource(resource);
-	}
-
-	public void setUrl(SafeUri url)
-	{
-		image.setUrl(url);
-	}
-
-	public void setUrl(String url)
-	{
-		image.setUrl(url);
-	}
-
-	public void setTitle(String title)
-	{
-		image.setTitle(title);
-	}
-
-	public void setVisible(boolean visible)
-	{
-		image.setVisible(visible);
-	}
-	
-	public void setStyleName(String style)
-	{
-		image.setStyleName(style);
-	}
-	
-	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
-	{
-		conditionalImageRenderer.renderImage(image, url, left, top, width, height);
-	}
-
-	public void setUrlAndVisibleRect(final String url, final int left, final int top, final int width, final int height)
-	{
-		conditionalImageRenderer.renderImage(image, url, left, top, width, height);
-	}
-
-	public void setVisibleRect(final int left, final int top, final int width, final int height)
-	{
-		conditionalImageRenderer.renderImage(image, left, top, width, height);
-	}
-
-	@Override
-	public boolean isEnabled()
-	{
-		return getSelectEventsHandler().isEnabled();
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		if (enabled != isEnabled())
-		{
-			getSelectEventsHandler().setEnabled(enabled);
-			if (enabled)
-			{
-				removeStyleDependentName("disabled");
-			}
-			else
-			{
-				addStyleDependentName("disabled");
-			}
-		}
 	}
 	
 	@Override
@@ -196,13 +105,104 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 	{
 		return image.addLoadHandler(handler);
 	}
-	
-	private static class InternalImage extends com.google.gwt.user.client.ui.Image
+
+	public String getAltText()
 	{
-		public InternalImage(ImageElement element)
+		return image.getAltText();
+	}
+
+	public int getOriginLeft()
+	{
+		return image.getOriginLeft();
+	}
+
+	public int getOriginTop()
+	{
+		return image.getOriginTop();
+	}
+
+	public String getUrl()
+	{
+		return image.getUrl();
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return getSelectEventsHandler().isEnabled();
+	}
+
+	public void setAltText(String altText)
+	{
+		image.setAltText(altText);
+	}
+
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		if (enabled != isEnabled())
 		{
-			super(element);
+			getSelectEventsHandler().setEnabled(enabled);
+			if (enabled)
+			{
+				removeStyleDependentName(STYLE_DISABLED_SUFIX);
+			}
+			else
+			{
+				addStyleDependentName(STYLE_DISABLED_SUFIX);
+			}
 		}
+	}
+
+	public void setResource(ImageResource resource)
+	{
+		image.setResource(resource);
+	}
+	
+	public void setStyleName(String style)
+	{
+		image.setStyleName(style);
+	}
+	
+	public void setTitle(String title)
+	{
+		image.setTitle(title);
+	}
+
+	public void setUrl(SafeUri url)
+	{
+		image.setUrl(url);
+	}
+
+	public void setUrl(String url)
+	{
+		image.setUrl(url);
+	}
+
+	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
+	{
+		conditionalImageRenderer.renderImage(image, url, left, top, width, height);
+	}
+
+	public void setUrlAndVisibleRect(final String url, final int left, final int top, final int width, final int height)
+	{
+		conditionalImageRenderer.renderImage(image, url, left, top, width, height);
+	}
+	
+	public void setVisible(boolean visible)
+	{
+		image.setVisible(visible);
+	}
+
+	public void setVisibleRect(final int left, final int top, final int width, final int height)
+	{
+		conditionalImageRenderer.renderImage(image, left, top, width, height);
+	}
+	
+	@Override
+	protected HandlerRegistration addClickHandler(ClickHandler handler)
+	{
+	    return image.addClickHandler(handler);
 	}
 
 	@Override
@@ -223,9 +223,11 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		return image.addHandler(handler, TouchStartEvent.getType());
 	}
 	
-	@Override
-	protected HandlerRegistration addClickHandler(ClickHandler handler)
+	private static class InternalImage extends com.google.gwt.user.client.ui.Image
 	{
-	    return image.addClickHandler(handler);
+		public InternalImage(ImageElement element)
+		{
+			super(element);
+		}
 	}
 }

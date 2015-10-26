@@ -53,10 +53,10 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	protected static final String STYLE_FACES_ACCORDION = "faces-Menu-accordion";
 	protected static final String STYLE_FACES_HORIZONTAL = "faces-Menu-horizontal";
 	protected static final String STYLE_FACES_VERTICAL = "faces-Menu-vertical";
-	protected static final String STYLE_FACES_OPEN = "faces-Menu-open";
+	protected static final String STYLE_FACES_OPEN = "faces-Menu--open";
 	protected static final String STYLE_FACES_HAS_CHILDREN = "faces-Menu-hasChildren";
-	protected static final String STYLE_FACES_DISABLED = "faces-Menu-disabled";
-	protected static final String STYLE_FACES_EMPTY = "faces-Menu-empty";
+	protected static final String STYLE_FACES_DISABLED = "faces-Menu--disabled";
+	protected static final String STYLE_FACES_EMPTY = "faces-Menu--empty";
 	protected static final String STYLE_FACES_LI = "faces-Menu-li";
 	protected static final String STYLE_FACES_UL = "faces-Menu-ul";
 	protected static final String STYLE_AUX_OPEN_CLOSE_TRIGGER_HELPER = "faces-Menu-openCloseTriggerHelper";
@@ -67,6 +67,8 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	private MenuPanel menuPanel = new MenuPanel();
 	protected Type currentType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
+	private boolean animationEnabled;
+	//TODO implement animation to open or close menu items
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
@@ -121,12 +123,13 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	@Override
 	public boolean isAnimationEnabled() 
 	{
-		return false;
+		return animationEnabled;
 	}
 
 	@Override
-	public void setAnimationEnabled(boolean enable) 
+	public void setAnimationEnabled(boolean animationEnabled) 
 	{
+		this.animationEnabled = animationEnabled;
 	}
 
 	@Override

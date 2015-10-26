@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.panel;
 
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.select.SelectableWidget;
+import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -38,30 +39,30 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SelectableFlowPanel extends SelectableWidget implements HasAllFocusHandlers, 
 								IndexedPanel.ForIsWidget, InsertPanel.ForIsWidget, HasEnabled, 
 								Focusable
 {
-	private static class ExposedFlowPanel extends FlowPanel
-	{
-		@Override
-		protected WidgetCollection getChildren()
-		{
-			return super.getChildren();
-		}
-	}
-	private static final String DEFAULT_STYLE_NAME = "faces-SelectablePanel";
+	private static final String DEFAULT_STYLE_NAME = "faces-SelectableFlowPanel";
 	private static FocusImpl focusImpl = FocusImpl.getFocusImplForPanel();
+	private InternalFlowPanel panel;
 
-	private ExposedFlowPanel panel;
-	
 	public SelectableFlowPanel()
 	{
-		this(new ExposedFlowPanel());
+		this(new InternalFlowPanel());
+	}
+	
+	public SelectableFlowPanel(SelectHandler buttonSelectHandler) 
+	{
+		this();
+		addSelectHandler(buttonSelectHandler);
 	}
 
-	protected SelectableFlowPanel(ExposedFlowPanel panel)
+	protected SelectableFlowPanel(InternalFlowPanel panel)
 	{
 		this.panel = panel;
 		makeFocusable(panel.getElement());
@@ -69,23 +70,17 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 		
-	public SelectableFlowPanel(SelectHandler buttonSelectHandler) 
-	{
-		this();
-		addSelectHandler(buttonSelectHandler);
-	}
-
 	public void add(IsWidget w)
 	{
 		panel.add(w);
 	}
-	
+
 	@Override
     public void add(Widget w)
     {
 		panel.add(w);
     }
-
+	
 	@Override
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
@@ -96,14 +91,6 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	public HandlerRegistration addFocusHandler(FocusHandler handler)
 	{
 		return addDomHandler(handler, FocusEvent.getType());
-	}
-
-	/**
-	 * @return 
-	 */
-	protected WidgetCollection getChildren() 
-	{
-		return panel.getChildren();
 	}
 
 	public int getTabIndex() 
@@ -127,37 +114,32 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
     public int getWidgetIndex(IsWidget child)
     {
 	    return panel.getWidgetIndex(child);
-    }	
-	
+    }
+
 	@Override
     public int getWidgetIndex(Widget child)
     {
 	    return panel.getWidgetIndex(child);
     }
-	
+
 	@Override
     public void insert(IsWidget w, int beforeIndex)
     {
 		panel.insert(w, beforeIndex);
-    }
+    }	
 	
 	@Override
     public void insert(Widget w, int beforeIndex)
     {
 		panel.insert(w, beforeIndex);
     }
-
+	
 	@Override
 	public boolean isEnabled()
 	{
 		return getSelectEventsHandler().isEnabled();
 	}
-
-	protected void makeFocusable(Element e)
-	{
-	    e.setTabIndex(0);
-	}
-
+	
 	@Override
     public boolean remove(int index)
     {
@@ -168,7 +150,7 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	{
 		return panel.remove(w);
 	}
-	
+
 	public void select()
 	{
 		setFocus(true);
@@ -179,7 +161,7 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 	{
 		focusImpl.setAccessKey(getElement(), key);
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -205,9 +187,31 @@ public class SelectableFlowPanel extends SelectableWidget implements HasAllFocus
 			focusImpl.blur(getElement());
 		}
 	}
-	
+
 	public void setTabIndex(int index)
 	{
 		focusImpl.setTabIndex(getElement(), index);
+	}
+	
+	/**
+	 * @return 
+	 */
+	protected WidgetCollection getChildren() 
+	{
+		return panel.getChildren();
+	}
+	
+	protected void makeFocusable(Element e)
+	{
+	    e.setTabIndex(0);
+	}
+	
+	private static class InternalFlowPanel extends FlowPanel
+	{
+		@Override
+		protected WidgetCollection getChildren()
+		{
+			return super.getChildren();
+		}
 	}
 }

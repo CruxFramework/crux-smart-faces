@@ -59,10 +59,10 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
 	
-	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-button";
-	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-ComboBox-comboItemList";
-	private static final String COMBO_BOX_POPUP = "faces-ComboBox-popup";
-	private static final String COMBO_BOX_TEXT = "faces-ComboBox-text";
+	private static final String COMBO_BOX_BUTTON = "button";
+	private static final String COMBO_BOX_COMBO_ITEM_LIST = "itemList";
+	private static final String COMBO_BOX_POPUP = "popup";
+	private static final String COMBO_BOX_TEXT = "text";
 	private static final String DEFAULT_WIDTH = "150px";
 
 	protected OptionsRenderer<V, T> optionsRenderer = null;
@@ -300,11 +300,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	
 	protected abstract void setValueByObject(T obj);
 	
-	private void showList()
-	{
-		popup.showRelativeTo(textBox);
-	}
-	
 	private void createVisualComponents(OptionsRenderer<V, T> optionsRenderer)
 	{
 		this.optionsRenderer = optionsRenderer;
@@ -366,6 +361,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			}
 		}, SelectComboItemEvent.getType());
 		setStyleName(DEFAULT_STYLE_NAME);
+	}
+	
+	private void showList()
+	{
+		popup.showRelativeTo(textBox);
 	}
 	
 	/**
@@ -446,7 +446,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	 */
 	private static class ComboBoxOptionPanel<V> extends Composite
 	{
-		private static final String COMBO_BOX_OPTION_PANEL = "faces-comboBoxOptionPanel";
+		private static final String COMBO_BOX_OPTION_PANEL = "optionPanel";
 		private SelectablePanel bodyPanel = new SelectablePanel();
 		private int index;
 		private String text;

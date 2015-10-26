@@ -30,8 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 @PartialSupport
 public class Progress extends Widget implements HasValue<Integer>
 {
-	private static Boolean supported = null;
 	public static final String DEFAULT_STYLE_NAME = "faces-Progress";
+	private static Boolean supported = null;
 
 	protected Progress() 
 	{
@@ -39,9 +39,10 @@ public class Progress extends Widget implements HasValue<Integer>
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 	
-	public void setMax(int maxValue)
+	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> handler) 
 	{
-		getElement().setPropertyInt("max", maxValue);
+      return addHandler(handler, ValueChangeEvent.getType());
 	}
 	
 	public int getMax()
@@ -49,10 +50,9 @@ public class Progress extends Widget implements HasValue<Integer>
 		return getElement().getPropertyInt("max");
 	}
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> handler) 
+	public double getPosition()
 	{
-      return addHandler(handler, ValueChangeEvent.getType());
+		return getElement().getPropertyDouble("position");
 	}
 
 	@Override
@@ -61,15 +61,15 @@ public class Progress extends Widget implements HasValue<Integer>
 		return getElement().getPropertyInt("value");
 	}
 
+	public void setMax(int maxValue)
+	{
+		getElement().setPropertyInt("max", maxValue);
+	}
+
 	@Override
 	public void setValue(Integer value) 
 	{
 		setValue(value, false);
-	}
-
-	public double getPosition()
-	{
-		return getElement().getPropertyDouble("position");
 	}
 	
 	@Override

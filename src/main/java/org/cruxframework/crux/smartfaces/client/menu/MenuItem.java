@@ -57,7 +57,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	private boolean opened = false;
 	private boolean enabled = true;
 	private String value = null;
-	
+
 	MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
@@ -108,32 +108,32 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 
 	public void open()
 	{
-		if(this.parentItem != null && menu.isSlider())
+		if (this.parentItem != null && menu.isSlider())
 		{
 			final Button closeButton = new Button();
 			closeButton.setStyleName(Menu.STYLE_AUX_CLOSE_TRIGGER_SLIDER_HELPER);
-			closeButton.addSelectHandler(new SelectHandler() 
+			closeButton.addSelectHandler(new SelectHandler()
 			{
 				@Override
-				public void onSelect(SelectEvent event) 
+				public void onSelect(SelectEvent event)
 				{
-					if(MenuItem.this.childrenContainer != null)
+					if (MenuItem.this.childrenContainer != null)
 					{
 						MenuItem.this.childrenContainer.removeChild(closeButton.getElement());
 					}
-					close();	
+					close();
 				}
 			});
-			
+
 			menu.adopt(this, closeButton);
-			if(this.childrenContainer != null)
+			if (this.childrenContainer != null)
 			{
-				this.childrenContainer.insertFirst(closeButton.getElement());			
+				this.childrenContainer.insertFirst(closeButton.getElement());
 			}
 		}
 
 		opened = true;
-		if(!getOpenCloseTriggerHelper().getStyleName().contains(Menu.STYLE_FACES_OPEN))
+		if (!getOpenCloseTriggerHelper().getStyleName().contains(Menu.STYLE_FACES_OPEN))
 		{
 			getOpenCloseTriggerHelper().addStyleName(Menu.STYLE_FACES_OPEN);
 		}
@@ -165,7 +165,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	{
 		return addHandler(handler, SelectEvent.getType());
 	}
-	
+
 	protected void addItem(final MenuItem menuItem)
 	{
 		if (childrenContainer == null)
@@ -184,19 +184,20 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 			@Override
 			public void onSelect(SelectEvent event)
 			{
-				if(!menuItem.enabled)
+				if (!menuItem.enabled)
 				{
 					event.setCanceled(true);
 					event.stopPropagation();
 					return;
 				}
-				
-				if( !menu.isTree() )
+
+				if (!menu.isTree())
 				{
-					if(menuItem.opened)
+					if (menuItem.opened)
 					{
 						menuItem.close();
-					} else
+					}
+					else
 					{
 						menuItem.open();
 					}
@@ -205,10 +206,10 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 				SelectionEvent.fire(menu, menuItem);
 			}
 		});
-		
+
 		if (!root)
 		{
-			if(!getElement().getClassName().contains(Menu.STYLE_FACES_HAS_CHILDREN))
+			if (!getElement().getClassName().contains(Menu.STYLE_FACES_HAS_CHILDREN))
 			{
 				getElement().appendChild(getOpenCloseTriggerHelper().getElement());
 				menu.adopt(this, getOpenCloseTriggerHelper());
@@ -221,40 +222,40 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		}
 	}
 
-	//Adding CSS helper div/button important to render icons 
-	//like open/close in accordion and tree menu types
-	protected Button getOpenCloseTriggerHelper() 
+	// Adding CSS helper div/button important to render icons
+	// like open/close in accordion and tree menu types
+	protected Button getOpenCloseTriggerHelper()
 	{
-		if(openCloseTriggerHelper != null)
+		if (openCloseTriggerHelper != null)
 		{
 			return openCloseTriggerHelper;
 		}
-		
+
 		openCloseTriggerHelper = new Button();
 		openCloseTriggerHelper.setStyleName(Menu.STYLE_AUX_OPEN_CLOSE_TRIGGER_HELPER);
-		openCloseTriggerHelper.addSelectHandler(new SelectHandler() 
+		openCloseTriggerHelper.addSelectHandler(new SelectHandler()
 		{
 			@Override
-			public void onSelect(SelectEvent event) 
+			public void onSelect(SelectEvent event)
 			{
-				if(!enabled)
+				if (!enabled)
 				{
 					event.setCanceled(true);
 					event.stopPropagation();
 					return;
 				}
-				
-				if(opened)
+
+				if (opened)
 				{
 					close();
-				} 
+				}
 				else
 				{
 					open();
 				}
 			}
 		});
-		
+
 		return openCloseTriggerHelper;
 	}
 
@@ -359,7 +360,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	{
 		return itemPanel.getChildWidget();
 	}
-	
+
 	public void addClassName(String className)
 	{
 		getElement().addClassName(className);
@@ -382,13 +383,13 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		{
 			handlerManager.fireEvent(event);
 		}
-	}	
+	}
 
 	FastList<MenuItem> getChildren()
 	{
 		return children;
 	}
-	
+
 	/**
 	 * Ensures the existence of the handler manager.
 	 * 
@@ -403,39 +404,40 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	{
 		return ensureHandlers().addHandler(type, handler);
 	}
-	
+
 	SelectablePanel getItemPanel()
 	{
 		return itemPanel;
 	}
 
 	@Override
-	public boolean isEnabled() 
+	public boolean isEnabled()
 	{
 		return enabled;
 	}
 
 	@Override
-	public void setEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-		if(!enabled)
+		if (!enabled)
 		{
-			if(!getElement().getClassName().contains(Menu.STYLE_FACES_DISABLED))
+			if (!getElement().getClassName().contains(Menu.STYLE_FACES_DISABLED))
 			{
 				getElement().addClassName(Menu.STYLE_FACES_DISABLED);
 			}
-		} else
+		}
+		else
 		{
 			getElement().removeClassName(Menu.STYLE_FACES_DISABLED);
 		}
 	}
-	
+
 	public boolean hasChildren()
 	{
 		return children.size() > 0 ? true : false;
 	}
-	
+
 	public void setId(String id)
 	{
 		this.getElement().setId(id);

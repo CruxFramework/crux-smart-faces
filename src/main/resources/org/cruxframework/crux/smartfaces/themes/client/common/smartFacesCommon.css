@@ -589,96 +589,6 @@ body
 	border-right:0;
 }
 
-/******************************************************************************
-    DivTable
-*******************************************************************************/
-
-.faces-DivTable 
-{
-	display: inline-block;
-}
-
-.faces-DivTable .arrowUp,
-.faces-DivTable .arrowDown,
-.faces-DivTable .arrowUpDown
-{
-	background:svgIconArrow transparent no-repeat center center;
-	border:none;
-	background-size:100% 100%, 70% auto;
-	color:rgba(0,0,0,0);
-	padding:5px;
-}
-
-.faces-DivTable .columnGroupHeader
-{
-	margin: 0 auto;
-}
-
-.faces-DivTable .arrowUp
-{
-	-webkit-transform: rotate(90deg);	
-}
-
-.faces-DivTable .arrowDown
-{
-	-webkit-transform: rotate(-90deg);
-}
-
-.faces-DivTable .arrowUpDown
-{
-	-webkit-transform: rotate(-90deg);
-	-webkit-box-reflect: right;
-}
-
-.faces-DivTable .row 
-{
-	 line-height: 25px;
-}
-
-.faces-DivTable .headerRow
-{
-	background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
-}
-
-.faces-DivTable .header 
-{
-	border: solid 1px black;
-}
-
-.faces-DivTable .column
-{
-	width: 100px;
-	border: solid 1px #EEEEEE;
-	vertical-align: middle;
-}
-
-.faces-DivTable .row--selected:not\(\rowOdd\), .faces-DivTable .row--selected:not\(\rowEven\)
-{
-	background: #9FB7E5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
-}
-
-.faces-DivTable .rowOdd
-{
-	background: #F4F5F5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
-}
-
-/******************************************************************************
-    DataGrid
-*******************************************************************************/
-
-.faces-Datagrid
-{
-	overflow: auto;
-}
-
-/******************************************************************************
-    Crux Image
-*******************************************************************************/
-.faces-Image
-{
-	background-size : 100% 100% !important;
-}
-
 /*  === Vertical Slider ===  */
 
 .faces-Menu.faces-Menu-slide
@@ -786,6 +696,95 @@ body
 	z-index:1;
 }
 
+/******************************************************************************
+    DivTable
+*******************************************************************************/
+
+.faces-DivTable 
+{
+	display: inline-block;
+}
+
+.faces-DivTable .arrowUp,
+.faces-DivTable .arrowDown,
+.faces-DivTable .arrowUpDown
+{
+	background:svgIconArrow transparent no-repeat center center;
+	border:none;
+	background-size:100% 100%, 70% auto;
+	color:rgba(0,0,0,0);
+	padding:5px;
+}
+
+.faces-DivTable .columnGroupHeader
+{
+	margin: 0 auto;
+}
+
+.faces-DivTable .arrowUp
+{
+	-webkit-transform: rotate(90deg);	
+}
+
+.faces-DivTable .arrowDown
+{
+	-webkit-transform: rotate(-90deg);
+}
+
+.faces-DivTable .arrowUpDown
+{
+	-webkit-transform: rotate(-90deg);
+	-webkit-box-reflect: right;
+}
+
+.faces-DivTable .row 
+{
+	 line-height: 25px;
+}
+
+.faces-DivTable .headerRow
+{
+	background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+.faces-DivTable .header 
+{
+	border: solid 1px black;
+}
+
+.faces-DivTable .column
+{
+	width: 100px;
+	border: solid 1px #EEEEEE;
+	vertical-align: middle;
+}
+
+.faces-DivTable .row--selected:not\(\rowOdd\), .faces-DivTable .row--selected:not\(\rowEven\)
+{
+	background: #9FB7E5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+.faces-DivTable .rowOdd
+{
+	background: #F4F5F5 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+}
+
+/******************************************************************************
+    DataGrid
+*******************************************************************************/
+
+.faces-Datagrid
+{
+	overflow: auto;
+}
+
+/******************************************************************************
+    Crux Image
+*******************************************************************************/
+.faces-Image
+{
+	background-size : 100% 100% !important;
+}
 
 /* -------------------- facesButton -----------------------*/
 
@@ -1081,27 +1080,27 @@ td > div > .faces--group
 
 /* -------------------- MenuDisposal (side, top) -----------------------*/
 
-.faces-SideMenuDisposal-headerPanel,
-.faces-TopMenuDisposal-headerPanel
+.faces-SideMenuDisposal .headerPanel,
+.faces-TopMenuDisposal .headerPanel
 {
 	background:#eee;
 	padding:10px;
 }
 
-.faces-SideMenuDisposal-menuPanel
+.faces-SideMenuDisposal .menuPanel
 {
 	background:#ddd;
 }
 
-.faces-SideMenuDisposal-footerPanel,
-.faces-TopMenuDisposal-footerPanel
+.faces-SideMenuDisposal .footerPanel,
+.faces-TopMenuDisposal .footerPanel
 {
 	background:#eee;
 	padding:10px;
 }
 
-.faces-SideMenuDisposal-contentPanel,
-.faces-TopMenuDisposal-contentPanel
+.faces-SideMenuDisposal .contentPanel,
+.faces-TopMenuDisposal .contentPanel
 {
 	padding:10px;
 }
@@ -1135,60 +1134,27 @@ td > div > .faces--group
 
 /* ------------ Combobox ---------------- */
 
-.faces-ComboBoxOptionPanel
+.faces-ComboBox .optionPanel
 {
 	background-color: #FFFFFF;
 }
 
-.faces-ComboBoxOptionPanel:hover * 
+.faces-ComboBox .optionPanel:hover * 
 {
 	background-color: #4496c6;
 	color: #fff;
 	cursor: pointer;
 }
 
-.faces-ComboBox-LabelItem
+.itemList
 {
 	
 }
 
-.faces-ComboBox-comboItemList
-{
-	
-}
-
-.faces-ComboBox-Text
+.faces-ComboBox .text
 {
 	width: 200px;
 }
-
-.faces-ComboBox-scrollPanel
-{
-	height: 150px;
-}
-
-/* ------------ Listbox ---------------- */
-.faces-ListBox
-{
-	min-width: 150px;
-	height: 150px;	
-	border: thin;
-	border-color: blue;
-}
-
-.faces-ListBox-optionPanel:hover *
-{
-	background-color: #4496c6;
-	color: #fff;
-	cursor: pointer;
-}
-
-.faces-ListBox-optionPanel-selected
-{
-	background-color: #4496c6;
-	color: #ff0000 !important;
-}
-
 
 /* ------------ SwapPanel ---------------- */
 .faces-SwapPanel .faces-SwapPanel-currentPanel,
