@@ -108,9 +108,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
-		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "faces-TopMenuDisposal-menuButton";
-		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-TopMenuDisposal-menuButtonContainer";
-		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-smallHeaderWrapper";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "menuButton";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "menuButtonContainer";
+		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "smallHeaderWrapper";
 
 
 		@Override

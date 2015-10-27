@@ -95,8 +95,8 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	
 	static class LargeLayoutBuilder implements LayoutBuilder
 	{
-		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
-		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "layoutWrapperPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "splitPanel";
 
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
@@ -134,9 +134,9 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
-		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON = "faces-SideMenuDisposal-menuButton";
-		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-SideMenuDisposal-menuButtonContainer";
-		private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-SideMenuDisposal-smallHeaderWrapper";
+		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON = "menuButton";
+		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "menuButtonContainer";
+		private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "smallHeaderWrapper";
 
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
