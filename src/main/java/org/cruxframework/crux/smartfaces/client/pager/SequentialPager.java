@@ -73,7 +73,6 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 	@Override
 	protected void setInteractionEnabled(boolean enabled) 
 	{
-		super.setInteractionEnabled(enabled);
 		previousButton.setEnabled(enabled);
 		nextButton.setEnabled(enabled);
 	}
