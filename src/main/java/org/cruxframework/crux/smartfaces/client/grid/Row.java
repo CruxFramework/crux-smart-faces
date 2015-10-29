@@ -33,7 +33,6 @@ public class Row<T>
 	boolean editing;
 	int index;
 	HandlerRegistration onSelectionHandlerRegistration;
-	boolean selected;
 	private final PageableDataGrid<T> grid;
 	private T oldDataObject;
 

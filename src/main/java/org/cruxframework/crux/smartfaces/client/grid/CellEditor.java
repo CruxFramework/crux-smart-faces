@@ -56,20 +56,26 @@ public abstract class CellEditor<T, K> implements WidgetFactory<T>
 	 * @param dataObject
 	 * @param row 
 	 */
-	public void render(
+	public IsWidget render(
 		PageableDataGrid<T> grid, 
 		int rowIndex, 
 		int columnIndex, 
 		int dataProviderRowIndex, 
-		T dataObject 
+		T dataObject,
+		boolean detailColumn
 		)
 	{
 		final IsWidget widget = CellEditor.this.createWidget(dataObject);
 		assert(widget != null): "widget cannot be null";
 
-		grid.drawCell(grid, rowIndex, columnIndex, dataProviderRowIndex, (Widget) widget);
+		if(!detailColumn)
+		{
+			grid.drawCell(grid, rowIndex, columnIndex, dataProviderRowIndex, (Widget) widget);
+		}
 
 		maybeAddHandlerToUpdateRow(grid, rowIndex, dataObject, widget);
+
+		return widget;
 	}
 
 	/**
