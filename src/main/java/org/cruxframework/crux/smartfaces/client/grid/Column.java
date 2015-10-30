@@ -19,6 +19,7 @@ package org.cruxframework.crux.smartfaces.client.grid;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import org.cruxframework.crux.core.client.css.animation.Animation.Callback;
 import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -156,7 +157,21 @@ public class Column<T, W extends IsWidget>
 	{
 		if(row.isEditing() && editableCell != null)
 		{
-			return renderToEdit(detailColumn);
+			IsWidget renderToEdit = renderToEdit(detailColumn);
+			
+			if(grid.isAnimationEnabled())
+			{
+				grid.getRowAnimation().animateEntrance(row.divRow, new Callback()
+				{
+					@Override
+					public void onAnimationCompleted()
+					{
+						// do nothing.
+					}
+				});
+			}
+			
+			return renderToEdit;
 		}
 		else
 		{
@@ -175,7 +190,7 @@ public class Column<T, W extends IsWidget>
 
 		if(widget != null && !detailColumn)
 		{
-			grid.drawCell(grid, row.index, index, row.dataProviderRowIndex, widget);
+			grid.drawCell(row.index, index, row.dataProviderRowIndex, widget);
 		}
 
 		return widget;
