@@ -31,9 +31,9 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.RowAnimation;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Column.ColumnComparator;
@@ -42,6 +42,8 @@ import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
+
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -84,9 +86,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
 	private DialogAnimation dialogAnimation = DialogAnimation.bounce;
 	private DivTable headerSection;
-	private String msgDetailPopupHeader = "Details";
+	private String msgDetailPopupHeader = WidgetMsgFactory.getMessages().details();
+	private String msgDefaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
 	private HandlerRegistration pageRequestedHandler;
-	private RowAnimation rowAnimation = RowAnimation.flipX;
+	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
 
 	/**
@@ -192,12 +195,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return rows;
 	}
 
-	public DialogAnimation getDialogAnimation()
+	public InOutAnimation getDialogAnimation()
 	{
 		return dialogAnimation;
 	}
 
-	public RowAnimation getRowAnimation()
+	public InOutAnimation getRowAnimation()
 	{
 		return rowAnimation;
 	}
@@ -271,7 +274,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.msgDetailPopupHeader = msgDetailPopupHeader;
 	}
 
-	public void setRowAnimation(RowAnimation rowAnimation)
+	public void setRowAnimation(InOutAnimation rowAnimation)
 	{
 		this.rowAnimation = rowAnimation;
 	}
@@ -514,6 +517,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			//body
 			column.render(false);
+
+			//animation
+			if(row.isEditing() && isAnimationEnabled())
+			{
+				getRowAnimation().animateEntrance(row.divRow, null);
+			}
 		}
 		return columnIndex;
 	}
@@ -624,7 +633,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("Details");
+					return new Label(msgDetailPopupHeader);
 				}
 			};
 		}
@@ -640,7 +649,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("More");
+					return new Label(msgDefaultDetailPopupHeader);
 				}
 			};
 		}
@@ -698,7 +707,16 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		}
 	}
-
+	
+	/**
+	 * Forces to redraw the entire grid.
+	 */
+	public void redraw()
+	{
+		refreshRowCache();
+		refreshPage(0);
+	}
+	
 	private void handleRowSelectStrategy(RowSelectStrategy rowSelectStrategy)
 	{
 		this.rowSelectStrategy = rowSelectStrategy;
@@ -714,6 +732,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					if (getDataProvider().getSelectionMode().equals(SelectionMode.multiple))
 					{
 						getDataProvider().selectAll(event.getValue());
+						redraw();
 					}
 				}
 			});

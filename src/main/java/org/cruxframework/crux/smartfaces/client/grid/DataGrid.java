@@ -89,14 +89,6 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		return columnGroup;
 	}
 
-	/**
-	 * Forces to redraw the entire grid.
-	 */
-	public void redraw()
-	{
-		refreshPage(0);
-	}
-
 	@Override
 	public void setEnabled(boolean enabled)
 	{
