@@ -19,6 +19,8 @@ package org.cruxframework.crux.smartfaces.client.grid;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -32,20 +34,23 @@ public class Column<T, W extends IsWidget>
 {
 	ColumnComparator<T> columnComparator;
 	ColumnGroup<T> columnGroup;
-	boolean sorted;
+	boolean detail = false;
 	IsWidget headerWidget;
 	int index = 0;
 	String key;
 	Row<T> row;
+	RowSelectStrategy rowSelectStrategy = null;
 	boolean sortable = false;
+	boolean sorted;
 	private GridDataFactory<T, W> dataFactory;
 	private CellEditor<T, ?> editableCell;
 	private final PageableDataGrid<T> grid;
 	private ArrayList<String> keys = new ArrayList<String>();
 
-	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<T, W> dataFactory, String key)
+	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<T, W> dataFactory, String key, boolean detail)
 	{
 		this.grid = pageableDataGrid;
+		this.detail = detail;
 		assert(!keys.contains(key)): "key must be unique.";
 		this.key = key;
 		assert(dataFactory != null): "dataFactory must not be null";
@@ -59,14 +64,6 @@ public class Column<T, W extends IsWidget>
 		return this;
 	}
 
-	/**
-	 * Clear the column content.
-	 */
-	public void clear()
-	{
-		row = null;
-	}
-	
 	/**
 	 * @return the data factory.
 	 */
@@ -86,6 +83,15 @@ public class Column<T, W extends IsWidget>
 	public Row<T> getRow() 
 	{
 		return row;
+	}
+
+	/**
+	 * @return true if the column show be rendered as a detail widget
+	 * and false otherwise.
+	 */
+	public boolean isDetail()
+	{
+		return detail;
 	}
 
 	public Column<T, W> setCellEditor(CellEditor<T, ?> editableCell)
@@ -113,7 +119,7 @@ public class Column<T, W extends IsWidget>
 		this.sortable = sortable;
 		return this;
 	}
-	
+
 	public void sort()
 	{
 		assert(grid.getDataProvider() != null) :"No dataProvider set for this component.";
@@ -129,42 +135,50 @@ public class Column<T, W extends IsWidget>
 				//uses all the comparators that were added when uses clicks in the column header.
 				while((compareResult == 0) && (index != grid.linkedComparators.size()))
 				{
-				ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
-				compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
-				index++;
+					ColumnComparator<T> columnComparator = grid.linkedComparators.get(index);
+					compareResult = columnComparator.comparator.compare(o1, o2)*columnComparator.multiplier;
+					index++;
 				}
 				return compareResult;
 			}
 		});
 	}
 
-	void render() 
+	/**
+	 * Clear the column content.
+	 */
+	void clear()
+	{
+		row = null;
+	}
+
+	IsWidget render(boolean detailColumn) 
 	{
 		if(row.isEditing() && editableCell != null)
 		{
-			renderToEdit();
+			return renderToEdit(detailColumn);
 		}
 		else
 		{
-			renderToView();						
+			return renderToView(detailColumn);
 		}
 	}
 
-	private void renderToEdit() 
+	private IsWidget renderToEdit(boolean detailColumn)
 	{
-		editableCell.render(grid, row.index, index, row.dataProviderRowIndex, row.dataObject);
+		return editableCell.render(grid, row.index, index, row.dataProviderRowIndex, row.dataObject, detailColumn);
 	}
 
-	private void renderToView() 
+	private IsWidget renderToView(boolean detailColumn) 
 	{
 		W widget = dataFactory.createData(row.dataObject, row);
 
-		if(widget == null)
+		if(widget != null && !detailColumn)
 		{
-			return;
+			grid.drawCell(grid, row.index, index, row.dataProviderRowIndex, widget);
 		}
 
-		grid.drawCell(grid, row.index, index, row.dataProviderRowIndex, widget);
+		return widget;
 	}
 
 	/**

@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.divtable;
 
-import org.cruxframework.crux.core.client.collection.Array;
-import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import java.util.HashMap;
+
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
@@ -35,7 +35,7 @@ public class DivRow extends SelectableFlowPanel
 {
 	public static final String STYLES_FACES_GRID_COLUMN = "column";
 	public static final String STYLES_FACES_GRID_ROW = "row";
-	private static Array<String> columnClasses = CollectionFactory.createArray();
+	private static HashMap<String, Integer> columnClasses = new HashMap<String, Integer>();
 	private final String divTableId;
 	
 	protected DivRow(String divTableId)
@@ -97,16 +97,16 @@ public class DivRow extends SelectableFlowPanel
 		}
 		
 		String columnName = divTableId + "_" + STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
-		int columnClassesIndex = columnClasses.indexOf(columnName);
-		if(columnClassesIndex >= 0)
+		Integer columnClassesIndex = columnClasses.get(columnName);
+		if(columnClassesIndex != null)
 		{
-			element.addClassName(columnClasses.get(columnClassesIndex));
+			element.addClassName(columnName);
 		} 
 		else
 		{
 			StyleInjector.inject("."+columnName+"{"+("order: " + String.valueOf(columnIndex))+"}");
 			element.addClassName(columnName);
-			columnClasses.insert(columnIndex, columnName);
+			columnClasses.put(columnName, columnIndex);
 		}
 	}
 }

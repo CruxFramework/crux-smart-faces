@@ -16,9 +16,9 @@
 package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.collection.Array;
-import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
+import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,10 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  * @param <T> the Data Object type.
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 {
 	private static final String STYLE_DISABLED = "-disabled";
@@ -41,6 +38,12 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 
 	public DataGrid()
 	{
+		this(RowSelectStrategy.row);
+	}
+
+	public DataGrid(RowSelectStrategy rowSelectStrategy)
+	{
+		super(rowSelectStrategy);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
 	}
@@ -52,17 +55,28 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	}
 
 	/**
-	 * Inserts a new column.
 	 * @param dataFactory
+	 * @param key
 	 * @return
 	 */
 	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key)
 	{
-		Column<T, V> column = new Column<T, V>(this, dataFactory, key);
+		return newColumn(dataFactory, key, false);
+	}
+
+	/**
+	 * @param dataFactory
+	 * @param key
+	 * @param detail
+	 * @return
+	 */
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key, boolean detail)
+	{
+		Column<T, V> column = new Column<T, V>(this, dataFactory, key, detail);
 		addColumn(column);
 		return column;
 	}
- 
+
 	/**
 	 * Define a column group in order to set a specific header to each group.
 	 * @param dataGridColumnGroup
@@ -74,7 +88,15 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		addColumnGroup(columnGroup);
 		return columnGroup;
 	}
-	
+
+	/**
+	 * Forces to redraw the entire grid.
+	 */
+	public void redraw()
+	{
+		refreshPage(0);
+	}
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{

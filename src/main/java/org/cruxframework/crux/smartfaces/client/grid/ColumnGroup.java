@@ -30,19 +30,12 @@ public class ColumnGroup<T>
 	IsWidget header;
 	int index = Integer.MAX_VALUE;
 	String key;
-	
+
 	protected ColumnGroup(String key)
 	{
 		this.key = key;
 	}
 
-	//TODO: implement it!
-	public ColumnGroup<T> addColumGroup(ColumnGroup<T> columnGroup)
-	{
-		columnGroup.columnGroupParent = this;
-		return this;
-	}
-	
 	public ColumnGroup<T> addColumn(Column<T, ?> column)
 	{
 		//find out the smaller index
@@ -53,7 +46,7 @@ public class ColumnGroup<T>
 		column.columnGroup = ColumnGroup.this;
 		return this;
 	}
-	
+
 	public IsWidget getHeaderWidget()
 	{
 		return header;
