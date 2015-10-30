@@ -17,14 +17,16 @@ package org.cruxframework.crux.smartfaces.client.dialog.animation;
 
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @see {@link InOutAnimation}
  */
-public abstract class DialogAnimation
+@Deprecated
+public abstract class DialogAnimation extends InOutAnimation
 {
 	private Animation<?> entrance = getEntranceAnimation();
 	private Animation<?> exit = getExitAnimation();

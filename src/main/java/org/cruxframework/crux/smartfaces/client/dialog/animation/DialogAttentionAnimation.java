@@ -16,11 +16,13 @@
 package org.cruxframework.crux.smartfaces.client.dialog.animation;
 
 import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.AttentionAnimation;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @see {@link AttentionAnimation}
  */
+@Deprecated
 public abstract class DialogAttentionAnimation extends DialogAnimation
 {
 	protected StandardAnimation getExitAnimation()
