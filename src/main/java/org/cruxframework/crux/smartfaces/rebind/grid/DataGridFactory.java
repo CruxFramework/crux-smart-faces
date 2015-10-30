@@ -93,7 +93,10 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String className = getWidgetClassName() + "<" + dataObjectName + ">";
 
-		out.println("final " + className + " " + context.getWidget() + " = new " + className + "();");
+		RowSelectStrategy selectionStrategy = RowSelectStrategy.valueOf(context.readChildProperty("rowSelectStrategy", RowSelectStrategy.row.toString()));
+		
+		out.println("final " + className + " " + context.getWidget() + " = new " + className + "(" +
+			RowSelectStrategy.class.getCanonicalName() + "." + selectionStrategy + ");");
 		
 		createColumns(out, context, context.getWidgetElement(), null);
 	}
