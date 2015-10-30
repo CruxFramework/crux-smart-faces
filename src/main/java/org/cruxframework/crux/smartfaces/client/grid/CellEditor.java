@@ -70,7 +70,7 @@ public abstract class CellEditor<T, K> implements WidgetFactory<T>
 
 		if(!detailColumn)
 		{
-			grid.drawCell(grid, rowIndex, columnIndex, dataProviderRowIndex, (Widget) widget);
+			grid.drawCell(rowIndex, columnIndex, dataProviderRowIndex, (Widget) widget);
 		}
 
 		maybeAddHandlerToUpdateRow(grid, rowIndex, dataObject, widget);
