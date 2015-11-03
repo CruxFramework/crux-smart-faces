@@ -86,8 +86,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
 	private DialogAnimation dialogAnimation = DialogAnimation.bounce;
 	private DivTable headerSection;
-	private String msgDetailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private String msgDefaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
+	private String msgDetailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
@@ -220,6 +220,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	}
 
 	/**
+	 * Forces to redraw the entire grid.
+	 */
+	public void redraw()
+	{
+		refreshRowCache();
+		refreshPage(0);
+	}
+
+	/**
 	 * Rolls back any transaction started in the edition mode.
 	 */
 	@Override
@@ -277,6 +286,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	public void setRowAnimation(InOutAnimation rowAnimation)
 	{
 		this.rowAnimation = rowAnimation;
+	}
+
+	/**
+	 * @param rowSelectStrategy
+	 */
+	public void setRowSelectStrategy(RowSelectStrategy rowSelectStrategy)
+	{
+		this.rowSelectStrategy = rowSelectStrategy;
 	}
 
 	/**
@@ -526,7 +543,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return columnIndex;
 	}
-
+	
 	private void drawDetails(final Row<T> row, int columnIndex)
 	{
 		boolean firstDetail = true;
@@ -589,7 +606,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		}
 	}
-
+	
+	
 	//This should not be exposed as it only returns rows for the current page
 	//and is used for internal purposes.
 	private Row<T> getCurrentPageRow(T boundObject)
@@ -608,7 +626,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			return null;
 		}
 	}
-	
+
 	private int getCurrentRowIndex(int dataProviderRowIndex)
 	{
 		int index;
@@ -622,8 +640,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return index;
 	}
-	
-	
+
 	private GridWidgetFactory getDetailColumnHeaderWidgetFactory()
 	{
 		if (detailColumnHeaderWidgetFactory == null)
@@ -655,7 +672,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return detailTriggerWidgetFactory;
 	}
-
+	
 	private String getStyleProperties(String type, int index, int classIndex)
 	{
 		String typeClassName = tableId + "_" + type+"_" + classIndex;
@@ -666,7 +683,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return type + " " + typeClassName;
 	}
-
+	
 	private void handleHeaderInsertion(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.index == 0 && column.row.index == 0)
@@ -707,16 +724,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		}
 	}
-	
-	/**
-	 * Forces to redraw the entire grid.
-	 */
-	public void redraw()
-	{
-		refreshRowCache();
-		refreshPage(0);
-	}
-	
+
 	private void handleRowSelectStrategy(RowSelectStrategy rowSelectStrategy)
 	{
 		this.rowSelectStrategy = rowSelectStrategy;
@@ -792,7 +800,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				);
 		}
 	}
-
+	
 	private void handleSelectionStrategy(final int dataProviderRowIndex, final Row<T> row)
 	{
 		if(rowSelectStrategy.equals(RowSelectStrategy.row) && row.onSelectionHandlerRegistration == null)
