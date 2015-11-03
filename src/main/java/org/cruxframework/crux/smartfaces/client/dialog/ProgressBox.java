@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.dialog;
 
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.progress.Progress;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.dom.client.PartialSupport;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -120,7 +120,7 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 	 * @param message the text to be displayed
 	 * @param animation animates the dialog while showing or hiding
 	 */
-	public static ProgressBox show(String message, DialogAnimation animation)
+	public static ProgressBox show(String message, InOutAnimation animation)
 	{
 		ProgressBox progressBox = ProgressBox.createIfSupported();
 		if (progressBox == null)

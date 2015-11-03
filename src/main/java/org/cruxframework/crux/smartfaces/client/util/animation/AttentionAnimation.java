@@ -13,24 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.dialog.animation;
+package org.cruxframework.crux.smartfaces.client.util.animation;
 
 import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
-import org.cruxframework.crux.smartfaces.client.util.animation.AttentionAnimation;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @see {@link AttentionAnimation}
+ *
  */
-@Deprecated
-public abstract class DialogAttentionAnimation extends DialogAnimation
+public abstract class AttentionAnimation extends InOutAnimation
 {
 	protected StandardAnimation getExitAnimation()
 	{
 		return new StandardAnimation(StandardAnimation.Type.fadeOut);
 	}
 
-	public static DialogAnimation bounce = new DialogAttentionAnimation()
+	public static InOutAnimation bounce = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -38,7 +36,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation flash = new DialogAttentionAnimation()
+	public static InOutAnimation flash = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -46,7 +44,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation pulse = new DialogAttentionAnimation()
+	public static InOutAnimation pulse = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -54,7 +52,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation rubberBand = new DialogAttentionAnimation()
+	public static InOutAnimation rubberBand = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -62,7 +60,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation shake = new DialogAttentionAnimation()
+	public static InOutAnimation shake = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -70,7 +68,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation swing = new DialogAttentionAnimation()
+	public static InOutAnimation swing = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -78,7 +76,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation tada = new DialogAttentionAnimation()
+	public static InOutAnimation tada = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -86,7 +84,7 @@ public abstract class DialogAttentionAnimation extends DialogAnimation
         }
 	};
 
-	public static DialogAnimation wobble = new DialogAttentionAnimation()
+	public static InOutAnimation wobble = new AttentionAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {

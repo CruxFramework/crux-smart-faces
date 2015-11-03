@@ -23,12 +23,12 @@ import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContai
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
 import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.BodyElement;
@@ -54,7 +54,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 	private static final String MENU_PANEL_STYLE = "menuPanel";
 	private static final String SMALL_HEADER_PANEL = "smallHeaderPanel";
 
-	protected DialogAnimation animation;
+	protected InOutAnimation animation;
 	protected Panel bodyPanel;
 	protected FooterPanel footerPanel;
 	protected HeaderPanel headerPanel;
@@ -128,7 +128,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 	}
 
 	@Override
-	public void setAnimation(DialogAnimation animation)
+	public void setAnimation(InOutAnimation animation)
 	{
 		this.animation = animation;
 		setAnimationEnabled(animation != null);
@@ -180,7 +180,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 		footerPanel.setStyleName(getFooterStyleName());
 		menuPanel.setStyleName(getMenuPanelStyleName());
 		viewContentPanel.setStyleName(getContentStyleName());
-		setAnimation(DialogAnimation.bounceLeft);
+		setAnimation(InOutAnimation.bounceLeft);
 		setStyleName(getDefaultStyleName());		
     }
 

@@ -24,8 +24,8 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -92,7 +92,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 * @param type the message type, used to apply a particular style
 	 * @param animation animation to be used on dialog entrances and exits
 	 */
-	public static MessageBox show(String message, MessageType type, DialogAnimation animation)
+	public static MessageBox show(String message, MessageType type, InOutAnimation animation)
 	{
 		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
@@ -125,7 +125,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 * @param animation animation to be used on dialog entrances and exits
 	 */
 	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, 
-									boolean modal, String styleName, DialogAnimation animation)
+									boolean modal, String styleName, InOutAnimation animation)
 	{
 		return show(null, message, type, movable, resizable, closable, modal, styleName, animation);
 	}
@@ -176,7 +176,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 * @param animation animation to be used on dialog entrances and exits
 	 */
 	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, 
-								boolean closable, boolean modal, String styleName, DialogAnimation animation)
+								boolean closable, boolean modal, String styleName, InOutAnimation animation)
 	{
 		MessageBox msgBox = new MessageBox(movable, resizable, closable, modal, styleName); 
 		msgBox.setMessage(message, type);

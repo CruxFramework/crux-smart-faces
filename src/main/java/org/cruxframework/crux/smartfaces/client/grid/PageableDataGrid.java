@@ -31,9 +31,9 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.RowAnimation;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Column.ColumnComparator;
@@ -42,6 +42,8 @@ import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
+
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -82,11 +84,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private HandlerRegistration dataSelectionHandler;
 	private GridWidgetFactory detailColumnHeaderWidgetFactory = null;
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
-	private DialogAnimation dialogAnimation = DialogAnimation.bounce;
+	private InOutAnimation dialogAnimation = InOutAnimation.bounce;
 	private DivTable headerSection;
-	private String detailPopupHeader = "Details";
+	private String defaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
+	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private HandlerRegistration pageRequestedHandler;
-	private RowAnimation rowAnimation = RowAnimation.flipX;
+	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
 
 	/**
@@ -192,12 +195,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return rows;
 	}
 
-	public DialogAnimation getDialogAnimation()
+	public InOutAnimation getDialogAnimation()
 	{
 		return dialogAnimation;
 	}
 
-	public RowAnimation getRowAnimation()
+	public InOutAnimation getRowAnimation()
 	{
 		return rowAnimation;
 	}
@@ -214,6 +217,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	public boolean isAnimationEnabled()
 	{
 		return animated ;
+	}
+
+	/**
+	 * Forces to redraw the entire grid.
+	 */
+	public void redraw()
+	{
+		refreshRowCache();
+		refreshPage(0);
 	}
 
 	/**
@@ -261,7 +273,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.detailTriggerWidgetFactory = detailTriggerWidgetFactory;
 	}
 
-	public void setDialogAnimation(DialogAnimation dialogAnimation)
+	public void setDialogAnimation(InOutAnimation dialogAnimation)
 	{
 		this.dialogAnimation = dialogAnimation;
 	}
@@ -271,9 +283,17 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.detailPopupHeader = msgDetailPopupHeader;
 	}
 
-	public void setRowAnimation(RowAnimation rowAnimation)
+	public void setRowAnimation(InOutAnimation rowAnimation)
 	{
 		this.rowAnimation = rowAnimation;
+	}
+
+	/**
+	 * @param rowSelectStrategy
+	 */
+	public void setRowSelectStrategy(RowSelectStrategy rowSelectStrategy)
+	{
+		this.rowSelectStrategy = rowSelectStrategy;
 	}
 
 	/**
@@ -514,6 +534,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			//body
 			column.render(false);
+
+			//animation
+			if(row.isEditing() && isAnimationEnabled())
+			{
+				getRowAnimation().animateEntrance(row.divRow, null);
+			}
 		}
 		return columnIndex;
 	}
@@ -624,7 +650,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("Details");//TODO i18n
+					return new Label(detailPopupHeader);
 				}
 			};
 		}
@@ -640,7 +666,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("More");//TODO i18n
+					return new Label(defaultDetailPopupHeader);
 				}
 			};
 		}
@@ -714,6 +740,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					if (getDataProvider().getSelectionMode().equals(SelectionMode.multiple))
 					{
 						getDataProvider().selectAll(event.getValue());
+						Array<Row<T>> currentPageRows = PageableDataGrid.this.getCurrentPageRows();
+						if(currentPageRows != null)
+						{
+							for(int i=0; i<currentPageRows.size(); i++)
+							{
+								Row<T> row = currentPageRows.get(i);
+								setRowSelectionState(row, event.getValue());
+							}
+						}
 					}
 				}
 			});
@@ -724,6 +759,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				public CheckBox createData(T value, final Row<T> row)
 				{
 					final CheckBox checkBox = new CheckBox();
+					row.checkbox = checkBox;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
 					checkBox.setValue(selected);
 					checkBox.addClickHandler(new ClickHandler()
@@ -747,6 +783,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				public RadioButton createData(T value, final Row<T> row)
 				{
 					final RadioButton radioButton = new RadioButton(tableId);
+					row.radioButton = radioButton;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
 					radioButton.setValue(selected);
 					radioButton.addClickHandler(new ClickHandler()
@@ -840,6 +877,16 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		else
 		{
 			row.divRow.removeStyleDependentName(SYTLE_DATAGRID_SELECTED);
+		}
+		
+		if(row.checkbox != null)
+		{
+			row.checkbox.setValue(selected);
+		}
+		
+		if(row.radioButton != null)
+		{
+			row.radioButton.setValue(selected);
 		}
 	}
 }

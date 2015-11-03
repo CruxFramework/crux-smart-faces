@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.dialog.animation;
+package org.cruxframework.crux.smartfaces.client.util.animation;
 
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
@@ -21,10 +21,11 @@ import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * @author Thiago da Rosa de Bustamante
  * @author Samuel Almeida Cardoso
  *
  */
-public abstract class RowAnimation
+public abstract class InOutAnimation
 {
 	private Animation<?> entrance = getEntranceAnimation();
 	private Animation<?> exit = getExitAnimation();
@@ -42,7 +43,7 @@ public abstract class RowAnimation
 	protected abstract Animation<?> getExitAnimation();
 	protected abstract Animation<?> getEntranceAnimation();
 	
-	public static RowAnimation bounce = new RowAnimation()
+	public static InOutAnimation bounce = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -55,7 +56,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation bounceUpDown = new RowAnimation()
+	public static InOutAnimation bounceUpDown = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -68,7 +69,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation bounceLeft = new RowAnimation()
+	public static InOutAnimation bounceLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -81,7 +82,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation bounceRight = new RowAnimation()
+	public static InOutAnimation bounceRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -94,7 +95,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation bounceDownUp = new RowAnimation()
+	public static InOutAnimation bounceDownUp = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -107,7 +108,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fade = new RowAnimation()
+	public static InOutAnimation fade = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -120,7 +121,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeDownUp = new RowAnimation()
+	public static InOutAnimation fadeDownUp = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -133,7 +134,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeUpDown = new RowAnimation()
+	public static InOutAnimation fadeUpDown = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -146,7 +147,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeLeft = new RowAnimation()
+	public static InOutAnimation fadeLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -159,7 +160,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeRight = new RowAnimation()
+	public static InOutAnimation fadeRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -172,7 +173,7 @@ public abstract class RowAnimation
 		}
 	};
 	
-	public static RowAnimation fadeDownUpBig = new RowAnimation()
+	public static InOutAnimation fadeDownUpBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -185,7 +186,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeUpDownBig = new RowAnimation()
+	public static InOutAnimation fadeUpDownBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -198,7 +199,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeLeftBig = new RowAnimation()
+	public static InOutAnimation fadeLeftBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -211,7 +212,7 @@ public abstract class RowAnimation
 		}
 	};
 
-	public static RowAnimation fadeRightBig = new RowAnimation()
+	public static InOutAnimation fadeRightBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -224,7 +225,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation flipX = new RowAnimation()
+	public static InOutAnimation flipX = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -237,7 +238,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation flipY = new RowAnimation()
+	public static InOutAnimation flipY = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -250,7 +251,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation lightSpeed = new RowAnimation()
+	public static InOutAnimation lightSpeed = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -263,7 +264,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation rotate = new RowAnimation()
+	public static InOutAnimation rotate = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -276,7 +277,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation rotateDownLeft = new RowAnimation()
+	public static InOutAnimation rotateDownLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -289,7 +290,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation rotateDownRight = new RowAnimation()
+	public static InOutAnimation rotateDownRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -302,7 +303,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation rotateUpLeft = new RowAnimation()
+	public static InOutAnimation rotateUpLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -315,7 +316,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation rotateUpRight = new RowAnimation()
+	public static InOutAnimation rotateUpRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -328,7 +329,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation slideDown = new RowAnimation()
+	public static InOutAnimation slideDown = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -341,7 +342,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation slideLeft = new RowAnimation()
+	public static InOutAnimation slideLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -354,7 +355,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation slideRight = new RowAnimation()
+	public static InOutAnimation slideRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -367,7 +368,7 @@ public abstract class RowAnimation
 		}
 	};	
 
-	public static RowAnimation roll = new RowAnimation()
+	public static InOutAnimation roll = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
@@ -377,6 +378,19 @@ public abstract class RowAnimation
 		protected StandardAnimation getExitAnimation()
 		{
 			return new StandardAnimation(StandardAnimation.Type.rollOut);
+		}
+	};
+	
+	public static InOutAnimation zoom = new InOutAnimation()
+	{
+		protected StandardAnimation getEntranceAnimation()
+        {
+	        return new StandardAnimation(StandardAnimation.Type.zoomIn);
+        }
+
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.zoomOut);
 		}
 	};	
 }
