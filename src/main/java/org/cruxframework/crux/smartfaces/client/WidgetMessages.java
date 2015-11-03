@@ -32,4 +32,10 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("Can not add a widget on this Dialog.")
 	String canNotAddWidgetOnThisDialog();
+
+	@DefaultMessage("Details")
+	String details();
+
+	@DefaultMessage("More")
+	String more();
 }

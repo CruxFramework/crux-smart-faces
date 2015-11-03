@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.dialog;
 
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -73,7 +74,7 @@ public class DialogBox extends AbstractDialogBox
 	 * @param widget the content widget displayed by this dialog
 	 * @param animation animates the dialog while showing or hiding
 	 */
-	public static DialogBox show(IsWidget widget, DialogAnimation animation)
+	public static DialogBox show(IsWidget widget, InOutAnimation animation)
 	{
 		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
@@ -104,7 +105,7 @@ public class DialogBox extends AbstractDialogBox
 	 * @param animation animates the dialog while showing or hiding
 	 */
 	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, 
-		boolean modal, DialogAnimation animation)
+		boolean modal, InOutAnimation animation)
 	{
 		return show(title, widget, movable, resizable, closable, modal, DEFAULT_STYLE_NAME, animation);
 	}
@@ -121,7 +122,7 @@ public class DialogBox extends AbstractDialogBox
 	 * @param animation animates the dialog while showing or hiding
 	 */
 	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, 
-								boolean modal, String styleName, DialogAnimation animation)
+								boolean modal, String styleName, InOutAnimation animation)
 	{
 		DialogBox msgBox = new DialogBox(movable, resizable, closable, modal, styleName); 
 		msgBox.setWidget(widget);

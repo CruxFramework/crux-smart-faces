@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.dialog.animation;
 
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.user.client.ui.HasAnimation;
 
@@ -30,5 +31,5 @@ public interface HasDialogAnimation extends HasAnimation
 	 * Defines the animation used to animate popup entrances and exits
 	 * @param animation animation.
 	 */
-	void setAnimation(DialogAnimation animation);
+	void setAnimation(InOutAnimation animation);
 }

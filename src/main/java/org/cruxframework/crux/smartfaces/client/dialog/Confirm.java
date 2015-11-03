@@ -27,9 +27,9 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -122,7 +122,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 * @param cancelHandler a handler for the Cancel button click event
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
-	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, DialogAnimation animation)
+	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, InOutAnimation animation)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
 				okHandler, cancelHandler, DEFAULT_STYLE_NAME, animation);
@@ -138,7 +138,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 * @param resizable if true, the window can be resized
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
-	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable, DialogAnimation animation)
+	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable, InOutAnimation animation)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
 				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, animation);
@@ -189,7 +189,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
 	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, 
-			CancelHandler cancelHandler, String styleName, DialogAnimation animation)
+			CancelHandler cancelHandler, String styleName, InOutAnimation animation)
 	{
 		return show(dialogTitle, message, okLabel, cancelLabel, okHandler, cancelHandler, true, false, styleName, animation);
 	}
@@ -208,7 +208,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
 	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, 
-			CancelHandler cancelHandler, boolean movable, boolean resizable, String styleName, DialogAnimation animation)
+			CancelHandler cancelHandler, boolean movable, boolean resizable, String styleName, InOutAnimation animation)
 	{
 		Confirm confirm = new Confirm(movable, resizable, styleName); 
 		confirm.setDialogTitle(dialogTitle);

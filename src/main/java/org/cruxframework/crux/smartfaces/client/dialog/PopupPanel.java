@@ -21,8 +21,8 @@ import java.util.List;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -80,7 +80,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private static final String STYLE_POPUP = "faces-popup";
 	
 	private boolean animating;
-	private DialogAnimation animation;
+	private InOutAnimation animation;
 	private boolean animationEnabled;
 	private boolean autoHide;
 	private boolean autoHideOnHistoryEvents;
@@ -451,7 +451,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 * Defines the animation used to animate popup entrances and exits
 	 * @param animation
 	 */
-	public void setAnimation(DialogAnimation animation)
+	public void setAnimation(InOutAnimation animation)
 	{
 		this.animation = animation;
 		setAnimationEnabled(animation != null);
@@ -794,11 +794,11 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		setPosition(left, top);
 	}
 
-	private DialogAnimation getDialogAnimation()
+	private InOutAnimation getDialogAnimation()
 	{
 		if (animation == null)
 		{
-			animation = DialogAnimation.bounce;
+			animation = InOutAnimation.bounce;
 		}
 		return animation;
 	}
