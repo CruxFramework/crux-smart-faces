@@ -84,7 +84,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
 	private DialogAnimation dialogAnimation = DialogAnimation.bounce;
 	private DivTable headerSection;
-	private String msgDetailPopupHeader = "Details";
+	private String detailPopupHeader = "Details";
 	private HandlerRegistration pageRequestedHandler;
 	private RowAnimation rowAnimation = RowAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
@@ -266,9 +266,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.dialogAnimation = dialogAnimation;
 	}
 
-	public void setMsgDetailPopupHeader(String msgDetailPopupHeader)
+	public void setDetailPopupHeader(String msgDetailPopupHeader)
 	{
-		this.msgDetailPopupHeader = msgDetailPopupHeader;
+		this.detailPopupHeader = msgDetailPopupHeader;
 	}
 
 	public void setRowAnimation(RowAnimation rowAnimation)
@@ -281,7 +281,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	 */
 	protected void addColumn(Column<T,?> column)
 	{
-		if(column.detail)
+		if(column.isDetail())
 		{
 			detailColumns.add(column);
 		}
@@ -541,7 +541,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 						{
 							dialogBox.setAnimation(dialogAnimation);
 						}
-						dialogBox.setDialogTitle(msgDetailPopupHeader);
+						dialogBox.setDialogTitle(detailPopupHeader);
 						final FlowPanel wrapperDetails = new FlowPanel();
 						wrapperDetails.setStyleName(SYTLE_DATAGRID_DETAILS);
 						dialogBox.add(wrapperDetails);
@@ -624,7 +624,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("Details");
+					return new Label("Details");//TODO i18n
 				}
 			};
 		}
@@ -640,7 +640,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label("More");
+					return new Label("More");//TODO i18n
 				}
 			};
 		}
