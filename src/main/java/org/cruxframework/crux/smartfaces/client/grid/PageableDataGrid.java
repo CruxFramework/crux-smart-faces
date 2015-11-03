@@ -732,7 +732,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					if (getDataProvider().getSelectionMode().equals(SelectionMode.multiple))
 					{
 						getDataProvider().selectAll(event.getValue());
-						redraw();
+						Array<Row<T>> currentPageRows = PageableDataGrid.this.getCurrentPageRows();
+						if(currentPageRows != null)
+						{
+							for(int i=0; i<currentPageRows.size(); i++)
+							{
+								Row<T> row = currentPageRows.get(i);
+								setRowSelectionState(row, event.getValue());
+							}
+						}
 					}
 				}
 			});
@@ -743,6 +751,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				public CheckBox createData(T value, final Row<T> row)
 				{
 					final CheckBox checkBox = new CheckBox();
+					row.checkbox = checkBox;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
 					checkBox.setValue(selected);
 					checkBox.addClickHandler(new ClickHandler()
@@ -766,6 +775,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				public RadioButton createData(T value, final Row<T> row)
 				{
 					final RadioButton radioButton = new RadioButton(tableId);
+					row.radioButton = radioButton;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
 					radioButton.setValue(selected);
 					radioButton.addClickHandler(new ClickHandler()
@@ -859,6 +869,16 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		else
 		{
 			row.divRow.removeStyleDependentName(SYTLE_DATAGRID_SELECTED);
+		}
+		
+		if(row.checkbox != null)
+		{
+			row.checkbox.setValue(selected);
+		}
+		
+		if(row.radioButton != null)
+		{
+			row.radioButton.setValue(selected);
 		}
 	}
 }

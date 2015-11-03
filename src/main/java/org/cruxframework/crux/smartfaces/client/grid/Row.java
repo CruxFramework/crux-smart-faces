@@ -18,6 +18,8 @@ package org.cruxframework.crux.smartfaces.client.grid;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.RadioButton;
 
 /**
  * Define the row data type.
@@ -28,6 +30,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public class Row<T>
 {
 	T dataObject;
+	CheckBox checkbox;
+	RadioButton radioButton;
 	int dataProviderRowIndex;
 	DivRow divRow;
 	boolean editing;
