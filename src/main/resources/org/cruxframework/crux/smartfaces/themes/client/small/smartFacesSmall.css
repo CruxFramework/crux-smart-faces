@@ -20,12 +20,12 @@ body
 
 /* -------------------- SideMenuDisposal -----------------------*/
 
-.faces-SideMenuDisposal-smallHeaderWrapper
+.faces-SideMenuDisposal .smallHeaderWrapper
 {
 	background:#4496c6;
 }
 
-.faces-SideMenuDisposal-menuButton
+.faces-SideMenuDisposal .menuButton
 {
 	border:none;
 	width:100%;
@@ -38,12 +38,12 @@ body
 
 /* -------------------- TopMenuDisposal -----------------------*/
 
-.faces-TopMenuDisposal-smallHeaderWrapper
+.faces-TopMenuDisposal .smallHeaderWrapper
 {
 	background:#4496c6;
 }
 
-.faces-TopMenuDisposal-menuButton
+.faces-TopMenuDisposal .menuButton
 {
 	border:none;
 	width:100%;

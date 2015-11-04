@@ -1,4 +1,5 @@
 @external faces-*;
+@external contentPanel, smallHeaderWrapper, menuButtonContainer, menuPanel, smallHeaderPanel;
 
 @def HEADER_HEIGHT 45px;
 
@@ -14,13 +15,13 @@
 	flex-direction:column;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
+.facesBackboneSideMenuDisposal .contentPanel
 {
 	flex:1;
 	padding-top:HEADER_HEIGHT;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderWrapper
+.facesBackboneSideMenuDisposal .smallHeaderWrapper
 {
 	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
@@ -35,7 +36,7 @@
 	flex-direction:row;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuButtonContainer
+.facesBackboneSideMenuDisposal .menuButtonContainer
 {
 	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
@@ -48,7 +49,7 @@
 	flex-direction:column;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuPanel
+.facesBackboneSideMenuDisposal .menuPanel
 {
 	position:absolute;
 	z-index:2;
@@ -56,7 +57,7 @@
 	height:100vh;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderPanel
+.facesBackboneSideMenuDisposal .smallHeaderPanel
 {
 	order:2;
 	flex:1;
