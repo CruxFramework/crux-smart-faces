@@ -1,6 +1,6 @@
 @external faces-*;
 
-.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-layoutWrapperPanel
+.facesBackboneTopMenuDisposal .layoutWrapperPanel
 {
 	display: -webkit-box;    /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-box;       /* OLD - Firefox 19- (buggy but mostly works) */
@@ -24,7 +24,7 @@
 }
 
 
-.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-contentPanel
+.facesBackboneTopMenuDisposal .contentPanel
 {
 	flex:0 1 auto;
 }
