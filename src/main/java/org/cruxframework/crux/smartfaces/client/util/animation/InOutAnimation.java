@@ -27,22 +27,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class InOutAnimation
 {
-	private Animation<?> entrance = getEntranceAnimation();
-	private Animation<?> exit = getExitAnimation();
-
-	public void animateExit(Widget widget, Animation.Callback callback)
-	{
-		exit.animate(widget, callback);
-	}
-	
-	public void animateEntrance(Widget widget, Animation.Callback callback)
-	{
-		entrance.animate(widget, callback);
-	}
-	
-	protected abstract Animation<?> getExitAnimation();
-	protected abstract Animation<?> getEntranceAnimation();
-	
 	public static InOutAnimation bounce = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -55,17 +39,16 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.bounceOut);
 		}
 	};
-
-	public static InOutAnimation bounceUpDown = new InOutAnimation()
+	public static InOutAnimation bounceDownUp = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
-	        return new StandardAnimation(StandardAnimation.Type.bounceInDown);
+	        return new StandardAnimation(StandardAnimation.Type.bounceInUp);
         }
 
 		protected StandardAnimation getExitAnimation()
 		{
-			return new StandardAnimation(StandardAnimation.Type.bounceOutUp);
+			return new StandardAnimation(StandardAnimation.Type.bounceOutDown);
 		}
 	};
 
@@ -81,7 +64,7 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.bounceOutLeft);
 		}
 	};
-
+	
 	public static InOutAnimation bounceRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -94,20 +77,19 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.bounceOutRight);
 		}
 	};
-
-	public static InOutAnimation bounceDownUp = new InOutAnimation()
+	
+	public static InOutAnimation bounceUpDown = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
-	        return new StandardAnimation(StandardAnimation.Type.bounceInUp);
+	        return new StandardAnimation(StandardAnimation.Type.bounceInDown);
         }
 
 		protected StandardAnimation getExitAnimation()
 		{
-			return new StandardAnimation(StandardAnimation.Type.bounceOutDown);
+			return new StandardAnimation(StandardAnimation.Type.bounceOutUp);
 		}
 	};
-
 	public static InOutAnimation fade = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -120,7 +102,7 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.fadeOut);
 		}
 	};
-
+	
 	public static InOutAnimation fadeDownUp = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -134,16 +116,16 @@ public abstract class InOutAnimation
 		}
 	};
 
-	public static InOutAnimation fadeUpDown = new InOutAnimation()
+	public static InOutAnimation fadeDownUpBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
-	        return new StandardAnimation(StandardAnimation.Type.fadeInUp);
+	        return new StandardAnimation(StandardAnimation.Type.fadeInDownBig);
         }
 
 		protected StandardAnimation getExitAnimation()
 		{
-			return new StandardAnimation(StandardAnimation.Type.fadeOutDown);
+			return new StandardAnimation(StandardAnimation.Type.fadeOutUpBig);
 		}
 	};
 
@@ -160,6 +142,19 @@ public abstract class InOutAnimation
 		}
 	};
 
+	public static InOutAnimation fadeLeftBig = new InOutAnimation()
+	{
+		protected StandardAnimation getEntranceAnimation()
+        {
+	        return new StandardAnimation(StandardAnimation.Type.fadeInLeftBig);
+        }
+
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.fadeOutLeftBig);
+		}
+	};
+
 	public static InOutAnimation fadeRight = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -172,17 +167,30 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.fadeOutRight);
 		}
 	};
-	
-	public static InOutAnimation fadeDownUpBig = new InOutAnimation()
+
+	public static InOutAnimation fadeRightBig = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
         {
-	        return new StandardAnimation(StandardAnimation.Type.fadeInDownBig);
+	        return new StandardAnimation(StandardAnimation.Type.fadeInRightBig);
         }
 
 		protected StandardAnimation getExitAnimation()
 		{
-			return new StandardAnimation(StandardAnimation.Type.fadeOutUpBig);
+			return new StandardAnimation(StandardAnimation.Type.fadeOutRightBig);
+		}
+	};
+
+	public static InOutAnimation fadeUpDown = new InOutAnimation()
+	{
+		protected StandardAnimation getEntranceAnimation()
+        {
+	        return new StandardAnimation(StandardAnimation.Type.fadeInUp);
+        }
+
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.fadeOutDown);
 		}
 	};
 
@@ -199,32 +207,6 @@ public abstract class InOutAnimation
 		}
 	};
 
-	public static InOutAnimation fadeLeftBig = new InOutAnimation()
-	{
-		protected StandardAnimation getEntranceAnimation()
-        {
-	        return new StandardAnimation(StandardAnimation.Type.fadeInLeftBig);
-        }
-
-		protected StandardAnimation getExitAnimation()
-		{
-			return new StandardAnimation(StandardAnimation.Type.fadeOutLeftBig);
-		}
-	};
-
-	public static InOutAnimation fadeRightBig = new InOutAnimation()
-	{
-		protected StandardAnimation getEntranceAnimation()
-        {
-	        return new StandardAnimation(StandardAnimation.Type.fadeInRightBig);
-        }
-
-		protected StandardAnimation getExitAnimation()
-		{
-			return new StandardAnimation(StandardAnimation.Type.fadeOutRightBig);
-		}
-	};	
-
 	public static InOutAnimation flipX = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -236,7 +218,7 @@ public abstract class InOutAnimation
 		{
 			return new StandardAnimation(StandardAnimation.Type.flipOutX);
 		}
-	};	
+	};
 
 	public static InOutAnimation flipY = new InOutAnimation()
 	{
@@ -249,8 +231,8 @@ public abstract class InOutAnimation
 		{
 			return new StandardAnimation(StandardAnimation.Type.flipOutY);
 		}
-	};	
-
+	};
+	
 	public static InOutAnimation lightSpeed = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -262,7 +244,20 @@ public abstract class InOutAnimation
 		{
 			return new StandardAnimation(StandardAnimation.Type.lightSpeedOut);
 		}
-	};	
+	};
+
+	public static InOutAnimation roll = new InOutAnimation()
+	{
+		protected StandardAnimation getEntranceAnimation()
+        {
+	        return new StandardAnimation(StandardAnimation.Type.rollIn);
+        }
+
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.rollOut);
+		}
+	};
 
 	public static InOutAnimation rotate = new InOutAnimation()
 	{
@@ -275,7 +270,7 @@ public abstract class InOutAnimation
 		{
 			return new StandardAnimation(StandardAnimation.Type.rotateOut);
 		}
-	};	
+	};
 
 	public static InOutAnimation rotateDownLeft = new InOutAnimation()
 	{
@@ -368,19 +363,6 @@ public abstract class InOutAnimation
 		}
 	};	
 
-	public static InOutAnimation roll = new InOutAnimation()
-	{
-		protected StandardAnimation getEntranceAnimation()
-        {
-	        return new StandardAnimation(StandardAnimation.Type.rollIn);
-        }
-
-		protected StandardAnimation getExitAnimation()
-		{
-			return new StandardAnimation(StandardAnimation.Type.rollOut);
-		}
-	};
-	
 	public static InOutAnimation zoom = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
@@ -393,4 +375,22 @@ public abstract class InOutAnimation
 			return new StandardAnimation(StandardAnimation.Type.zoomOut);
 		}
 	};	
+
+	private Animation<?> entrance = getEntranceAnimation();	
+
+	private Animation<?> exit = getExitAnimation();	
+
+	public void animateEntrance(Widget widget, Animation.Callback callback)
+	{
+		entrance.animate(widget, callback);
+	}	
+
+	public void animateExit(Widget widget, Animation.Callback callback)
+	{
+		exit.animate(widget, callback);
+	}	
+
+	protected abstract Animation<?> getEntranceAnimation();
+	
+	protected abstract Animation<?> getExitAnimation();	
 }
