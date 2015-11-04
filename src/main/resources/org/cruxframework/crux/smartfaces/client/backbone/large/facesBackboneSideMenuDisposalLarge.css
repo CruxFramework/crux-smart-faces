@@ -5,7 +5,7 @@
 	height:100%;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-layoutWrapperPanel
+.facesBackboneSideMenuDisposal .layoutWrapperPanel
 {
 	display: -webkit-inline-box;    /* OLD - iOS 6 -, Safari 3.1-6 */
 	display: -moz-inline-box;       /* OLD - Firefox 19 - (buggy but mostly works) */
@@ -18,7 +18,7 @@
 	-ms-flex-direction:column;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-splitPanel
+.facesBackboneSideMenuDisposal .splitPanel
 {
 	flex:0 1 auto;
 	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
@@ -30,19 +30,19 @@
 	flex-direction:row;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuPanel
+.facesBackboneSideMenuDisposal .menuPanel
 {
 	order:1;
 	flex:200px 0;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
+.facesBackboneSideMenuDisposal .contentPanel
 {
 	order:2;
 	flex:0 1 auto;
 }
 
-.facesBackboneSideMenuDisposal.faces-SideMenuDisposal--right .faces-SideMenuDisposal-contentPanel
+.facesBackboneSideMenuDisposal.faces-SideMenuDisposal--right .contentPanel
 {
 	order:-1;
 }
