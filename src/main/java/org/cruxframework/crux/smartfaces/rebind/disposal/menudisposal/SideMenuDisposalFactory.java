@@ -46,6 +46,7 @@ import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
+import org.cruxframework.crux.smartfaces.rebind.dialog.HasDialogAnimationFactory;
 import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.SideMenuDisposalFactory.DisposalLayoutContext;
 
 
@@ -65,7 +66,7 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.SideMenuDi
 @TagChildren({
 	@TagChild(SideMenuDisposalFactory.DisposalChildrenProcessor.class)
 })
-public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> 
+public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> implements HasDialogAnimationFactory<WidgetCreatorContext>
 {
 	@Override
 	public DisposalLayoutContext instantiateContext()
