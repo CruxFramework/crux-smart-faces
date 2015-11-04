@@ -18,9 +18,9 @@ package org.cruxframework.crux.smartfaces.client.dialog;
 import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 import org.cruxframework.crux.smartfaces.client.label.Label;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
@@ -71,7 +71,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param animation animates the dialog while showing or hiding
 	 * @return the dialog container
 	 */
-	public static DialogViewContainer show(String viewName, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, InOutAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true);
 		container.setAnimation(animation);
@@ -86,7 +86,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param parameter object to be passed to view when loaded.
 	 * @return the dialog container
 	 */
-	public static DialogViewContainer show(String viewName, DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, InOutAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewName, true, parameter);
 		container.setAnimation(animation);
@@ -131,7 +131,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param animation animates the dialog while showing or hiding
 	 * @return the dialog container
 	 */
-	public static DialogViewContainer show(String viewName, String viewId, boolean closable, DialogAnimation animation)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable, InOutAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable);
 		container.setAnimation(animation);
@@ -148,7 +148,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param parameter object to be passed to view when loaded.
 	 * @return the dialog container
 	 */
-	public static DialogViewContainer show(String viewName, String viewId, boolean closable, DialogAnimation animation, Object parameter)
+	public static DialogViewContainer show(String viewName, String viewId, boolean closable, InOutAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, closable, parameter);
 		container.setAnimation(animation);
@@ -212,7 +212,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
 											boolean modal, String width, String height, int left, int top, String baseStyleName, 
-											DialogAnimation animation)
+											InOutAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, null);
 		container.setAnimation(animation);
@@ -238,7 +238,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
 											boolean modal, String width, String height, int left, int top, String baseStyleName, 
-											DialogAnimation animation, Object parameter)
+											InOutAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, parameter);
 		container.setAnimation(animation);
@@ -259,7 +259,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @return the dialog container
 	 */
 	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-											boolean modal, String baseStyleName, DialogAnimation animation)
+											boolean modal, String baseStyleName, InOutAnimation animation)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, null);				
 		container.setAnimation(animation);
@@ -281,7 +281,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @return the dialog container
 	 */
 	public static DialogViewContainer show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, 
-											boolean modal, String baseStyleName, DialogAnimation animation, Object parameter)
+											boolean modal, String baseStyleName, InOutAnimation animation, Object parameter)
 	{
 		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, null, null, -1, -1, parameter);				
 		container.setAnimation(animation);
@@ -522,7 +522,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * Defines the animation used to animate popup entrances and exits
 	 * @param animation
 	 */
-	public void setAnimation(DialogAnimation animation)
+	public void setAnimation(InOutAnimation animation)
 	{
 		dialog.setAnimation(animation);
 	}

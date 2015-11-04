@@ -22,7 +22,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 /**
  * A helper class to help on HasDialogAnimation widgets creation, based on crux pages metadata.
@@ -38,7 +38,7 @@ public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> exten
 {
 	public static enum DialogAnimations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
-		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll}
+		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll, zoom}
 	
 	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
     {
@@ -50,7 +50,7 @@ public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> exten
 		@Override
         public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
         {
-	        out.println(context.getWidget()+".setAnimation("+DialogAnimation.class.getCanonicalName()+"."+attributeValue+");");
+	        out.println(context.getWidget()+".setAnimation("+InOutAnimation.class.getCanonicalName()+"."+attributeValue+");");
         }
     }
 }

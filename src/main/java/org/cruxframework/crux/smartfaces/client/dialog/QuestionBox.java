@@ -22,9 +22,9 @@ import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -87,7 +87,7 @@ public class QuestionBox extends AbstractDialogBox
 	 * @param labels the question buttons labels
 	 * @param handlers the question buttons event handlers
 	 */
-	public static QuestionBox show(String title, String message, DialogAnimation animation, String[] labels, SelectHandler... handlers)
+	public static QuestionBox show(String title, String message, InOutAnimation animation, String[] labels, SelectHandler... handlers)
 	{
 		return show(title, message, true, false, false, DEFAULT_STYLE_NAME, animation, labels, handlers);
 	}
@@ -120,7 +120,7 @@ public class QuestionBox extends AbstractDialogBox
 	 * @param handlers the question buttons event handlers
 	 */
 	public static QuestionBox show(String title, String message, boolean movable, boolean resizable, boolean closable, 
-							DialogAnimation animation, String[] labels, SelectHandler... handlers)
+							InOutAnimation animation, String[] labels, SelectHandler... handlers)
 	{
 		return show(title, message, movable, resizable, closable, DEFAULT_STYLE_NAME, animation, labels, handlers);
 	}
@@ -156,7 +156,7 @@ public class QuestionBox extends AbstractDialogBox
 	 * @param handlers the question buttons event handlers
 	 */
 	public static QuestionBox show(String title, String message, boolean movable, boolean resizable, boolean closable, String styleName, 
-									DialogAnimation animation, String[] labels, SelectHandler... handlers)
+									InOutAnimation animation, String[] labels, SelectHandler... handlers)
 	{
 		QuestionBox questionBox = new QuestionBox(movable, resizable, closable, styleName); 
 		questionBox.setDialogTitle(title);

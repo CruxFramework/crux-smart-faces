@@ -33,7 +33,6 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
 import org.cruxframework.crux.smartfaces.client.grid.Column.ColumnComparator;
@@ -84,10 +83,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private HandlerRegistration dataSelectionHandler;
 	private GridWidgetFactory detailColumnHeaderWidgetFactory = null;
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
-	private DialogAnimation dialogAnimation = DialogAnimation.bounce;
+	private InOutAnimation dialogAnimation = InOutAnimation.bounce;
 	private DivTable headerSection;
-	private String msgDefaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
-	private String msgDetailPopupHeader = WidgetMsgFactory.getMessages().details();
+	private String defaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
+	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
@@ -273,14 +272,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.detailTriggerWidgetFactory = detailTriggerWidgetFactory;
 	}
 
-	public void setDialogAnimation(DialogAnimation dialogAnimation)
+	public void setDialogAnimation(InOutAnimation dialogAnimation)
 	{
 		this.dialogAnimation = dialogAnimation;
 	}
 
-	public void setMsgDetailPopupHeader(String msgDetailPopupHeader)
+	public void setDetailPopupHeader(String msgDetailPopupHeader)
 	{
-		this.msgDetailPopupHeader = msgDetailPopupHeader;
+		this.detailPopupHeader = msgDetailPopupHeader;
 	}
 
 	public void setRowAnimation(InOutAnimation rowAnimation)
@@ -301,7 +300,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	 */
 	protected void addColumn(Column<T,?> column)
 	{
-		if(column.detail)
+		if(column.isDetail())
 		{
 			detailColumns.add(column);
 		}
@@ -548,7 +547,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return columnIndex;
 	}
-	
+
 	private void drawDetails(final Row<T> row, int columnIndex)
 	{
 		boolean firstDetail = true;
@@ -572,7 +571,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 						{
 							dialogBox.setAnimation(dialogAnimation);
 						}
-						dialogBox.setDialogTitle(msgDetailPopupHeader);
+						dialogBox.setDialogTitle(detailPopupHeader);
 						final FlowPanel wrapperDetails = new FlowPanel();
 						wrapperDetails.setStyleName(SYTLE_DATAGRID_DETAILS);
 						dialogBox.add(wrapperDetails);
@@ -611,8 +610,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		}
 	}
-	
-	
+
 	//This should not be exposed as it only returns rows for the current page
 	//and is used for internal purposes.
 	private Row<T> getCurrentPageRow(T boundObject)
@@ -631,7 +629,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			return null;
 		}
 	}
-
+	
 	private int getCurrentRowIndex(int dataProviderRowIndex)
 	{
 		int index;
@@ -645,7 +643,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return index;
 	}
-
+	
+	
 	private GridWidgetFactory getDetailColumnHeaderWidgetFactory()
 	{
 		if (detailColumnHeaderWidgetFactory == null)
@@ -655,7 +654,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label(msgDetailPopupHeader);
+					return new Label(detailPopupHeader);
 				}
 			};
 		}
@@ -671,13 +670,13 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public IsWidget createWidget()
 				{
-					return new Label(msgDefaultDetailPopupHeader);
+					return new Label(defaultDetailPopupHeader);
 				}
 			};
 		}
 		return detailTriggerWidgetFactory;
 	}
-	
+
 	private String getStyleProperties(String type, int index, int classIndex)
 	{
 		String typeClassName = tableId + "_" + type+"_" + classIndex;
@@ -688,7 +687,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return type + " " + typeClassName;
 	}
-	
+
 	private void handleHeaderInsertion(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.index == 0 && column.row.index == 0)
@@ -805,7 +804,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				);
 		}
 	}
-	
+
 	private void handleSelectionStrategy(final int dataProviderRowIndex, final Row<T> row)
 	{
 		if(rowSelectStrategy.equals(RowSelectStrategy.row) && row.onSelectionHandlerRegistration == null)

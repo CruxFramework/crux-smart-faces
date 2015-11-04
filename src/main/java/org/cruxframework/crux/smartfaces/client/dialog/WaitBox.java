@@ -16,7 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.dialog;
 
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -100,7 +100,7 @@ public class WaitBox extends AbstractDialogBox
 	 * @param message the text to be displayed
 	 * @param animation animates the dialog while showing or hiding
 	 */
-	public static WaitBox show(String message, DialogAnimation animation)
+	public static WaitBox show(String message, InOutAnimation animation)
 	{
 		WaitBox waitBox = new WaitBox();
 		if (animation != null)
