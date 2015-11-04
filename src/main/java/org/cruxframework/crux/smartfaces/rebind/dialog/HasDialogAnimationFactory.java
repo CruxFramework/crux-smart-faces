@@ -38,7 +38,7 @@ public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> exten
 {
 	public static enum DialogAnimations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
-		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll}
+		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll, zoom}
 	
 	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
     {

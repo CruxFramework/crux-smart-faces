@@ -28,12 +28,15 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ControllerAccessHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDataProviderDataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
@@ -56,7 +59,9 @@ import org.cruxframework.crux.smartfaces.client.grid.GridWidgetFactory;
 import org.cruxframework.crux.smartfaces.client.grid.Row;
 import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 import org.cruxframework.crux.smartfaces.client.label.Label;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
+import org.cruxframework.crux.smartfaces.rebind.dialog.HasDialogAnimationFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,16 +85,25 @@ description="A data grid that use a DataProvider to provide data and a gridDataF
 	@TagChild(value=DataGridFactory.DataGridChildrenProcessor.class)
 })
 @TagAttributes({
-	@TagAttribute(value="detailPopupHeader", type=String.class, supportsI18N=true, supportsResources=true, supportsDataBinding=true)
+	@TagAttribute(value="detailPopupHeader", type=String.class, supportsI18N=true, supportsResources=true, supportsDataBinding=true),
+	@TagAttribute(value="dialogAnimation", processor=DataGridFactory.DialogAnimationProcessor.class, 
+	  type=HasDialogAnimationFactory.DialogAnimations.class, 
+	  description="The animation to be aplied when the dialog is opened or closed."),
+	@TagAttribute(value="rowAnimation", processor=DataGridFactory.RowAnimationProcessor.class, 
+	  type=HasDialogAnimationFactory.DialogAnimations.class, 
+	  description="The animation to be aplied when the row is opened or closed for edit mode."),
+	@TagAttribute(value="rowSelectStrategy",  type=RowSelectStrategy.class, 
+	  description="The strategy used to select rows for this grid."),
 })
-public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasEnabledFactory<WidgetCreatorContext>
+public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasEnabledFactory<WidgetCreatorContext>, 
+																					HasAnimationFactory<WidgetCreatorContext>
 {
 	@Override
 	public WidgetCreatorContext instantiateContext()
 	{
 		return new WidgetCreatorContext();
 	}
-
+	
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
@@ -104,7 +118,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		processChildren(out, context, context.getWidgetElement(), null);
 	}
-
+	
 	protected String createColumn(SourcePrinter out, WidgetCreatorContext context, JClassType dataObject, JSONObject columnElement)
 	{
 		String columnVar = createColumnByWidget(out, context, columnElement, dataObject);
@@ -390,7 +404,6 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		}
 	}
 
-
 	protected String createColumnGroup(SourcePrinter out, WidgetCreatorContext context, JClassType dataObject, JSONObject columnGroupElement)
 	{
 		String key = columnGroupElement.optString("key");
@@ -438,6 +451,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		}
 	}
 
+
 	protected boolean createGetTooltipMethod(SourcePrinter out, HasDataProviderDataBindingProcessor dataBindingProcessor, 
 		Set<String> converterDeclarations, String tooltip, String dataObjectName, String dataObjectAlias)
 	{
@@ -463,7 +477,6 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		return true;
 	}
-
 
 	/**
 	 * Generate the createWidget method and return the set of converter declarations used by the generated method
@@ -572,6 +585,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			throw new CruxGeneratorException("Missing required attribute [onCreateWidget], on widgetFactoryOnController "
 				+ "tag on widget declaration. WidgetID ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
 		}    }
+
 
 	protected JSONObject getChildTag(JSONObject parent, String tagName, String widgetId)
 	{
@@ -869,6 +883,20 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	})
 	public static class DetailTriggerProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
 
+	public static class DialogAnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
+    {
+		public DialogAnimationProcessor(WidgetCreator<?> widgetCreator)
+        {
+	        super(widgetCreator);
+        }
+
+		@Override
+        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+        {
+	        out.println(context.getWidget()+".setDialogAnimation("+InOutAnimation.class.getCanonicalName()+"."+attributeValue+");");
+        }
+    }
+
 	@TagConstraints(tagName="editor", minOccurs="0", maxOccurs="1")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="autoRefreshRow", type=Boolean.class), 
@@ -897,6 +925,20 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		@TagChild(WidgetFactoryControllerChildCreator.class)
 	})
 	public static class OptionalWidgetChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
+
+	public static class RowAnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
+    {
+		public RowAnimationProcessor(WidgetCreator<?> widgetCreator)
+        {
+	        super(widgetCreator);
+        }
+
+		@Override
+        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+        {
+	        out.println(context.getWidget()+".setRowAnimation("+InOutAnimation.class.getCanonicalName()+"."+attributeValue+");");
+        }
+    }
 
 	@TagConstraints(tagName="text")
 	@TagAttributesDeclaration({
