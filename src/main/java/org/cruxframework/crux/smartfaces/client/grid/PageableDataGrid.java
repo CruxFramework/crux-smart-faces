@@ -363,7 +363,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			Column<T, ?> dataGridColumn = getColumns().get(index);
 			dataGridColumn.clear();
 		}
-		getPagePanel().clear();
+		//Check if widget has been initialized
+		if(getPagePanel() != null)
+		{
+			getPagePanel().clear();
+		}
 	}
 
 	@Override
@@ -492,6 +496,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				if(row.onSelectionHandlerRegistration != null)
 				{
 					row.onSelectionHandlerRegistration.removeHandler();
+					row.onSelectionHandlerRegistration = null;
 				}
 			}
 			//remove rows

@@ -27,7 +27,7 @@
 	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
 	display: -webkit-inline-flex;	/* NEW - Chrome */
 	display: inline-flex;      		/* NEW, Spec - Opera 12.1, Firefox 20+ */
-/*	display:flex; */
+	/*	display:flex; */
 	position: fixed;
 	z-index:3;
 	width: 100%;

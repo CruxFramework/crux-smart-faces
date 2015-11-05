@@ -193,4 +193,15 @@ public class Column<T, W extends IsWidget>
 		Comparator<T> comparator;
 		short multiplier = -1; 
 	}
+	
+	/**
+	 * @param detail true if the column should be rendered
+	 * as a detail column and false otherwise.
+	 */
+	public void setDetail(boolean detail)
+	{
+		grid.columns.remove(this);
+		grid.detailColumns.add(this);
+		this.detail = detail;
+	}
 }
