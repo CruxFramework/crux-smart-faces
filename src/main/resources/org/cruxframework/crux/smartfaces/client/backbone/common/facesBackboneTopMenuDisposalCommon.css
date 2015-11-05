@@ -1,4 +1,4 @@
-@external faces-*;
+@external contentPanel;
 
 .facesBackboneTopMenuDisposal
 {
@@ -12,7 +12,7 @@
 	flex-direction:column;
 }
 
-.faces-TopMenuDisposal-contentPanel
+.faces-TopMenuDisposal .contentPanel
 {
 	flex:1;
 }

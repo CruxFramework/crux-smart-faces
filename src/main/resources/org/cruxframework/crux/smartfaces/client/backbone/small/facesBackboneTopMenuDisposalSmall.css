@@ -1,4 +1,3 @@
-@external faces-*;
 @external contentPanel, smallHeaderWrapper, menuButtonContainer, menuPanel, smallHeaderPanel;
 
 @def HEADER_HEIGHT 45px;
@@ -28,6 +27,7 @@
 	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
 	display: -webkit-inline-flex;	/* NEW - Chrome */
 	display: inline-flex;      		/* NEW, Spec - Opera 12.1, Firefox 20+ */
+	/*	display:flex; */
 	position: fixed;
 	z-index:3;
 	width: 100%;

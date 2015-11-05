@@ -1,4 +1,3 @@
-@external faces-*;
 @external contentPanel, smallHeaderWrapper, menuButtonContainer, menuPanel, smallHeaderPanel;
 
 @def HEADER_HEIGHT 45px;

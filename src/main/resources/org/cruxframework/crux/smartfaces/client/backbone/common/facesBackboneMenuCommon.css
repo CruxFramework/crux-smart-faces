@@ -172,7 +172,7 @@
 	display:none;
 }
 
-.facesBackboneMenu.faces-Menu-vertical.faces-Menu-tree .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.facesBackboneMenu.faces-Menu-vertical.faces-Menu-tree .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
 	display:block;
 }
@@ -249,7 +249,7 @@
 	overflow-y:auto;
 }
 
-.facesBackboneMenu.faces-Menu-horizontal.faces-Menu-accordion .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.facesBackboneMenu.faces-Menu-horizontal.faces-Menu-accordion .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
 	display:block;
 }
@@ -279,7 +279,7 @@
 	display:none;
 }
 
-.facesBackboneMenu.faces-Menu-vertical.faces-Menu-accordion .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.facesBackboneMenu.faces-Menu-vertical.faces-Menu-accordion .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
 	display:block;
 }
@@ -328,7 +328,7 @@
     padding:10px;
 }
 
-.facesBackboneMenu.faces-Menu-slide .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
+.facesBackboneMenu.faces-Menu-slide .faces-Menu-li.faces-Menu--open > .faces-Menu-ul
 {
 	-webkit-transform:translateX(0px);
 	-moz-transform:translateX(0px);
