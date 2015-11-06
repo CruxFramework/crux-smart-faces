@@ -173,6 +173,11 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		out.println("public " + widgetClassName + " createData("+dataObjectName+" "+dataObjectVariable+", final "+rowClassName+"<"+dataObjectName+"> row){");
 
+		for (String converterDecl : converterDeclarations)
+		{
+			out.println(converterDecl);
+		}
+		
 		out.println(valueType.getParameterizedQualifiedSourceName() + " " + resultVariable + ";");
 		out.println(valueExpression + ";");
 
@@ -323,6 +328,24 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			}
 			out.println(columnVar + ".setSortable(" + sortable + ");");
 		}
+	}
+	
+	@Override
+	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, WidgetCreatorContext context, JSONObject child, 
+		JClassType dataObject, String bindingContextVariable, HasDataProviderDataBindingProcessor bindingProcessor)
+	{
+		String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
+		String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
+		
+		child = ensureFirstChild(child, false, context.getWidgetId());
+
+		out.println("public "+IsWidget.class.getCanonicalName()+" createData("+dataObject.getParameterizedQualifiedSourceName()
+				    +" "+bindingProcessor.getCollectionObjectReference()+", final "+rowClassName+" row){");
+	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
+	    out.println("return "+childWidget+";");
+	    out.println("}");
+	    
+	    return bindingProcessor.getConverterDeclarations();
 	}
 
 	protected void createColumnEditor(SourcePrinter out, WidgetCreatorContext context, JSONObject columnElement, String columnVar,

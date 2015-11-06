@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * Define a new data factory passing the row as a parameter. 
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -24,5 +26,5 @@ package org.cruxframework.crux.smartfaces.client.grid;
  */
 public interface GridDataFactory<T, W>
 {
-	W createData(T value, Row<T> row);
+	IsWidget createData(T value, Row<T> row);
 }

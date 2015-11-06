@@ -420,7 +420,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					row = rows.get(currentRowIndex);
 				}
 
-				drawColumns(row);
+				drawColumnsAndDetails(row);
 			}
 		};
 	}
@@ -477,10 +477,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 	}
 
-	void drawColumns(Row<T> row)
+	void drawColumnsAndDetails(Row<T> row)
 	{
 		int columnIndex;
-		columnIndex = doDrawColumns(row);
+		columnIndex = drawColumns(row);
 		drawDetails(row, columnIndex);
 	}
 
@@ -521,7 +521,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		handleHeaderInsertion(column, headerWrapper);
 	}
 
-	private int doDrawColumns(Row<T> row)
+	private int drawColumns(Row<T> row)
 	{
 		int columnIndex;
 		//iterate over the columns to render the body (and the header)
@@ -629,7 +629,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			return null;
 		}
 	}
-	
+
 	private int getCurrentRowIndex(int dataProviderRowIndex)
 	{
 		int index;
@@ -643,8 +643,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		return index;
 	}
-	
-	
+
+
 	private GridWidgetFactory getDetailColumnHeaderWidgetFactory()
 	{
 		if (detailColumnHeaderWidgetFactory == null)
@@ -822,7 +822,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		setRowSelectionState(row, getDataProvider().isSelected(dataProviderRowIndex));
 	}
-	
+
 	private void handleSortEvents(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
 		if(column.sortable && (!getDataProvider().isDirty() || getDataProvider() instanceof LazyProvider))
@@ -866,10 +866,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		}
 	}
-	
+
 	private void setRowSelectionState(Row<T> row, boolean selected)
 	{
-		if(row.divRow == null)
+		if(row == null || row.divRow == null)
 		{
 			return;
 		}
@@ -882,12 +882,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		{
 			row.divRow.removeStyleDependentName(SYTLE_DATAGRID_SELECTED);
 		}
-		
+
 		if(row.checkbox != null)
 		{
 			row.checkbox.setValue(selected);
 		}
-		
+
 		if(row.radioButton != null)
 		{
 			row.radioButton.setValue(selected);

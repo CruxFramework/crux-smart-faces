@@ -105,6 +105,6 @@ public class Row<T>
 	 */
 	void refresh()
 	{
-		grid.drawColumns(this);
+		grid.drawColumnsAndDetails(this);
 	}
 }

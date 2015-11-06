@@ -166,12 +166,12 @@ public class Column<T, W extends IsWidget>
 
 	private IsWidget renderToEdit(boolean detailColumn)
 	{
-		return editableCell.render(grid, row.index, index, row.dataProviderRowIndex, row.dataObject, detailColumn);
+		return editableCell.render(grid, row, index, detailColumn);
 	}
 
 	private IsWidget renderToView(boolean detailColumn) 
 	{
-		W widget = dataFactory.createData(row.dataObject, row);
+		IsWidget widget = dataFactory.createData(row.dataObject, row);
 
 		if(widget != null && !detailColumn)
 		{
