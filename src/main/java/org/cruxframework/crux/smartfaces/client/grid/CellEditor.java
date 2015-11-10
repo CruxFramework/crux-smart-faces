@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class CellEditor<T, K> implements GridDataFactory<T, K>
 {
-	private boolean autoRefreshRow = true;
+	private boolean autoRefreshRow = false;
 
 	public CellEditor()
 	{
@@ -66,7 +66,7 @@ public abstract class CellEditor<T, K> implements GridDataFactory<T, K>
 
 		if(!detailColumn)
 		{
-			grid.drawCell(row.index, index, row.dataProviderRowIndex, (Widget) widget);
+			grid.drawCell(row, index, (Widget) widget);
 		}
 
 		maybeAddHandlerToUpdateRow(grid, row.index, row.dataObject, widget);

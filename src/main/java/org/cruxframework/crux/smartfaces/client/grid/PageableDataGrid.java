@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.DataReader;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
+import org.cruxframework.crux.core.client.dataprovider.DataProviderException;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord;
 import org.cruxframework.crux.core.client.dataprovider.DataSelectionEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataSelectionHandler;
@@ -455,11 +456,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		super.setForEdition(index, object);
 	}
 
-	void drawCell(final int rowIndex, int columnIndex, final int dataProviderRowIndex, IsWidget widget)
+	void drawCell(final Row<T> row, int columnIndex, IsWidget widget)
 	{
-		final DivRow divRow = getPagePanel().setWidget(rowIndex, columnIndex, widget);
-
-		Row<T> row = rows.get(rowIndex);
+		final DivRow divRow = getPagePanel().setWidget(row.index, columnIndex, widget);
 
 		//for each row...
 		if(columnIndex == 0)
@@ -472,7 +471,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			if(!row.editing)
 			{
-				handleSelectionStrategy(dataProviderRowIndex, row);
+				handleSelectionStrategy(row.dataProviderRowIndex, row);
 			}
 		}
 	}
@@ -606,7 +605,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				}
 
 				//draw button
-				drawCell(row.index, columnIndex, row.dataProviderRowIndex, selectablePanel);
+				drawCell(row, columnIndex, selectablePanel);
 			}
 		}
 	}
@@ -618,16 +617,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		int rowIndex = getDataProvider().indexOf(boundObject);
 		if(rowIndex < 0)
 		{
-			return null;
+			throw new DataProviderException("The object passed to dataprovider is not bound.");
 		}
-		try
-		{
-			return rows.get(getCurrentRowIndex(rowIndex));
-		}
-		catch(Exception e)
-		{
-			return null;
-		}
+		int currentRowIndex = getCurrentRowIndex(rowIndex);
+		return rows.get(currentRowIndex);
 	}
 
 	private int getCurrentRowIndex(int dataProviderRowIndex)
@@ -869,11 +862,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 	private void setRowSelectionState(Row<T> row, boolean selected)
 	{
-		if(row == null || row.divRow == null)
-		{
-			return;
-		}
-
 		if(selected)
 		{
 			row.divRow.addStyleDependentName(SYTLE_DATAGRID_SELECTED);
