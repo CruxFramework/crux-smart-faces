@@ -16,8 +16,6 @@
 
 package org.cruxframework.crux.smartfaces.client.grid;
 
-import org.cruxframework.crux.core.client.factory.WidgetFactory;
-
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
@@ -31,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @param <T> the Data Object type.
  * @param <K> the property type inside of DataObject.
  */
-public abstract class CellEditor<T, K> implements WidgetFactory<T>
+public abstract class CellEditor<T, K> implements GridDataFactory<T, K>
 {
 	private boolean autoRefreshRow = true;
 
@@ -58,22 +56,20 @@ public abstract class CellEditor<T, K> implements WidgetFactory<T>
 	 */
 	public IsWidget render(
 		PageableDataGrid<T> grid, 
-		int rowIndex, 
-		int columnIndex, 
-		int dataProviderRowIndex, 
-		T dataObject,
+		Row<T> row, 
+		int index, 
 		boolean detailColumn
 		)
 	{
-		final IsWidget widget = CellEditor.this.createWidget(dataObject);
+		final IsWidget widget = CellEditor.this.createData(row.dataObject, row);
 		assert(widget != null): "widget cannot be null";
 
 		if(!detailColumn)
 		{
-			grid.drawCell(rowIndex, columnIndex, dataProviderRowIndex, (Widget) widget);
+			grid.drawCell(row.index, index, row.dataProviderRowIndex, (Widget) widget);
 		}
 
-		maybeAddHandlerToUpdateRow(grid, rowIndex, dataObject, widget);
+		maybeAddHandlerToUpdateRow(grid, row.index, row.dataObject, widget);
 
 		return widget;
 	}
