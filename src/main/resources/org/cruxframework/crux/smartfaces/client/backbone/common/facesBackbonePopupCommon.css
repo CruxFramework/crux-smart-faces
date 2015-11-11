@@ -5,7 +5,7 @@
 
 .facesPopup
 {
-	z-index:6;
+	z-index:5;
 	overflow:hidden;
 	pointer-events: auto;
 	position: fixed;
@@ -13,7 +13,7 @@
 
 .facesWaitBox
 {
-	z-index:7;
+	z-index:6;
 }
 
 .facesPopupCenter
