@@ -40,10 +40,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author bruno.rafael
  *
  */
-/**
- * @author bruno.rafael
- *
- */
 public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimation
 {
 	/**
