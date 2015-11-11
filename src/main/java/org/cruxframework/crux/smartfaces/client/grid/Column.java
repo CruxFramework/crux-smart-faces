@@ -175,7 +175,7 @@ public class Column<T, W extends IsWidget>
 
 		if(widget != null && !detailColumn)
 		{
-			grid.drawCell(row.index, index, row.dataProviderRowIndex, widget);
+			grid.drawCell(row, index, widget);
 		}
 
 		return widget;

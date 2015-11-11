@@ -95,7 +95,7 @@ public class Row<T>
 	public void undoChanges()
 	{
 		dataObject = oldDataObject;
-		grid.getDataProvider().set(dataProviderRowIndex, dataObject);
+		grid.setForEdition(dataProviderRowIndex, dataObject);
 		editing = false;
 		refresh();
 	}
