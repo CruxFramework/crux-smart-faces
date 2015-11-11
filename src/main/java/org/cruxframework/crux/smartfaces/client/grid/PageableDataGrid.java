@@ -111,8 +111,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			rows.get(i).makeChanges();
 		}
 
-		super.commit();
 		refreshRowCache();
+		super.commit();
 	}
 
 	/**

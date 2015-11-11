@@ -57,7 +57,6 @@ public class Row<T>
 	{
 		if(!editing)
 		{
-			dataObject = grid.getDataProvider().get(dataProviderRowIndex);
 			grid.setForEdition(dataProviderRowIndex, dataObject);
 			editing = true;
 			refresh();
