@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.rebind.carroussel;
+package org.cruxframework.crux.smartfaces.rebind.carousel;
 
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
-import org.cruxframework.crux.smartfaces.client.carroussel.Carroussel;
+import org.cruxframework.crux.smartfaces.client.carousel.Carousel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONObject;
 
@@ -41,7 +41,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="carroussel", targetWidget=Carroussel.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="carousel", targetWidget=Carousel.class)
 @TagAttributes({
 	@TagAttribute(value="largeDeviceItemWidth", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
 	@TagAttribute(value="smallDeviceItemHeight", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),
@@ -53,9 +53,9 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 	@TagAttribute(value="fixedHeight", type=Boolean.class, defaultValue="true") 
 })
 @TagChildren({
-	@TagChild(value=CarrousselFactory.WidgetChildCreator.class, autoProcess=false)
+	@TagChild(value=CarouselFactory.WidgetChildCreator.class, autoProcess=false)
 })
-public class CarrousselFactory extends AbstractPageableFactory<WidgetCreatorContext>
+public class CarouselFactory extends AbstractPageableFactory<WidgetCreatorContext>
 {
 	@Override
 	public WidgetCreatorContext instantiateContext() 

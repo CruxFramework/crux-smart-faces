@@ -85,6 +85,7 @@ public class Row<T>
 	 */
 	public void makeChanges()
 	{
+		oldDataObject = dataObject;
 		editing = false;
 		refresh();
 	}

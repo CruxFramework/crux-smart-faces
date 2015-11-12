@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.carroussel;
+package org.cruxframework.crux.smartfaces.client.carousel;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
@@ -31,15 +31,15 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * A Carroussel of items that support {@link DataProvider}s to provide a collection of data.
+ * A carousel of items that support {@link DataProvider}s to provide a collection of data.
  * @author Thiago da Rosa de Bustamante
  * - EXPERIMENTAL - 
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class Carroussel<T> extends AbstractPageable<T, Storyboard>
+public class Carousel<T> extends AbstractPageable<T, Storyboard>
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-Carroussel";
+	public static final String DEFAULT_STYLE_NAME = "faces-Carousel";
 	public static final String PAGE_PANEL_STYLE_NAME = "page";
 
 	protected SimplePanel contentPanel = new SimplePanel();
@@ -57,7 +57,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	 * @param widgetFactory a factory to create widgets for each {@link DataObject} 
 	 * provided by the {@link DataProvider}
 	 */
-	public Carroussel(WidgetFactory<T> widgetFactory) 
+	public Carousel(WidgetFactory<T> widgetFactory) 
 	{
 		assert(widgetFactory != null);
 		this.widgetFactory = widgetFactory;
@@ -105,7 +105,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * Set the horizontal alignment for the items on this Carroussel. It only affects large devices, 
+	 * Set the horizontal alignment for the items on this carousel. It only affects large devices, 
 	 * as on small devices, the items fills all the space available horizontally.
 	 * @param value alignment
 	 */
@@ -120,7 +120,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 
 	/**
-	 * Set the height of each item on this Carroussel, when displaying on a large device. 
+	 * Set the height of each item on this carousel, when displaying on a large device. 
 	 * @param height item height.
 	 */
 	public void setLargeDeviceItemHeight(String height)
@@ -133,7 +133,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * Set the width of each item on this Carroussel, when displaying on a large device. 
+	 * Set the width of each item on this carousel, when displaying on a large device. 
 	 * @param width item width.
 	 */
 	public void setLargeDeviceItemWidth(String width)
@@ -146,7 +146,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * Set the height of each item on this Carroussel, when displaying on a small device. 
+	 * Set the height of each item on this carousel, when displaying on a small device. 
 	 * @param height item height.
 	 */
 	public void setSmallDeviceItemHeight(String height)
@@ -159,7 +159,7 @@ public class Carroussel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
-	 * Set the vertical alignment for items on this Carroussel.
+	 * Set the vertical alignment for items on this carousel.
 	 * @param value alignment
 	 */
 	public void setVerticalAlignment(HasVerticalAlignment.VerticalAlignmentConstant value)
