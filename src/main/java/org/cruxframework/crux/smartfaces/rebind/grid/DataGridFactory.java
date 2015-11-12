@@ -387,7 +387,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 					}
 					String typeName = binding.getType().getParameterizedQualifiedSourceName();
 
-					boolean autoRefreshRow = editorTag.optBoolean("autoRefreshRow", true);
+					boolean autoRefreshRow = editorTag.optBoolean("autoRefreshRow", false);
 					String dataObjectType = dataObject.getParameterizedQualifiedSourceName();
 					out.println(columnVar + ".setCellEditor(new " + CellEditor.class.getCanonicalName() + 
 						"<" + dataObjectType+", " + typeName + ">(" + autoRefreshRow + ") {");
@@ -922,7 +922,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 	@TagConstraints(tagName="editor", minOccurs="0", maxOccurs="1")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="autoRefreshRow", type=Boolean.class), 
+		@TagAttributeDeclaration(value="autoRefreshRow", type=Boolean.class, defaultValue="false"), 
 		@TagAttributeDeclaration(value="property", supportsI18N=false, supportsResources=false, supportsDataBinding=true)
 	})
 	@TagChildren({
