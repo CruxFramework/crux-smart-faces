@@ -617,7 +617,6 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public void center()
 	{
-		assert(getActiveView() != null):"There is no View loaded into this container.";
 		dialog.center();
 	}
 	
@@ -635,7 +634,6 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public void show()
 	{
-		assert(getActiveView() != null):"There is no View loaded into this container.";
 		dialog.show();
 	}
 	
