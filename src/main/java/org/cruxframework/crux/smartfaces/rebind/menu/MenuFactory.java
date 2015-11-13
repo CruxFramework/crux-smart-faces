@@ -85,12 +85,6 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 	protected static Logger logger = Logger.getLogger(MenuFactory.class.getName());
 	
 	@Override
-	public void processAttributes(SourcePrinter out, MenuContext context) throws CruxGeneratorException
-	{
-		super.processAttributes(out, context);
-	}
-	
-	@Override
 	public void instantiateWidget(SourcePrinter out, MenuContext context) throws CruxGeneratorException
 	{
 		String className = getWidgetClassName();
