@@ -18,8 +18,6 @@ package org.cruxframework.crux.smartfaces.rebind.tab;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBeforeSelectionHandlersFactory;
@@ -28,6 +26,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetC
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -70,7 +69,8 @@ class TabPanelContext extends WidgetCreatorContext
 @DeclarativeFactory(id="tabPanel", library=Constants.LIBRARY_NAME, targetWidget=TabPanel.class, 
 					description="A panel that open its children in tabs.")
 @TagAttributes({
-	@TagAttribute(value="visibleTab", type=Integer.class, processor=TabPanelFactory.VisibleTabAttributeParser.class, 
+	@TagAttribute(value="visibleTab", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView,
+				  method="selectTab",
 				  description="The index of the tab that initialy must be visible")
 })
 @TagChildren({
@@ -80,26 +80,6 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 									implements HasAnimationFactory<TabPanelContext>, 
 									HasBeforeSelectionHandlersFactory<TabPanelContext>
 {
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class VisibleTabAttributeParser extends AttributeProcessor<TabPanelContext>
-	{
-		public VisibleTabAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		public void processAttribute(SourcePrinter out, TabPanelContext context, final String propertyValue)
-        {
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-			printlnPostProcessing(widget+".selectTab("+String.valueOf(Integer.parseInt(propertyValue) - 1)+");");
-        }
-	}	
-	
 	@TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="tabEnabled", type=Boolean.class, defaultValue="true", 
