@@ -32,6 +32,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPost
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -59,7 +60,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @TagAttributes({
 		@TagAttribute(value = "activeIndex", type = Integer.class, 
 					 description = "The index of the current active item on this Breadcrumb.",
-					 processor=BreadcrumbFactory.ActiveIndexAttributeProcessor.class),
+					 processingTime=ProcessingTime.afterAllWidgetsOnView),
 		@TagAttribute(value = "dividerImage", supportsResources=true, 
 					 description = "The image used as divider between items on this Breadcrumb.",
 					 processor=BreadcrumbFactory.DividerImageAttributeProcessor.class), 
@@ -89,24 +90,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 	{
 		return new BreadcrumbContext();
 	}
-	
-	public static class ActiveIndexAttributeProcessor extends AttributeProcessor<BreadcrumbContext>
-	{
-		public ActiveIndexAttributeProcessor(WidgetCreator<?> widgetCreator) 
-		{
-			super(widgetCreator);
-		}
-
-		@Override
-		public void processAttribute(SourcePrinter out, BreadcrumbContext context, String attributeValue) 
-		{
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-			printlnPostProcessing(widget+".setActiveIndex("+attributeValue+");");
-		}
-	}
-	
+		
 	@TagChildren({
 		@TagChild(BreadcrumbItemLabelTextProcessor.class),
 		@TagChild(BreadcrumbItemLabelWidgetProcessor.class)
@@ -142,7 +126,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				else
 				{
 					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, getWidgetCreator().getWidgetClassName(), 
-														widgetPropertyPath, uiObjectClassName, getUiObjectExpression, context.getDataBindingProcessor());
+														widgetPropertyPath, uiObjectClassName, getUiObjectExpression, context.getDataBindingProcessor(), null);
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
