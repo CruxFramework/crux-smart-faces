@@ -126,7 +126,8 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				else
 				{
 					ExpressionDataBinding expressionBinding = getWidgetCreator().getExpressionDataBinding(text, getWidgetCreator().getWidgetClassName(), 
-														widgetPropertyPath, uiObjectClassName, getUiObjectExpression, context.getDataBindingProcessor(), null);
+														widgetPropertyPath, uiObjectClassName, getUiObjectExpression, context.getDataBindingProcessor(), 
+														null, null);
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
