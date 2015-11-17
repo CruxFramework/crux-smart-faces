@@ -102,6 +102,15 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
     }
 
 	@Override
+	public void setPageable(Pageable<T> pageable)
+	{
+		if (pageable != null)
+		{
+			pageable.setPager(this);
+		}
+	}
+	
+	@Override
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
