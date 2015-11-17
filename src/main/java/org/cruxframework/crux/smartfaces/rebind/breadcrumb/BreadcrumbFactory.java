@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
-import org.cruxframework.crux.core.rebind.screen.Widget;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
@@ -34,6 +33,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetC
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
@@ -64,9 +64,9 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 		@TagAttribute(value = "dividerImage", supportsResources=true, 
 					 description = "The image used as divider between items on this Breadcrumb.",
 					 processor=BreadcrumbFactory.DividerImageAttributeProcessor.class), 
-		@TagAttribute(value = "viewContainer", supportsI18N=true, 
-		 			 description = "A ViewContainer to open views as items are selected.", 
-		 			 processor=BreadcrumbFactory.ViewContainerAttributeProcessor.class),
+		@TagAttribute(value = "viewContainer", type=WidgetReference.class, widgetType=ViewContainer.class, 
+		 			 processingTime=ProcessingTime.afterAllWidgetsOnView,
+					 description = "A ViewContainer to open views as items are selected."),
 		@TagAttribute(value = "removeInactiveItems", type=Boolean.class, defaultValue="false", 
 					property="removeInactiveItemsEnabled", 
 		 			description = "When this property is true, the Breadcrumb automatically remove the items that are not active anymore."),
@@ -247,29 +247,6 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 			{
 				out.println(context.getWidget()+".setDividerImage("+EscapeUtils.quote(attributeValue)+");");
 			}
-		}
-	}
-	
-	public static class ViewContainerAttributeProcessor extends AttributeProcessor<BreadcrumbContext>
-	{
-		public ViewContainerAttributeProcessor(WidgetCreator<?> widgetCreator) 
-		{
-			super(widgetCreator);
-		}
-
-		@Override
-		public void processAttribute(SourcePrinter out, BreadcrumbContext context, String attributeValue) 
-		{
-			Widget widget = getWidgetCreator().getView().getWidget(attributeValue);
-			if (widget == null)
-			{
-				throw new CruxGeneratorException("There is no viewContainer named ["+attributeValue+
-												"] on the view ["+getWidgetCreator().getView().getId()+"]");
-			}
-			
-			printlnPostProcessing(context.getWidget()+".setViewContainer(("+
-								ViewContainer.class.getCanonicalName()+")"+getViewVariable()+".getWidget("+
-								EscapeUtils.quote(attributeValue)+"));");
 		}
 	}
 }
