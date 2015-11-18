@@ -124,7 +124,6 @@ public class Column<T, W extends IsWidget>
 	{
 		assert(grid.getDataProvider() != null) :"No dataProvider set for this component.";
 		sorted = true;
-		grid.refreshRowCache();
 		grid.getDataProvider().sort(new Comparator<T>()
 		{
 			@Override

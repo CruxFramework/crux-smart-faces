@@ -21,13 +21,10 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.DataReader;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
-import org.cruxframework.crux.core.client.dataprovider.DataProviderException;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord;
 import org.cruxframework.crux.core.client.dataprovider.DataSelectionEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataSelectionHandler;
 import org.cruxframework.crux.core.client.dataprovider.LazyProvider;
-import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
-import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.event.SelectEvent;
@@ -111,7 +108,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			rows.get(i).makeChanges();
 		}
 
-		refreshRowCache();
 		super.commit();
 	}
 
@@ -220,15 +216,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	}
 
 	/**
-	 * Forces to redraw the entire grid.
-	 */
-	public void redraw()
-	{
-		refreshRowCache();
-		refreshPage(0);
-	}
-
-	/**
 	 * Rolls back any transaction started in the edition mode.
 	 */
 	@Override
@@ -240,7 +227,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 
 		super.rollback();
-		refreshRowCache();
 	}
 
 	@Override
@@ -337,20 +323,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					{
 						DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
 						Row<T> row = getCurrentPageRow(dataProviderRecord.getRecordObject());
-						setRowSelectionState(row, dataProviderRecord.isSelected());
+						
+						//Row can be null is it's state is changed to unselected but it not
+						//present in the DOM. This happens when we remove a line.
+						if(row != null)
+						{
+							setRowSelectionState(row, dataProviderRecord.isSelected());
+						}
 					}
-				}
-			}
-		});
-
-		pageRequestedHandler = getDataProvider().addPageRequestedHandler(new PageRequestedHandler() 
-		{
-			@Override
-			public void onPageRequested(PageRequestedEvent event) 
-			{
-				if(PageableDataGrid.this.pager == null || !PageableDataGrid.this.pager.supportsInfiniteScroll())
-				{
-					refreshRowCache();
 				}
 			}
 		});
@@ -359,12 +339,27 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	@Override
 	protected void clear()
 	{
+		//clear rows
+		if(rows != null)
+		{
+			//remove row selecion handlers
+			for(int i=0; i<rows.size();i++)
+			{
+				Row<T> row = rows.get(i);
+				row.getDivRow().removeFromParent();
+			}
+			//remove rows
+			rows.clear();
+		}
+		
+		//clear columns
 		for (int index = 0; index < getColumns().size(); index++)
 		{
 			Column<T, ?> dataGridColumn = getColumns().get(index);
 			dataGridColumn.clear();
 		}
-		//Check if widget has been initialized
+		
+		//clear panel
 		if(getPagePanel() != null)
 		{
 			getPagePanel().clear();
@@ -464,9 +459,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		if(columnIndex == 0)
 		{
 			//Adding a pointer to row.
-			if(row.divRow == null)
+			if(row.getDivRow() == null)
 			{
-				row.divRow = divRow;
+				row.setDivRow(divRow);
 			}
 
 			if(!row.editing)
@@ -481,26 +476,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		int columnIndex;
 		columnIndex = drawColumns(row);
 		drawDetails(row, columnIndex);
-	}
-
-	//Render method is caching rendered rows in order to gain performance
-	void refreshRowCache()
-	{
-		if(rows != null)
-		{
-			//remove row selecion handlers
-			for(int i=0; i<rows.size();i++)
-			{
-				Row<T> row = rows.get(i);
-				if(row.onSelectionHandlerRegistration != null)
-				{
-					row.onSelectionHandlerRegistration.removeHandler();
-					row.onSelectionHandlerRegistration = null;
-				}
-			}
-			//remove rows
-			rows.clear();
-		}
 	}
 
 	private void createHeader(final Column<T, ?> column)
@@ -541,7 +516,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			//animation
 			if(row.isEditing() && isAnimationEnabled())
 			{
-				getRowAnimation().animateEntrance(row.divRow, null);
+				getRowAnimation().animateEntrance(row.getDivRow(), null);
 			}
 		}
 		return columnIndex;
@@ -617,7 +592,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		int rowIndex = getDataProvider().indexOf(boundObject);
 		if(rowIndex < 0)
 		{
-			throw new DataProviderException("The object passed to dataprovider is not bound.");
+			return null;
 		}
 		int currentRowIndex = getCurrentRowIndex(rowIndex);
 		return rows.get(currentRowIndex);
@@ -802,12 +777,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		if(rowSelectStrategy.equals(RowSelectStrategy.row) && row.onSelectionHandlerRegistration == null)
 		{
-			HandlerRegistration selectHandler = row.divRow.addSelectHandler(new SelectHandler()
+			HandlerRegistration selectHandler = row.getDivRow().addSelectHandler(new SelectHandler()
 			{
 				@Override
 				public void onSelect(SelectEvent event)
 				{
-					boolean selected = row.divRow.getStyleName().contains(SYTLE_DATAGRID_SELECTED);
+					boolean selected = row.getDivRow().getStyleName().contains(SYTLE_DATAGRID_SELECTED);
 					getDataProvider().select(dataProviderRowIndex, !selected);
 				}
 			});
@@ -864,11 +839,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		if(selected)
 		{
-			row.divRow.addStyleDependentName(SYTLE_DATAGRID_SELECTED);
+			row.getDivRow().addStyleDependentName(SYTLE_DATAGRID_SELECTED);
 		}
 		else
 		{
-			row.divRow.removeStyleDependentName(SYTLE_DATAGRID_SELECTED);
+			row.getDivRow().removeStyleDependentName(SYTLE_DATAGRID_SELECTED);
 		}
 
 		if(row.checkbox != null)
