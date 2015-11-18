@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
+import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageablePager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
@@ -159,7 +160,7 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 	{
 		return swapPanel.isAnimationEnabled();
 	}
-
+	
 	/**
 	 * Retrieve the circularPaging property value. If this property is true, the pager will start 
 	 * at the first position after the last page is reached during paginations.
@@ -223,6 +224,15 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 	{
 		nextPanel.setVisible(visible);
 		backPanel.setVisible(visible);
+	}
+
+	@Override
+	public void setPageable(Pageable<T> pageable)
+	{
+		if (pageable != null)
+		{
+			pageable.setPager(this);
+		}
 	}
 
 	@Override
