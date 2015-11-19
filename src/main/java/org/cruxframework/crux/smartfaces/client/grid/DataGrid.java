@@ -73,7 +73,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key, boolean detail)
 	{
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key, detail);
-		addColumn(column);
+		addColumn(key, column);
 		return column;
 	}
 

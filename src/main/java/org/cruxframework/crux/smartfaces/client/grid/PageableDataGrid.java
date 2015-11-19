@@ -29,6 +29,7 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
@@ -116,7 +117,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	 */
 	public Column<T, ?> getColumn(String key)
 	{
-		if(getColumns() == null)
+		if(getColumns() == null || StringUtils.isEmpty(key))
 		{
 			return null;
 		}
@@ -283,18 +284,42 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	}
 
 	/**
+	 * Replaces one column by another.
+	 * @param key of the column to be replaced.
+	 * @param column the new column.
+	 */
+	protected void addColumn(String key, Column<T,?> column)
+	{
+		if(column.isDetail())
+		{
+			insertColumn(detailColumns, column, getColumn(key));
+		}
+		else
+		{
+			insertColumn(columns, column, getColumn(key));
+		}
+	}
+
+	private void insertColumn(Array<Column<T, ?>> columnList, Column<T, ?> column, Column<T, ?> oldColumn)
+	{
+		if(oldColumn != null)
+		{
+			int index = columnList.indexOf(oldColumn);
+			columnList.remove(oldColumn);
+			columnList.insert(index, column);
+		}
+		else
+		{
+			columnList.add(column);
+		}
+	}
+	
+	/**
 	 * @param column the column to be added.
 	 */
 	protected void addColumn(Column<T,?> column)
 	{
-		if(column.isDetail())
-		{
-			detailColumns.add(column);
-		}
-		else
-		{
-			columns.add(column);
-		}
+		addColumn(null, column);
 	}
 
 	protected void addColumnGroup(ColumnGroup<T> columnGroup)
