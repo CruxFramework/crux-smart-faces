@@ -38,7 +38,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 
 /**
- * A Factory for Label widgets
+ * A Factory for HTML widgets
  * @author Thiago da Rosa de Bustamante
  *
  */
