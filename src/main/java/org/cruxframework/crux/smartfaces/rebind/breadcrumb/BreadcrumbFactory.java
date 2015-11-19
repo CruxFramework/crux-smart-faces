@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -45,8 +44,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDec
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.Breadcrumb;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.BreadcrumbItem;
-import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
+import org.cruxframework.crux.smartfaces.rebind.image.ImageFactory;
 
 /**
  * 
@@ -61,9 +60,6 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 		@TagAttribute(value = "activeIndex", type = Integer.class, 
 					 description = "The index of the current active item on this Breadcrumb.",
 					 processingTime=ProcessingTime.afterAllWidgetsOnView),
-		@TagAttribute(value = "dividerImage", supportsResources=true, 
-					 description = "The image used as divider between items on this Breadcrumb.",
-					 processor=BreadcrumbFactory.DividerImageAttributeProcessor.class), 
 		@TagAttribute(value = "viewContainer", type=WidgetReference.class, widgetType=ViewContainer.class, 
 		 			 processingTime=ProcessingTime.afterAllWidgetsOnView,
 					 description = "A ViewContainer to open views as items are selected."),
@@ -81,6 +77,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 							+ "item when it is bound to a view that is activated on the Breadcrumb's viewContainer.")
 })
 @TagChildren({
+	@TagChild(BreadcrumbFactory.BreadcrumbDividerProcessor.class), 
 	@TagChild(BreadcrumbFactory.BreadcrumbItemProcessor.class) 
 })
 public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implements HasEnabledFactory<BreadcrumbContext>
@@ -91,6 +88,18 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 		return new BreadcrumbContext();
 	}
 		
+	@TagConstraints(tagName="divider")
+	@TagChildren({
+		@TagChild(BreadcrumbDividerImageProcessor.class)
+	})
+	@TagAttributes({
+		@TagAttribute(value="text", property="dividerText")
+	})
+	public static class BreadcrumbDividerProcessor extends WidgetChildProcessor<BreadcrumbContext> {}
+		
+	@TagConstraints(tagName="image", widgetProperty="dividerImage", type=ImageFactory.class, minOccurs="0", maxOccurs="1")
+	public static class BreadcrumbDividerImageProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	
 	@TagChildren({
 		@TagChild(BreadcrumbItemLabelTextProcessor.class),
 		@TagChild(BreadcrumbItemLabelWidgetProcessor.class)
@@ -224,28 +233,6 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 			if (childWidget != null && childWidget.length() > 0)
 			{
 				out.println(context.itemVariable + ".setWidget(" + childWidget + ");");
-			}
-		}
-	}
-	
-	public static class DividerImageAttributeProcessor extends AttributeProcessor<BreadcrumbContext>
-	{
-		public DividerImageAttributeProcessor(WidgetCreator<?> widgetCreator) 
-		{
-			super(widgetCreator);
-		}
-
-		@Override
-		public void processAttribute(SourcePrinter out, BreadcrumbContext context, String attributeValue) 
-		{
-			if (getWidgetCreator().isResourceReference(attributeValue))
-			{
-				String expression = getWidgetCreator().getResourceAccessExpression(attributeValue);
-				out.println(context.getWidget()+".setDividerImage(new "+Image.class.getCanonicalName()+"("+expression+"));");
-			}
-			else
-			{
-				out.println(context.getWidget()+".setDividerImage("+EscapeUtils.quote(attributeValue)+");");
 			}
 		}
 	}

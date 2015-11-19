@@ -38,76 +38,78 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
- *Factory for Image Widgets
+ * Factory for Image Widgets
+ * 
  * @authorThiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="image", targetWidget=Image.class, 
-					description="An image component that support google fast buttons to simulate clicks on touch devices.")
-
+@DeclarativeFactory(library = Constants.LIBRARY_NAME, id = "image", targetWidget = Image.class, 
+					description = "An image component that support google fast buttons to simulate clicks on touch devices.")
 @TagAttributes({
-	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
-				 description="If true, the html will call preventDefault on all touch events."),
-	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true, 
-				  description="The URL of the image to be displayed."),
-    @TagAttribute(value="width", description="Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
-	@TagAttribute(value="height", description="Sets the object's height, in CSS units (e.g. \"10px\", \"1em\"). This height does not include decorations such as border, margin, and padding."),
-	@TagAttribute(value="altText", description="The alternate text of the image for user agents that can't render the image."),
-	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class, 
-				  description="Visibility rectangle of an image.")
-})	
-@TagEvents({
-	@TagEvent(LoadEvtBind.class),
-	@TagEvent(LoadErrorEvtBind.class),
-	@TagEvent(SelectEvtBind.class)
-})
-public class ImageFactory extends WidgetCreator<WidgetCreatorContext>
-						implements HasAllFocusHandlersFactory<WidgetCreatorContext>, HasEnabledFactory<WidgetCreatorContext>
+    @TagAttribute(value = "preventDefaultTouchEvents", type = Boolean.class, defaultValue = "false", 
+    			  description = "If true, the html will call preventDefault on all touch events."),
+    @TagAttribute(value = "url", processor = ImageFactory.URLAttributeParser.class, supportsResources = true, 
+    			  supportsDataBinding=true,
+    			  description = "The URL of the image to be displayed."),
+    @TagAttribute(value = "width", 
+    			description = "Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
+    @TagAttribute(value = "height", 
+    			description = "Sets the object's height, in CSS units (e.g. \"10px\", \"1em\"). This height does not include decorations such as border, margin, and padding."),
+    @TagAttribute(value = "altText", 
+    			description = "The alternate text of the image for user agents that can't render the image."),
+    @TagAttribute(value = "visibleRect", supportsDataBinding=false, 
+    			processor = ImageFactory.VisibleRectAttributeParser.class, description = "Visibility rectangle of an image.") })
+@TagEvents({ @TagEvent(LoadEvtBind.class), @TagEvent(LoadErrorEvtBind.class), @TagEvent(SelectEvtBind.class) })
+public class ImageFactory extends WidgetCreator<WidgetCreatorContext> implements HasAllFocusHandlersFactory<WidgetCreatorContext>,
+    HasEnabledFactory<WidgetCreatorContext>
 {
 	public static class URLAttributeParser extends AttributeProcessor<WidgetCreatorContext>
 	{
 		public URLAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		@Override
-        public void processAttribute(SourcePrinter out, final WidgetCreatorContext context, String attributeValue)
-        {
+		public void processAttribute(SourcePrinter out, final WidgetCreatorContext context, String attributeValue)
+		{
 			String property = context.readWidgetProperty("url");
-	        if (getWidgetCreator().isResourceReference(property))
-	        {
-	        	String resource = ViewFactoryCreator.createVariableName("resource");
-	        	String height = context.readWidgetProperty("height");
-				if(StringUtils.isEmpty(height))
+			if (getWidgetCreator().isResourceReference(property))
+			{
+				String resource = ViewFactoryCreator.createVariableName("resource");
+				String height = context.readWidgetProperty("height");
+				if (StringUtils.isEmpty(height))
 				{
-					height = resource+".getHeight()";
-				} else
+					height = resource + ".getHeight()";
+				}
+				else
 				{
 					height = height.replaceAll("[^\\d.]", "");
 				}
-				
+
 				String width = context.readWidgetProperty("width");
-				if(StringUtils.isEmpty(width))
+				if (StringUtils.isEmpty(width))
 				{
-					width = resource+".getWidth()";
-				} else
+					width = resource + ".getWidth()";
+				}
+				else
 				{
 					width = width.replaceAll("[^\\d.]", "");
 				}
-				
-	        	out.println("final " + ImageResource.class.getCanonicalName()+" "+resource+" = "+getWidgetCreator().getResourceAccessExpression(property)+";");
-	        	out.println("com.google.gwt.core.client.Scheduler.get().scheduleDeferred(new com.google.gwt.core.client.Scheduler.ScheduledCommand() { @Override public void execute() {" 
-	        	+ context.getWidget() + ".setUrlAndVisibleRect(Screen.rewriteUrl("+
-	        			resource + ".getSafeUri().asString()), "+resource+".getLeft(), "+resource+".getTop(), "+width+", "+height+"); } });");
-	        }
-	        else
-	        {
-	        	out.println(context.getWidget()+".setUrl(Screen.rewriteUrl("+EscapeUtils.quote(property)+"));");
-	        }
-        }
+
+				out.println("final " + ImageResource.class.getCanonicalName() + " " + resource + " = "
+				    + getWidgetCreator().getResourceAccessExpression(property) + ";");
+				out.println("com.google.gwt.core.client.Scheduler.get().scheduleDeferred(new com.google.gwt.core.client.Scheduler.ScheduledCommand() { @Override public void execute() {"
+				    + context.getWidget() + ".setUrlAndVisibleRect(" + resource + ".getSafeUri().asString(), " + resource + ".getLeft(), "
+				    												 + resource + ".getTop(), " + width + ", " + height + "); } });");
+			}
+			else
+			{
+				out.println(context.getWidget() + ".setUrl(" + EscapeUtils.quote(property) + ");");
+			}
+		}
 	}
-	
+
 	/**
 	 * @author Thiago da Rosa de Bustamante
 	 *
@@ -115,27 +117,27 @@ public class ImageFactory extends WidgetCreator<WidgetCreatorContext>
 	public static class VisibleRectAttributeParser extends AttributeProcessor<WidgetCreatorContext>
 	{
 		public VisibleRectAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
+		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+		{
 			String widget = context.getWidget();
 			String[] coord = attributeValue.split(",");
-			
+
 			if (coord != null && coord.length == 4)
 			{
-				out.println(widget+".setVisibleRect("+Integer.parseInt(coord[0].trim())+", "+Integer.parseInt(coord[1].trim())+","+ 
-						Integer.parseInt(coord[2].trim())+", "+Integer.parseInt(coord[3].trim())+");");
+				out.println(widget + ".setVisibleRect(" + Integer.parseInt(coord[0].trim()) + ", " + Integer.parseInt(coord[1].trim())
+				    + "," + Integer.parseInt(coord[2].trim()) + ", " + Integer.parseInt(coord[3].trim()) + ");");
 			}
-        }
+		}
 	}
 
 	@Override
-    public WidgetCreatorContext instantiateContext()
-    {
-	    return new WidgetCreatorContext();
-    }
+	public WidgetCreatorContext instantiateContext()
+	{
+		return new WidgetCreatorContext();
+	}
 }

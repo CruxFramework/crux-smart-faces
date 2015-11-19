@@ -35,6 +35,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONObject;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 /**
  * 
@@ -46,9 +48,11 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 	@TagAttribute(value="largeDeviceItemWidth", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
 	@TagAttribute(value="smallDeviceItemHeight", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),
 	@TagAttribute(value="largeDeviceItemHeight", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
-	@TagAttribute(value="horizontalAlignment", type=HorizontalAlignment.class, processor=HorizontalAlignmentAttributeParser.class, defaultValue="center",  
+	@TagAttribute(value="horizontalAlignment", type=HorizontalAlignment.class, widgetType=HorizontalAlignmentConstant.class, 
+		    processor=HorizontalAlignmentAttributeParser.class, defaultValue="center",  
 			supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
-	@TagAttribute(value="verticalAlignment", type=VerticalAlignment.class, processor=VerticalAlignmentAttributeParser.class, defaultValue="middle"), 
+	@TagAttribute(value="verticalAlignment", type=VerticalAlignment.class, widgetType=VerticalAlignmentConstant.class, 
+			processor=VerticalAlignmentAttributeParser.class, defaultValue="middle"), 
 	@TagAttribute(value="fixedWidth", type=Boolean.class, defaultValue="true"), 
 	@TagAttribute(value="fixedHeight", type=Boolean.class, defaultValue="true") 
 })

@@ -45,10 +45,10 @@ description="A pager widget that can predict the datasource size at the load ins
 				  description="If this property is true, the pager will start at the first position "
 				  	+ "after the last page is reached during paginations."),
 	@TagAttribute(value = "animationBackward", processor = SwapPagerFactory.BackAnimationProcessor.class, 
-			      type = HasSwapAnimationFactory.SwapAnimations.class, 
+			      type = HasSwapAnimationFactory.SwapAnimations.class, widgetType=SwapAnimation.class,
 			      description="The animation to be aplied when the panel swaps to backward."), 
-	@TagAttribute(value = "animationBackward", processor = SwapPagerFactory.ForwardAnimationProcessor.class, 
-    			  type = HasSwapAnimationFactory.SwapAnimations.class, 
+	@TagAttribute(value = "animationForward", processor = SwapPagerFactory.ForwardAnimationProcessor.class, 
+    			  type = HasSwapAnimationFactory.SwapAnimations.class, widgetType=SwapAnimation.class, 
     			  description="The animation to be aplied when the panel swaps to forward.") 
 })
 

@@ -18,8 +18,6 @@ package org.cruxframework.crux.smartfaces.rebind.dialog;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.OkEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -43,14 +41,16 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @TagAttributes({
 	@TagAttribute(value="dialogTitle", supportsI18N=true, description="Sets the Dialog title."),
 	@TagAttribute(value="buttonText", supportsI18N=true, description="Sets the Dialog button text."),
-	@TagAttribute(value="message", supportsI18N=true, description="Message to be presented on this message box.", processor=MessageBoxFactory.MessageProcessor.class)
+	@TagAttribute(value="message", supportsI18N=true, 
+				  description="Message to be presented on this message box."),
+	@TagAttribute(value="messageType", type=MessageType.class, defaultValue="INFO", 
+				  description="The type of the message presented by this box. It changes the message box style, to customize the dialog when errors or warnings is presented.")
 })
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", description="If true, the window can be dragged on the screen"),
 	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", description="If true, the window can be resized"),
 	@TagAttributeDeclaration(value="closable", type=Boolean.class, defaultValue="true", description="If true, a close button will be available at the dialog's top bar to close the window"),
-	@TagAttributeDeclaration(value="modal", type=Boolean.class, defaultValue="true", description="If true, the content behind the dialog can not be changed when dialog is showing"),
-	@TagAttributeDeclaration(value="messageType", type=MessageType.class, defaultValue="INFO", description="The type of the message presented by this box. It changes the message box style, to customize the dialog when errors or warnings is presented.")
+	@TagAttributeDeclaration(value="modal", type=Boolean.class, defaultValue="true", description="If true, the content behind the dialog can not be changed when dialog is showing")
 })
 @TagEvents({
 	@TagEvent(value=OkEvtBind.class, description="Event triggered when the message box button is selected.")
@@ -76,26 +76,4 @@ public class MessageBoxFactory extends PanelFactory<WidgetCreatorContext>
     {
         return new WidgetCreatorContext();
     }
-        
-	/**
-	 * Process message attribute
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */	
-	public static class MessageProcessor extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public MessageProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			String messageType = context.readWidgetProperty("messageType", MessageType.INFO.name());
-			String expression = getWidgetCreator().getResourceAccessExpression(attributeValue);
-			out.println(context.getWidget()+".setMessage("+expression+", "+MessageType.class.getCanonicalName()+"."+messageType+");");
-        }
-	}
-    
 }

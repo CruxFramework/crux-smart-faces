@@ -87,10 +87,10 @@ description="A data grid that use a DataProvider to provide data and a gridDataF
 @TagAttributes({
 	@TagAttribute(value="detailPopupHeader", type=String.class, supportsI18N=true, supportsResources=true, supportsDataBinding=true),
 	@TagAttribute(value="dialogAnimation", processor=DataGridFactory.DialogAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, 
+	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the dialog is opened or closed."),
 	@TagAttribute(value="rowAnimation", processor=DataGridFactory.RowAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, 
+	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the row is opened or closed for edit mode."),
 	@TagAttribute(value="rowSelectStrategy",  type=RowSelectStrategy.class, 
 	  description="The strategy used to select rows for this grid."),
