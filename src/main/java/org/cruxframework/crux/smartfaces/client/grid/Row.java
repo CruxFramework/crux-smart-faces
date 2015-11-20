@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -29,17 +31,17 @@ import com.google.gwt.user.client.ui.RadioButton;
  */
 public class Row<T>
 {
-	T dataObject;
 	CheckBox checkbox;
-	RadioButton radioButton;
+	T dataObject;
 	int dataProviderRowIndex;
-	DivRow divRow;
 	boolean editing;
 	int index;
 	HandlerRegistration onSelectionHandlerRegistration;
+	RadioButton radioButton;
+	private DivRow divRow;
 	private final PageableDataGrid<T> grid;
 	private T oldDataObject;
-
+	
 	protected Row(PageableDataGrid<T> pageableDataGrid, T dataObject, int index, int dataProviderRowIndex)
 	{
 		grid = pageableDataGrid;
@@ -58,10 +60,14 @@ public class Row<T>
 		if(!editing)
 		{
 			dataObject = grid.getDataProvider().get(dataProviderRowIndex);
-			grid.setForEdition(dataProviderRowIndex, dataObject);
 			editing = true;
 			refresh();
 		}
+	}
+
+	public DivRow getDivRow()
+	{
+		return divRow;
 	}
 
 	/**
@@ -86,8 +92,24 @@ public class Row<T>
 	public void makeChanges()
 	{
 		oldDataObject = dataObject;
-		editing = false;
-		refresh();
+		concludeOperation();
+	}
+
+	public void setDivRow(DivRow divRow)
+	{
+		this.divRow = divRow;
+		this.divRow.addAttachHandler(new Handler()
+		{
+			@Override
+			public void onAttachOrDetach(AttachEvent event)
+			{
+				if(!event.isAttached() && onSelectionHandlerRegistration != null)
+				{
+					onSelectionHandlerRegistration.removeHandler();
+					onSelectionHandlerRegistration = null;
+				}
+			}
+		});
 	}
 
 	/**
@@ -96,9 +118,7 @@ public class Row<T>
 	public void undoChanges()
 	{
 		dataObject = oldDataObject;
-		grid.setForEdition(dataProviderRowIndex, dataObject);
-		editing = false;
-		refresh();
+		concludeOperation();
 	}
 
 	/**
@@ -107,5 +127,12 @@ public class Row<T>
 	void refresh()
 	{
 		grid.drawColumnsAndDetails(this);
+	}
+
+	private void concludeOperation()
+	{
+		grid.setForEdition(dataProviderRowIndex, dataObject);
+		editing = false;
+		refresh();
 	}
 }
