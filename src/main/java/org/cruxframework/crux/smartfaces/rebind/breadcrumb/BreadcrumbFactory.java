@@ -223,7 +223,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 	} 
 
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class BreadcrumbItemWidgetProcessor extends WidgetChildProcessor<BreadcrumbContext>
 	{
 		@Override

@@ -241,7 +241,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	{
 	}
 	
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class LargeHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
@@ -255,7 +255,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 	
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class SmallHeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
@@ -269,7 +269,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 	
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class HeaderProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
@@ -280,7 +280,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class LargeFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
@@ -294,7 +294,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class SmallFooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override
@@ -308,7 +308,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 
-	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(maxOccurs="unbounded", minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class FooterProcessor extends WidgetChildProcessor<DisposalLayoutContext>
 	{
 		@Override

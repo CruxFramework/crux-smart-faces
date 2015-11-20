@@ -139,7 +139,7 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 	})	
 	public static class WidgetTitleTabProcessor extends WidgetChildProcessor<TabPanelContext> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetTitleProcessor extends WidgetChildProcessor<TabPanelContext> 
 	{
 		@Override
@@ -162,7 +162,7 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 	})	
 	public static class TabWidgetProcessor extends WidgetChildProcessor<TabPanelContext> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetContentProcessor extends WidgetChildProcessor<TabPanelContext> 
 	{
 		@Override

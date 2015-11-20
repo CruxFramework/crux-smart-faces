@@ -116,7 +116,7 @@ public class StoryboardFactory  extends ComplexPanelFactory<StoryboardContext> i
 	{
 	}
 	
-    @TagConstraints(type=AnyWidget.class)
+    @TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
     public static class WidgetContentProcessor extends WidgetChildProcessor<StoryboardContext> 
 	{
 		@Override
