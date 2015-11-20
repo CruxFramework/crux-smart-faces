@@ -39,9 +39,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @DeclarativeFactory(id="swapCrawlableViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapCrawlableViewContainer.class)
 @TagAttributes({
 	@TagAttribute(value="animationForward", type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
-		processor=SwapCrawlableViewContainerFactory.AnimationForwardProcessor.class ,description="Defines the type of animation to be executed to advance the swap of view."),
+		processor=SwapCrawlableViewContainerFactory.AnimationForwardProcessor.class , widgetType=SwapAnimation.class,
+		description="Defines the type of animation to be executed to advance the swap of view."),
 	@TagAttribute(value="animationBackward",type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
-		processor=SwapCrawlableViewContainerFactory.AnimationBackwardProcessor.class,   description="Defines the type of animation to be executed to back the swap of view.")
+		processor=SwapCrawlableViewContainerFactory.AnimationBackwardProcessor.class, widgetType=SwapAnimation.class,
+		description="Defines the type of animation to be executed to back the swap of view.")
 })
 @TagChildren({
 	@TagChild(SwapViewContainerFactory.ViewProcessor.class)

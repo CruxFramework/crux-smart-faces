@@ -304,7 +304,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 	{
 	}
 	
-	@TagConstraints(type=AnyWidget.class, description="The widget inserted into the item.")
+	@TagConstraints(type=AnyWidget.class, description="The widget inserted into the item.", autoProcessingEnabled=false)
 	public static class WidgetProcessor extends WidgetChildProcessor<MenuContext>
 	{
 		@Override

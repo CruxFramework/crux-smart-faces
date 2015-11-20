@@ -51,6 +51,8 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	
 	private HTML msgLabel;
 	private Button hideButton;
+	private MessageType messageType;
+	private boolean isHTML = false;
 
 	/**
 	 * Creates a message box
@@ -58,6 +60,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	public MessageBox()
 	{
 		this(true, true, true, false, DEFAULT_STYLE_NAME);
+		setMessageType(MessageType.INFO);
 	}
 	
 	/**
@@ -196,13 +199,57 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public void setMessage(SafeHtml message, MessageType type)
 	{
+		setMessage(message);
+		setMessageType(type);
+	}
+
+	public String getMessage()
+	{
+		return isHTML?this.msgLabel.getHTML():this.msgLabel.getText();
+	}
+	
+	/**
+	 * Retrieve the message type for this dialog
+	 * @return message type
+	 */
+	public MessageType getMessageType()
+	{
+		return messageType;
+	}
+	
+	/**
+	 * Sets the message to be shown
+	 * @param message the HTML to be displayed
+	 */
+	public void setMessage(SafeHtml message)
+	{
+		this.isHTML = true;
 		this.msgLabel.setHTML(message);
+	}
+	
+	/**
+	 * Sets the message to be shown
+	 * @param message the text to be displayed
+	 */
+	public void setMessage(String message)
+	{
+		this.isHTML = false;
+		this.msgLabel.setText(message);
+	}
+	
+	/**
+	 * Sets the message type for this dialog
+	 * @param type
+	 */
+	public void setMessageType(MessageType type)
+    {
+	    this.messageType = type;
 		for(MessageType anyType : MessageType.values())
 		{
 			this.removeStyleDependentName(anyType.name().toLowerCase());
 		}
 		this.addStyleDependentName(type.name().toLowerCase());
-	}
+    }
 	
 	/**
 	 * Sets the message to be shown
@@ -211,12 +258,8 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	 */
 	public void setMessage(String message, MessageType type)
 	{
-		this.msgLabel.setText(message);
-		for(MessageType anyType : MessageType.values())
-		{
-			this.removeStyleDependentName(anyType.name().toLowerCase());
-		}
-		this.addStyleDependentName(type.name().toLowerCase());
+		setMessage(message);
+		setMessageType(type);
 	}
 	
 

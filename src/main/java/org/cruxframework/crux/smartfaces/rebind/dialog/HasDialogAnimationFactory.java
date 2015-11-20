@@ -31,7 +31,7 @@ import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
  */
 @TagAttributes({
 	@TagAttribute(value="animation", processor=HasDialogAnimationFactory.AnimationProcessor.class, 
-				  type=HasDialogAnimationFactory.DialogAnimations.class, 
+				  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,  
 				  description="The animation to be aplied when the dialog is opened or closed.")
 })
 public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
