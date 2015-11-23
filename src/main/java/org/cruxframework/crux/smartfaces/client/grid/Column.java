@@ -42,12 +42,12 @@ public class Column<T, W extends IsWidget>
 	RowSelectStrategy rowSelectStrategy = null;
 	boolean sortable = false;
 	boolean sorted;
-	private GridDataFactory<T, W> dataFactory;
+	private GridDataFactory<T> dataFactory;
 	private CellEditor<T, ?> editableCell;
 	private final PageableDataGrid<T> grid;
 	private ArrayList<String> keys = new ArrayList<String>();
 
-	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<T, W> dataFactory, String key, boolean detail)
+	protected Column(PageableDataGrid<T> pageableDataGrid, GridDataFactory<T> dataFactory, String key, boolean detail)
 	{
 		this.grid = pageableDataGrid;
 		this.detail = detail;
@@ -67,7 +67,7 @@ public class Column<T, W extends IsWidget>
 	/**
 	 * @return the data factory.
 	 */
-	public GridDataFactory<T, W> getDataFactory()
+	public GridDataFactory<T> getDataFactory()
 	{
 		return dataFactory;
 	}
@@ -153,7 +153,7 @@ public class Column<T, W extends IsWidget>
 
 	IsWidget render(boolean detailColumn) 
 	{
-		if(row.isEditing() && editableCell != null)
+		if(row.editing && editableCell != null)
 		{
 			return renderToEdit(detailColumn);
 		}
@@ -170,7 +170,7 @@ public class Column<T, W extends IsWidget>
 
 	private IsWidget renderToView(boolean detailColumn) 
 	{
-		IsWidget widget = dataFactory.createData(row.dataObject, row);
+		IsWidget widget = dataFactory.createData(row.dataObject, row.index);
 
 		if(widget != null && !detailColumn)
 		{

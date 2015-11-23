@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @param <T> the Data Object type.
  * @param <W> the widget type.
  */
-public interface GridDataFactory<T, W>
+public interface GridDataFactory<T>
 {
-	IsWidget createData(T value, Row<T> row);
+	IsWidget createData(T value, int rowIndex);
 }

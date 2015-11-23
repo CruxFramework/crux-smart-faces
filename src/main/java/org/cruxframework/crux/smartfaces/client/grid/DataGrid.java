@@ -59,7 +59,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param key
 	 * @return
 	 */
-	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T> dataFactory, String key)
 	{
 		return newColumn(dataFactory, key, false);
 	}
@@ -70,7 +70,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param detail
 	 * @return
 	 */
-	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key, boolean detail)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T> dataFactory, String key, boolean detail)
 	{
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key, detail);
 		addColumn(key, column);
@@ -87,6 +87,57 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		ColumnGroup<T> columnGroup = new ColumnGroup<T>(key);
 		addColumnGroup(columnGroup);
 		return columnGroup;
+	}
+	
+	/**
+	 * Commit all the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void makeRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).makeChanges();
+	}
+
+	/**
+	 * Undo the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void undoRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).undoChanges();
+	}
+
+	/**
+	 * Put the Row in the edition mode.
+	 * @param rowIndex the row index.
+	 */
+	public void editRow(int rowIndex)
+	{
+		rows.get(rowIndex).edit();
+	}
+	
+	/**
+	 * @param rowIndex the row index.
+	 * @return true if the row is editing or false otherwise.
+	 */
+	public boolean isRowEditing(int rowIndex)
+	{
+		return rows.get(rowIndex).editing;
+	}
+	
+	/**
+	 * Put all rolls in the edition mode.
+	 */
+	public void editAllRows()
+	{
+		if(rows == null)
+		{
+			return;
+		}
+		for(int i=0;i<rows.size();i++)
+		{
+			rows.get(i).edit();
+		}
 	}
 
 	@Override
