@@ -32,4 +32,16 @@ public interface SmartFacesResourcesCommon extends ClientBundle
 	
 	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-arrow.svg")
 	DataResource svgIconArrow();
+	
+	@Source("svg-icon-paginator-first.svg")
+	DataResource svgIconPaginatorFirst();
+	
+	@Source("svg-icon-paginator-last.svg")
+	DataResource svgIconPaginatorLast();
+	
+	@Source("svg-icon-paginator-next.svg")
+	DataResource svgIconPaginatorNext();
+	
+	@Source("svg-icon-paginator-prev.svg")
+	DataResource svgIconPaginatorPrev();
 }
