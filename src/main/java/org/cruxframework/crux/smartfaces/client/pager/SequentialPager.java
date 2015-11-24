@@ -48,7 +48,8 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 		this.panel.add(infoPanel);
 		this.panel.add(nextButton);		
 		
-		this.panel.setStyleName(DEFAULT_STYLE_NAME);
+		this.panel.setStyleName(DEFAULT_PAGER_STYLE_NAME);
+		this.panel.addStyleName(DEFAULT_STYLE_NAME);
 		
 		initWidget(this.panel);		
 	}

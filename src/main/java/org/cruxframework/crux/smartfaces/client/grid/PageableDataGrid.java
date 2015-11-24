@@ -187,7 +187,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	/**
 	 * @return all the table rows. 
 	 */
-	public Array<Row<T>> getCurrentPageRows()
+	Array<Row<T>> getCurrentPageRows()
 	{
 		return rows;
 	}
@@ -539,7 +539,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			column.render(false);
 
 			//animation
-			if(row.isEditing() && isAnimationEnabled())
+			if(row.editing && isAnimationEnabled())
 			{
 				getRowAnimation().animateEntrance(row.getDivRow(), null);
 			}
@@ -750,11 +750,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				}
 			});
 
-			columns.add(new Column<T, CheckBox>(this, new GridDataFactory<T, CheckBox>()
+			columns.add(new Column<T, CheckBox>(this, new GridDataFactory<T>()
 			{
 				@Override
-				public CheckBox createData(T value, final Row<T> row)
+				public CheckBox createData(T value, final int rowIndex)
 				{
+					final Row<T> row = rows.get(rowIndex);
 					final CheckBox checkBox = new CheckBox();
 					row.checkbox = checkBox;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
@@ -774,14 +775,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		else if(rowSelectStrategy.equals(RowSelectStrategy.radioButton))
 		{
-			columns.add(new Column<T, RadioButton>(this, new GridDataFactory<T, RadioButton>()
+			columns.add(new Column<T, RadioButton>(this, new GridDataFactory<T>()
 			{
 				@Override
-				public RadioButton createData(T value, final Row<T> row)
+				public RadioButton createData(T value, final int rowIndex)
 				{
+					final Row<T> row = rows.get(rowIndex);
 					final RadioButton radioButton = new RadioButton(tableId);
 					row.radioButton = radioButton;
-					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
+					boolean selected = getDataProvider().isSelected(rows.get(rowIndex).dataProviderRowIndex);
 					radioButton.setValue(selected);
 					radioButton.addClickHandler(new ClickHandler()
 					{
