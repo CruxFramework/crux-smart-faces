@@ -235,7 +235,7 @@ public abstract class NavigationButtonsPager<T> extends AbstractPager<T>
 	private Button createNavigationButton(String styleName, SelectHandler selectHandler)
 	{
 		Button button = new Button();
-		button.setStyleName(styleName);
+		button.addStyleName(styleName);
 		button.addSelectHandler(selectHandler);
 		return button;
 	}
