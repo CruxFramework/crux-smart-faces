@@ -74,7 +74,9 @@ public class BulletsPager<T> extends AbstractPager<T>
 				}
 			}
 		});
-		setStyleName(DEFAULT_STYLE_NAME);
+		
+		setStyleName(DEFAULT_PAGER_STYLE_NAME);
+		addStyleName(DEFAULT_STYLE_NAME);
 	}
 	
 	/**

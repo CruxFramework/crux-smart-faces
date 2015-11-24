@@ -48,7 +48,9 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 		this.panel.add(createNextButton());
 		this.panel.add(createLastPageButton());	
 		
-		this.panel.setStyleName(DEFAULT_STYLE_NAME);
+		this.panel.setStyleName(DEFAULT_PAGER_STYLE_NAME);
+		this.panel.addStyleName(DEFAULT_STYLE_NAME);
+		
 		initWidget(this.panel);		
 	}
 
