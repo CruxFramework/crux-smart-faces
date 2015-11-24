@@ -80,11 +80,6 @@ public class Column<T, W extends IsWidget>
 		return headerWidget;
 	}
 
-	public Row<T> getRow() 
-	{
-		return row;
-	}
-
 	/**
 	 * @return true if the column show be rendered as a detail widget
 	 * and false otherwise.
@@ -106,6 +101,17 @@ public class Column<T, W extends IsWidget>
 		columnComparator.comparator = comparator;
 		columnComparator.multiplier = 1;
 		return this;
+	}
+
+	/**
+	 * @param detail true if the column should be rendered
+	 * as a detail column and false otherwise.
+	 */
+	public void setDetail(boolean detail)
+	{
+		grid.columns.remove(this);
+		grid.detailColumns.add(this);
+		this.detail = detail;
 	}
 
 	public Column<T, W> setHeaderWidget(IsWidget headerWidget)
@@ -179,7 +185,7 @@ public class Column<T, W extends IsWidget>
 
 		return widget;
 	}
-
+	
 	/**
 	 * Encapsulate the comparator adding a variable to indicate if the ordering should be
 	 * ascending or descending.
@@ -191,16 +197,5 @@ public class Column<T, W extends IsWidget>
 	{
 		Comparator<T> comparator;
 		short multiplier = -1; 
-	}
-	
-	/**
-	 * @param detail true if the column should be rendered
-	 * as a detail column and false otherwise.
-	 */
-	public void setDetail(boolean detail)
-	{
-		grid.columns.remove(this);
-		grid.detailColumns.add(this);
-		this.detail = detail;
 	}
 }

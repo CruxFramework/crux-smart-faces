@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  * @param <T> the Data Object type.
- * @param <W> the widget type.
  */
 public interface GridDataFactory<T>
 {

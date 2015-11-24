@@ -48,10 +48,52 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		setStyleName(STYLE_FACES_DATAGRID);
 	}
 
+	/**
+	 * Put all rolls in the edition mode.
+	 */
+	public void editAllRows()
+	{
+		if(rows == null)
+		{
+			return;
+		}
+		for(int i=0;i<rows.size();i++)
+		{
+			rows.get(i).edit();
+		}
+	}
+
+	/**
+	 * Put the Row in the edition mode.
+	 * @param rowIndex the row index.
+	 */
+	public void editRow(int rowIndex)
+	{
+		rows.get(rowIndex).edit();
+	}
+
 	@Override
 	public boolean isEnabled()
 	{
 		return enabled;
+	}
+
+	/**
+	 * @param rowIndex the row index.
+	 * @return true if the row is editing or false otherwise.
+	 */
+	public boolean isRowEditing(int rowIndex)
+	{
+		return rows.get(rowIndex).editing;
+	}
+	
+	/**
+	 * Commit all the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void makeRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).makeChanges();
 	}
 
 	/**
@@ -76,7 +118,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		addColumn(key, column);
 		return column;
 	}
-
+	
 	/**
 	 * Define a column group in order to set a specific header to each group.
 	 * @param dataGridColumnGroup
@@ -89,57 +131,6 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		return columnGroup;
 	}
 	
-	/**
-	 * Commit all the changes for a single row.
-	 * @param rowIndex the row index.
-	 */
-	public void makeRowChanges(int rowIndex)
-	{
-		rows.get(rowIndex).makeChanges();
-	}
-
-	/**
-	 * Undo the changes for a single row.
-	 * @param rowIndex the row index.
-	 */
-	public void undoRowChanges(int rowIndex)
-	{
-		rows.get(rowIndex).undoChanges();
-	}
-
-	/**
-	 * Put the Row in the edition mode.
-	 * @param rowIndex the row index.
-	 */
-	public void editRow(int rowIndex)
-	{
-		rows.get(rowIndex).edit();
-	}
-	
-	/**
-	 * @param rowIndex the row index.
-	 * @return true if the row is editing or false otherwise.
-	 */
-	public boolean isRowEditing(int rowIndex)
-	{
-		return rows.get(rowIndex).editing;
-	}
-	
-	/**
-	 * Put all rolls in the edition mode.
-	 */
-	public void editAllRows()
-	{
-		if(rows == null)
-		{
-			return;
-		}
-		for(int i=0;i<rows.size();i++)
-		{
-			rows.get(i).edit();
-		}
-	}
-
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -153,6 +144,15 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 			getContentPanel().addStyleDependentName(STYLE_DISABLED);
 		}
 		setEnableColumns(enabled);
+	}
+
+	/**
+	 * Undo the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void undoRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).undoChanges();
 	}
 
 	@Override
