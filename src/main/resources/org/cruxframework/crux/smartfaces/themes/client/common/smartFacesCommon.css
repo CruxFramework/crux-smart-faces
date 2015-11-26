@@ -701,6 +701,7 @@ body
 }
 
 /******************************************************************************
+	(TODO: some of this code should be on backbone)
     DivTable
 *******************************************************************************/
 
@@ -814,6 +815,7 @@ body
 }
 
 /******************************************************************************
+	(TODO: some of this code should be on backbone)
     DataGrid
 *******************************************************************************/
 
@@ -853,8 +855,8 @@ body
 }
 
 /**********************************************************************
-* Pagers (TODO: some of this code should be on backbone)
-*  
+* (TODO: some of this code should be on backbone)
+* Pagers
 * Types: commonPagerWrapper / swapPagerWrapper / scrollablePagerWrapper
 ***********************************************************************/
 

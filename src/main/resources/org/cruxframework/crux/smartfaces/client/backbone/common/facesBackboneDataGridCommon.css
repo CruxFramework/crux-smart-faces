@@ -1,6 +1,4 @@
-@external faces-*;
-
 .faces-DivTable 
 {
-	display: inline-block;
+	display: flex;
 }
