@@ -32,8 +32,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ControllerAccessHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
@@ -56,12 +56,11 @@ import org.cruxframework.crux.smartfaces.client.grid.ColumnGroup;
 import org.cruxframework.crux.smartfaces.client.grid.DataGrid;
 import org.cruxframework.crux.smartfaces.client.grid.GridDataFactory;
 import org.cruxframework.crux.smartfaces.client.grid.GridWidgetFactory;
-import org.cruxframework.crux.smartfaces.client.grid.Row;
 import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.dialog.HasDialogAnimationFactory;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,10 +86,10 @@ description="A data grid that use a DataProvider to provide data and a gridDataF
 @TagAttributes({
 	@TagAttribute(value="detailPopupHeader", type=String.class, supportsI18N=true, supportsResources=true, supportsDataBinding=true),
 	@TagAttribute(value="dialogAnimation", processor=DataGridFactory.DialogAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
+	  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the dialog is opened or closed."),
 	@TagAttribute(value="rowAnimation", processor=DataGridFactory.RowAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
+	  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the row is opened or closed for edit mode."),
 	@TagAttribute(value="rowSelectStrategy",  type=RowSelectStrategy.class, 
 	  description="The strategy used to select rows for this grid."),
@@ -141,7 +140,6 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		String tooltip = columnElement.optString("tooltip");
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String widgetClassName = Label.class.getCanonicalName();
-		String rowClassName = Row.class.getCanonicalName();
 		String bindingContextVariable = createVariableName("context");
 		Set<String> converterDeclarations = new HashSet<String>();
 
@@ -163,7 +161,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			propertyAttr, converterDeclarations, Label.class.getCanonicalName(), "text", 
 			dataBindingProcessor, valueExpression);	
 
-		String factoryClassName = GridDataFactory.class.getCanonicalName()+"<" + dataObjectName + ", "  + widgetClassName + ">";
+		String factoryClassName = GridDataFactory.class.getCanonicalName()+"<" + dataObjectName + ">";
 		String columnClassName = Column.class.getCanonicalName()+"<" + dataObjectName + ", "  + widgetClassName + ">";
 		out.println(columnClassName + " " + columnVar + " = " + context.getWidget()+".newColumn(new " + factoryClassName + "(){");
 
@@ -171,7 +169,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		boolean hasTooltip = createGetTooltipMethod(out, dataBindingProcessor, converterDeclarations, tooltip, dataObjectName, dataObjectAlias);
 
-		out.println("public " + widgetClassName + " createData("+dataObjectName+" "+dataObjectVariable+", final "+rowClassName+"<"+dataObjectName+"> row){");
+		out.println("public " + widgetClassName + " createData("+dataObjectName+" "+dataObjectVariable+", final int rowIndex){");
 
 		for (String converterDecl : converterDeclarations)
 		{
@@ -205,7 +203,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	{
 		String widgetClassName = IsWidget.class.getCanonicalName();
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
-		String widgetFactoryClassName = GridDataFactory.class.getCanonicalName()+"<"+dataObjectName+", "+widgetClassName+">";
+		String widgetFactoryClassName = GridDataFactory.class.getCanonicalName()+"<"+dataObjectName+">";
 
 		JSONArray children = ensureChildren(columnElement, true, context.getWidgetId());
 		if (children != null)
@@ -334,13 +332,10 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, WidgetCreatorContext context, JSONObject child, 
 		JClassType dataObject, String bindingContextVariable, HasDataProviderDataBindingProcessor bindingProcessor)
 	{
-		String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
-		String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
-		
 		child = ensureFirstChild(child, false, context.getWidgetId());
 
 		out.println("public "+IsWidget.class.getCanonicalName()+" createData("+dataObject.getParameterizedQualifiedSourceName()
-				    +" "+bindingProcessor.getCollectionObjectReference()+", final "+rowClassName+" row){");
+				    +" "+bindingProcessor.getCollectionObjectReference()+", final int rowIndex){");
 	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
 	    out.println("return "+childWidget+";");
 	    out.println("}");
@@ -518,7 +513,6 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		String tooltip = columnElement.optString("tooltip");
 
 		String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
-		String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
 		String dataObjectAlias = getDataObjectAlias(dataObject);
 
 		boolean hasTooltip = createGetTooltipMethod(out, bindingProcessor, bindingProcessor.getConverterDeclarations(), tooltip, 
@@ -526,7 +520,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 		String dataObjectVariable = bindingProcessor.getCollectionObjectReference();
 		out.println("public "+widgetClassName+" createData("+dataObjectClassName+" "+dataObjectVariable + 
-			", "+rowClassName+" row){");
+			", final int rowIndex){");
 		String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
 		if (hasTooltip)
 		{
@@ -572,7 +566,6 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 
 			String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
 			String dataObjectAlias = getDataObjectAlias(dataObject);
-			String rowClassName = Row.class.getCanonicalName() + "<"+dataObjectClassName+">";
 
 			String bindingContextVariable = createVariableName("_context");
 			generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
@@ -580,7 +573,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			boolean hasTooltip = createGetTooltipMethod(out, dataBindingProcessor, dataBindingProcessor.getConverterDeclarations(), 
 				tooltip, dataObjectClassName, dataObjectAlias);
 
-			out.println("public "+widgetClassName+" createData("+dataObjectClassName+" value, "+rowClassName+" row){");
+			out.println("public "+widgetClassName+" createData("+dataObjectClassName+" value, final int rowIndex){");
 
 			String childWidget = createVariableName("widget");
 			out.print(widgetClassName + " " + childWidget + " = ");

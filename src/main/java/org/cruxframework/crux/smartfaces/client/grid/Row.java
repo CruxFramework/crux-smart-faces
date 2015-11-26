@@ -29,18 +29,18 @@ import com.google.gwt.user.client.ui.RadioButton;
  *
  * @param <T> the Data Object type.
  */
-public class Row<T>
+class Row<T>
 {
 	CheckBox checkbox;
 	T dataObject;
 	int dataProviderRowIndex;
 	boolean editing;
+	final PageableDataGrid<T> grid;
 	int index;
+	T oldDataObject;
 	HandlerRegistration onSelectionHandlerRegistration;
 	RadioButton radioButton;
 	private DivRow divRow;
-	private final PageableDataGrid<T> grid;
-	private T oldDataObject;
 	
 	protected Row(PageableDataGrid<T> pageableDataGrid, T dataObject, int index, int dataProviderRowIndex)
 	{
@@ -53,9 +53,17 @@ public class Row<T>
 	}
 
 	/**
+	 * @return the current widget representing.
+	 */
+	public DivRow getDivRow()
+	{
+		return divRow;
+	}
+
+	/**
 	 * Put the Row in the edition mode.
 	 */
-	public void edit()
+	void edit()
 	{
 		if(!editing)
 		{
@@ -65,37 +73,24 @@ public class Row<T>
 		}
 	}
 
-	public DivRow getDivRow()
-	{
-		return divRow;
-	}
-
-	/**
-	 * @return the row index.
-	 */
-	public int getIndex() 
-	{
-		return index;
-	}
-
-	/**
-	 * @return true if the row is in the edition mode and false otherwise.
-	 */
-	public boolean isEditing() 
-	{
-		return editing;
-	}
-
 	/**
 	 * Commit all the changes for a single row.
 	 */
-	public void makeChanges()
+	void makeChanges()
 	{
 		oldDataObject = dataObject;
 		concludeOperation();
 	}
 
-	public void setDivRow(DivRow divRow)
+	/**
+	 * Refreshes the all the row columns. 
+	 */
+	void refresh()
+	{
+		grid.drawColumnsAndDetails(this);
+	}
+
+	void setDivRow(DivRow divRow)
 	{
 		this.divRow = divRow;
 		this.divRow.addAttachHandler(new Handler()
@@ -115,20 +110,12 @@ public class Row<T>
 	/**
 	 * Undo the changes for a single row.
 	 */
-	public void undoChanges()
+	void undoChanges()
 	{
 		dataObject = oldDataObject;
 		concludeOperation();
 	}
-
-	/**
-	 * Refreshes the all the row columns. 
-	 */
-	void refresh()
-	{
-		grid.drawColumnsAndDetails(this);
-	}
-
+	
 	private void concludeOperation()
 	{
 		grid.setForEdition(dataProviderRowIndex, dataObject);

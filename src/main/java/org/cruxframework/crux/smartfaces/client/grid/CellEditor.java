@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @param <T> the Data Object type.
  * @param <K> the property type inside of DataObject.
  */
-public abstract class CellEditor<T, K> implements GridDataFactory<T, K>
+public abstract class CellEditor<T, K> implements GridDataFactory<T>
 {
 	private boolean autoRefreshRow = false;
 
@@ -61,7 +61,7 @@ public abstract class CellEditor<T, K> implements GridDataFactory<T, K>
 		boolean detailColumn
 		)
 	{
-		final IsWidget widget = CellEditor.this.createData(row.dataObject, row);
+		final IsWidget widget = CellEditor.this.createData(row.dataObject, row.index);
 		assert(widget != null): "widget cannot be null";
 
 		if(!detailColumn)

@@ -38,7 +38,10 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneComboboxCommon.css",
 		"facesBackboneListboxCommon.css",
 		"facesBackbonePopupCommon.css",
-		"facesBackboneScrollablePagerCommon.css"
+		"facesBackboneScrollablePagerCommon.css", 
+		"facesBackboneSequentialPagerCommon.css", 
+		"facesBackboneBulletsPagerCommon.css",
+		"facesBackbonePredictivePagerCommon.css"
 		})
 	FacesBackboneCSSCommon css();
 }

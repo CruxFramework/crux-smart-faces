@@ -48,6 +48,30 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		setStyleName(STYLE_FACES_DATAGRID);
 	}
 
+	/**
+	 * Put all rolls in the edition mode.
+	 */
+	public void editAllRows()
+	{
+		if(rows == null)
+		{
+			return;
+		}
+		for(int i=0;i<rows.size();i++)
+		{
+			rows.get(i).edit();
+		}
+	}
+
+	/**
+	 * Put the Row in the edition mode.
+	 * @param rowIndex the row index.
+	 */
+	public void editRow(int rowIndex)
+	{
+		rows.get(rowIndex).edit();
+	}
+
 	@Override
 	public boolean isEnabled()
 	{
@@ -55,11 +79,29 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	}
 
 	/**
+	 * @param rowIndex the row index.
+	 * @return true if the row is editing or false otherwise.
+	 */
+	public boolean isRowEditing(int rowIndex)
+	{
+		return rows.get(rowIndex).editing;
+	}
+	
+	/**
+	 * Commit all the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void makeRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).makeChanges();
+	}
+
+	/**
 	 * @param dataFactory
 	 * @param key
 	 * @return
 	 */
-	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T> dataFactory, String key)
 	{
 		return newColumn(dataFactory, key, false);
 	}
@@ -70,13 +112,13 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 	 * @param detail
 	 * @return
 	 */
-	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T, V> dataFactory, String key, boolean detail)
+	public <V extends IsWidget> Column<T, V> newColumn(GridDataFactory<T> dataFactory, String key, boolean detail)
 	{
 		Column<T, V> column = new Column<T, V>(this, dataFactory, key, detail);
 		addColumn(key, column);
 		return column;
 	}
-
+	
 	/**
 	 * Define a column group in order to set a specific header to each group.
 	 * @param dataGridColumnGroup
@@ -88,7 +130,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		addColumnGroup(columnGroup);
 		return columnGroup;
 	}
-
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -102,6 +144,15 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 			getContentPanel().addStyleDependentName(STYLE_DISABLED);
 		}
 		setEnableColumns(enabled);
+	}
+
+	/**
+	 * Undo the changes for a single row.
+	 * @param rowIndex the row index.
+	 */
+	public void undoRowChanges(int rowIndex)
+	{
+		rows.get(rowIndex).undoChanges();
 	}
 
 	@Override

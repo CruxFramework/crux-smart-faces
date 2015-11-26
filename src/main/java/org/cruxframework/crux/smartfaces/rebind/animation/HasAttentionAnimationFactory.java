@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.rebind.dialog;
+package org.cruxframework.crux.smartfaces.rebind.animation;
 
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
@@ -22,23 +22,21 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
-import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
+import org.cruxframework.crux.smartfaces.client.util.animation.AttentionAnimation;
 
 /**
- * A helper class to help on HasDialogAnimation widgets creation, based on crux pages metadata.
- * @author Thiago da Rosa de Bustamante
+ * A helper class to help on HasAttentionAnimation widgets creation, based on crux pages metadata.
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @TagAttributes({
-	@TagAttribute(value="animation", processor=HasDialogAnimationFactory.AnimationProcessor.class, 
-				  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,  
+	@TagAttribute(value="animation", processor=HasAttentionAnimationFactory.AnimationProcessor.class, 
+				  type=HasAttentionAnimationFactory.AttentionAnimations.class, widgetType=AttentionAnimation.class,  
 				  description="The animation to be aplied when the dialog is opened or closed.")
 })
-public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
+public interface HasAttentionAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {
-	public static enum DialogAnimations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
-		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
-		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll, zoom}
+	public static enum AttentionAnimations{bounce, flash, pulse, rubberBand, shake, swing, tada, wobble}
 	
 	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
     {
@@ -50,7 +48,7 @@ public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> exten
 		@Override
         public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
         {
-	        out.println(context.getWidget()+".setAnimation("+InOutAnimation.class.getCanonicalName()+"."+attributeValue+");");
+	        out.println(context.getWidget()+".setAnimation("+AttentionAnimation.class.getCanonicalName()+"."+attributeValue+");");
         }
     }
 }

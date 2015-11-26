@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
@@ -48,11 +49,30 @@ public class SequentialPager<T> extends NavigationButtonsPager<T>
 		this.panel.add(infoPanel);
 		this.panel.add(nextButton);		
 		
-		this.panel.setStyleName(DEFAULT_STYLE_NAME);
-		
 		initWidget(this.panel);		
+
+		setStyleName(DEFAULT_PAGER_STYLE_NAME);
+		this.panel.addStyleName(DEFAULT_STYLE_NAME);
 	}
 
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesSequentialPager());
+	}
+	
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesSequentialPager());
+		}
+	}
+	
 	/**
 	 * @see org.cruxframework.crux.widgets.client.paging.AbstractPager#hideLoading()
 	 */

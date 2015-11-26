@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -48,10 +49,31 @@ public class PredictivePager<T> extends NavigationButtonsPager<T>
 		this.panel.add(createNextButton());
 		this.panel.add(createLastPageButton());	
 		
-		this.panel.setStyleName(DEFAULT_STYLE_NAME);
 		initWidget(this.panel);		
+		
+		setStyleName(DEFAULT_PAGER_STYLE_NAME);
+		this.panel.addStyleName(DEFAULT_STYLE_NAME);
 	}
 
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPredictivePager());
+	}
+	
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesPredictivePager());
+		}
+	}
+	
+	
 	@Override
 	protected void hideLoading()
 	{

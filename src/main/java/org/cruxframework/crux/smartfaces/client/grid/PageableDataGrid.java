@@ -31,6 +31,7 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
@@ -62,6 +63,11 @@ import com.google.gwt.user.client.ui.RadioButton;
  */
 public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> implements HasEnabled, HasAnimation
 {
+	private static final String SYTLE_DATAGRID_HEADER_WRAPPER = "headerWrapper";
+	private static final String SYTLE_DATAGRID_ARROW_UP = "arrowUp";
+	private static final String SYTLE_DATAGRID_ARROW_DOWN = "arrowDown";
+	private static final String SYTLE_DATAGRID_ARROW_UP_DOWN = "arrowUpDown";
+	private static final String SYTLE_DATAGRID_ARROW = "arrow";
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 	private static int nextTableId = 0;
 	private static final String SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
@@ -187,7 +193,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	/**
 	 * @return all the table rows. 
 	 */
-	public Array<Row<T>> getCurrentPageRows()
+	Array<Row<T>> getCurrentPageRows()
 	{
 		return rows;
 	}
@@ -507,6 +513,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		SelectableFlowPanel headerWrapper = new SelectableFlowPanel();
 
+		headerWrapper.setStyleName(SYTLE_DATAGRID_HEADER_WRAPPER);
+		headerWrapper.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDataGridHeaderWrapper());
+		
 		//Adding the header widget
 		if(column.headerWidget != null)
 		{
@@ -539,7 +548,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			column.render(false);
 
 			//animation
-			if(row.isEditing() && isAnimationEnabled())
+			if(row.editing && isAnimationEnabled())
 			{
 				getRowAnimation().animateEntrance(row.getDivRow(), null);
 			}
@@ -750,11 +759,12 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				}
 			});
 
-			columns.add(new Column<T, CheckBox>(this, new GridDataFactory<T, CheckBox>()
+			columns.add(new Column<T, CheckBox>(this, new GridDataFactory<T>()
 			{
 				@Override
-				public CheckBox createData(T value, final Row<T> row)
+				public CheckBox createData(T value, final int rowIndex)
 				{
+					final Row<T> row = rows.get(rowIndex);
 					final CheckBox checkBox = new CheckBox();
 					row.checkbox = checkBox;
 					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
@@ -774,14 +784,15 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 		else if(rowSelectStrategy.equals(RowSelectStrategy.radioButton))
 		{
-			columns.add(new Column<T, RadioButton>(this, new GridDataFactory<T, RadioButton>()
+			columns.add(new Column<T, RadioButton>(this, new GridDataFactory<T>()
 			{
 				@Override
-				public RadioButton createData(T value, final Row<T> row)
+				public RadioButton createData(T value, final int rowIndex)
 				{
+					final Row<T> row = rows.get(rowIndex);
 					final RadioButton radioButton = new RadioButton(tableId);
 					row.radioButton = radioButton;
-					boolean selected = getDataProvider().isSelected(row.dataProviderRowIndex);
+					boolean selected = getDataProvider().isSelected(rows.get(rowIndex).dataProviderRowIndex);
 					radioButton.setValue(selected);
 					radioButton.addClickHandler(new ClickHandler()
 					{
@@ -840,7 +851,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			if(!column.sorted)
 			{
-				arrow.setStyleName("arrowUpDown");
+				arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+				arrow.addStyleName(SYTLE_DATAGRID_ARROW_UP_DOWN);
 			}
 			else
 			{
@@ -849,11 +861,13 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				{
 					if(column.columnComparator.multiplier > 0)
 					{
-						arrow.setStyleName("arrowDown");
+						arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+						arrow.addStyleName(SYTLE_DATAGRID_ARROW_DOWN);
 					}
 					else
 					{
-						arrow.setStyleName("arrowUp");
+						arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+						arrow.addStyleName(SYTLE_DATAGRID_ARROW_UP);
 					}
 				}
 			}
