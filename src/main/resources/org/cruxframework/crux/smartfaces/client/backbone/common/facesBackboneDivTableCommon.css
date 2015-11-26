@@ -1,3 +1,8 @@
+/*.faces-DivTable 
+ {
+ 	display: inline-block;
+ } 
+*/
 .facesDivTableContainer 
 {
 	flex-direction: column;
