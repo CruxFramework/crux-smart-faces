@@ -28,6 +28,7 @@ import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -41,6 +42,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -55,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @param <T>
  */
 public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<T>, 
-								HasAllFocusHandlers, HasEnabled, HasSelectHandlers
+								HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
 	
@@ -64,9 +66,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static final String COMBO_BOX_POPUP = "popup";
 	private static final String COMBO_BOX_TEXT = "text";
 	private static final String DEFAULT_WIDTH = "150px";
-
 	protected OptionsRenderer<V, T> optionsRenderer = null;
-	
 	private final SelectableFlowPanel bodyPanel = new SelectableFlowPanel();
 	private final Button button = new Button();
 	private ComboBoxOptionList<V, T> optionsList;
@@ -550,5 +550,31 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static interface SelectComboItemHandler<V> extends EventHandler
 	{
 		void onSelectItem(SelectComboItemEvent<V> event);
+	}
+	
+	/**
+	 * return true if the animation is enabled.
+	 */
+	public boolean isAnimationEnabled()
+	{
+		return popup.isAnimationEnabled();
+	}
+
+    /**
+    * Enable or disable animations.
+    *
+    * @param animationEnabled true to enable, false to disable
+    */
+	public void setAnimationEnabled(boolean animationEnabled)
+    {
+		popup.setAnimationEnabled(animationEnabled);
+    }
+	
+	/**
+	 * @param animation
+	 */
+	public void setAnimation(InOutAnimation animation)
+	{
+		popup.setAnimation(animation);
 	}
 }
