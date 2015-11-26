@@ -35,6 +35,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.list.AbstractComboBox.OptionsRenderer;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 import org.json.JSONObject;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -52,7 +53,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 @TagAttributes({
 	@TagAttribute("listHeight")
 })
-public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements HasBindPathFactory<WidgetCreatorContext>
+public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<WidgetCreatorContext> implements 
+	HasBindPathFactory<WidgetCreatorContext>, HasInOutAnimationFactory<WidgetCreatorContext>
 {
 	@Override
 	public WidgetCreatorContext instantiateContext()

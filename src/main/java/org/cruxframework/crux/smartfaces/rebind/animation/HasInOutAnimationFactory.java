@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.rebind.dialog;
+package org.cruxframework.crux.smartfaces.rebind.animation;
 
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
@@ -25,18 +25,18 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 /**
- * A helper class to help on HasDialogAnimation widgets creation, based on crux pages metadata.
+ * A helper class to help on HasInOutAnimation widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="animation", processor=HasDialogAnimationFactory.AnimationProcessor.class, 
-				  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,  
+	@TagAttribute(value="animation", processor=HasInOutAnimationFactory.AnimationProcessor.class, 
+				  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,  
 				  description="The animation to be aplied when the dialog is opened or closed.")
 })
-public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
+public interface HasInOutAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {
-	public static enum DialogAnimations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
+	public static enum InOutAnimations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
 		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, slideDown, slideLeft, slideRight, roll, zoom}
 	

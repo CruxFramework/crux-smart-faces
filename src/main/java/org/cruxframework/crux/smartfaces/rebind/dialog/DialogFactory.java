@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.rebind.dialog;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 
 /**
  * A helper class to help on HasDialogAnimation widgets creation, based on crux pages metadata.
@@ -33,6 +34,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 	@TagAttribute(value="glassStyleName", supportsResources=true, 
 				  description="the class name for the element placed above the dialog element")
 })
-public interface DialogFactory<C extends WidgetCreatorContext> extends HasDialogAnimationFactory<C>
+public interface DialogFactory<C extends WidgetCreatorContext> extends HasInOutAnimationFactory<C>
 {
 }
