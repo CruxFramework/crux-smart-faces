@@ -263,7 +263,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 		}
 	}
 	
-	@TagConstraints(tagName="itemHtml", description="Create an item with a HTML body.")
+	@TagConstraints(tagName="itemHtml", description="Create an item with an HTML body.")
 	@TagChildren({
 		@TagChild(HTMLProcessor.class)
 	})
