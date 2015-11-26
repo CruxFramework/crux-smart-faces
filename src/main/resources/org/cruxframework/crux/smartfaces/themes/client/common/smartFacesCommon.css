@@ -711,19 +711,11 @@ body
     background: #4496c6 -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.8)), to(rgba(255, 255, 255, 0)));
 }
 
-.faces-DivTable .headerWrapper 
-{
-    display: inline-block;
-    width: 100%;
-    position: relative;
-}
-
 .faces-DivTable .headerWrapper
 {
     padding-right: 20px;
     float: left;
     text-align: center;
-    width: 100%;
 }
 
 .faces-DivTable .headerWrapper > .arrow 

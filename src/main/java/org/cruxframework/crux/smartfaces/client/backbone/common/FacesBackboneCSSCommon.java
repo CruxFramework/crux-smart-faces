@@ -68,5 +68,11 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String facesUnselectable();
 	
 	//Pager
-	String facesScrollablePager();	
+	String facesScrollablePager();
+	String facesSequentialPager();
+	String facesBulletsPager();
+	String facesPredictivePager();
+	
+	//DataGrid
+	String facesDataGridHeaderWrapper();
 }

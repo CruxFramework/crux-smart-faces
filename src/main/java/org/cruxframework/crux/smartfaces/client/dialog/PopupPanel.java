@@ -1068,10 +1068,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		// Create handlers if showing.
 		if (isShowing())
 		{
-			if (modal)
-			{
-				nativePreviewHandlerRegistration = Event.addNativePreviewHandler(this);
-			}
+			nativePreviewHandlerRegistration = Event.addNativePreviewHandler(this);
 			historyHandlerRegistration = History.addValueChangeHandler(new ValueChangeHandler<String>()
 			{
 				public void onValueChange(ValueChangeEvent<String> event)

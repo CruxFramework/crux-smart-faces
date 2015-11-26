@@ -31,6 +31,7 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
@@ -513,6 +514,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		SelectableFlowPanel headerWrapper = new SelectableFlowPanel();
 
 		headerWrapper.setStyleName(SYTLE_DATAGRID_HEADER_WRAPPER);
+		headerWrapper.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDataGridHeaderWrapper());
 		
 		//Adding the header widget
 		if(column.headerWidget != null)

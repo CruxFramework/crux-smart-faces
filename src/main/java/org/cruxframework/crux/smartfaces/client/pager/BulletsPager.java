@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.shared.Experimental;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
@@ -77,6 +78,24 @@ public class BulletsPager<T> extends AbstractPager<T>
 		
 		setStyleName(DEFAULT_PAGER_STYLE_NAME);
 		addStyleName(DEFAULT_STYLE_NAME);
+	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBulletsPager());
+	}
+	
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    super.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBulletsPager());
+		}
 	}
 	
 	/**

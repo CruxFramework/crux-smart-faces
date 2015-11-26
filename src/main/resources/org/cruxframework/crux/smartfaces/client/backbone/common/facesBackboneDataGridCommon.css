@@ -1,4 +1,7 @@
-.faces-DivTable 
+.facesDataGridHeaderWrapper
 {
-	display: flex;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+
 }

@@ -1,5 +1,3 @@
-@external faces-*;
-
 .facesScrollablePager
 {
 	height:literal("calc(100% - 1px)");
