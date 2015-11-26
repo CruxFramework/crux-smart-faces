@@ -45,7 +45,7 @@ import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.dialog.HasDialogAnimationFactory;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDisposalFactory.DisposalLayoutContext;
 
 
@@ -62,7 +62,7 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDis
 @TagChildren({
 	@TagChild(TopMenuDisposalFactory.DisposalChildrenProcessor.class)
 })
-public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> implements HasDialogAnimationFactory<WidgetCreatorContext>
+public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> implements HasInOutAnimationFactory<WidgetCreatorContext>
 {
 	@Override
 	public DisposalLayoutContext instantiateContext()

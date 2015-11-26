@@ -6,6 +6,10 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconClose svgIconClose;
 @url svgIconCloseWhite svgIconCloseWhite;
 @url svgIconArrow svgIconArrow;
+@url svgIconPaginatorFirst svgIconPaginatorFirst;
+@url svgIconPaginatorLast svgIconPaginatorLast;
+@url svgIconPaginatorNext svgIconPaginatorNext;
+@url svgIconPaginatorPrev svgIconPaginatorPrev;
 
 *:focus, *:active, *:hover	
 {
@@ -697,28 +701,50 @@ body
 }
 
 /******************************************************************************
+	(TODO: some of this code should be on backbone)
     DivTable
 *******************************************************************************/
 
-.faces-DivTable 
+.faces-DivTable .headerRow,
+.faces-DivTable .headerRow .rowOdd
 {
-	display: inline-block;
+    background: #4496c6 -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.8)), to(rgba(255, 255, 255, 0)));
+}
+
+.faces-DivTable .headerWrapper 
+{
+    display: inline-block;
+    width: 100%;
+    position: relative;
+}
+
+.faces-DivTable .headerWrapper
+{
+    padding-right: 20px;
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+
+.faces-DivTable .headerWrapper > .arrow 
+{
+	padding-right: 0px;
+	width: 10px;
+	float: none;
+    position: absolute;
+    right: 6px;
+    top: 0;
 }
 
 .faces-DivTable .arrowUp,
 .faces-DivTable .arrowDown,
 .faces-DivTable .arrowUpDown
 {
-	background:svgIconArrow transparent no-repeat center center;
-	border:none;
-	background-size:100% 100%, 70% auto;
-	color:rgba(0,0,0,0);
-	padding:5px;
-}
-
-.faces-DivTable .columnGroupHeader
-{
-	margin: 0 auto;
+	background: svgIconArrow transparent no-repeat center center;
+	border: none;
+	background-size: 100% 100%, 70% auto;
+	color: rgba(0,0,0,0);
+	padding: 5px;
 }
 
 .faces-DivTable .arrowUp
@@ -742,21 +768,40 @@ body
 	 line-height: 25px;
 }
 
-.faces-DivTable .headerRow
+.faces-DivTable .columnGroupHeader
 {
-	background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+	margin: 0 auto;
 }
 
-.faces-DivTable .header 
+.faces-DivTable .headerWrapper > .arrowUp,
+.faces-DivTable .headerWrapper > .arrowDown
 {
-	border: solid 1px black;
+    margin-top: 5px;
+}
+
+.faces-DivTable .headerWrapper .arrowUpDown 
+{
+    height: auto;
+    margin-top: 12px;
 }
 
 .faces-DivTable .column
 {
 	width: 100px;
-	border: solid 1px #EEEEEE;
-	vertical-align: middle;
+}
+
+.faces-DivTable .column,
+.faces-DivTable .columnGroup .headerRow
+{
+    border: solid 1px #d4d4d4;
+    vertical-align: middle;
+    border-width: 1px 1px 0 0;
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\), .faces-DivTable .row--selected:not\(rowEven\) 
+{
+    background: #8ABDDB;
+    box-sizing: border-box;
 }
 
 .faces-DivTable .row--selected:not\(\rowOdd\), .faces-DivTable .row--selected:not\(\rowEven\)
@@ -770,12 +815,211 @@ body
 }
 
 /******************************************************************************
+	(TODO: some of this code should be on backbone)
     DataGrid
 *******************************************************************************/
 
 .faces-Datagrid
 {
 	overflow: auto;
+}
+
+.faces-Datagrid .faces-DivTable .row .column
+{
+    padding: 4px 0;
+}
+
+.faces-Datagrid .faces-DivTable .row .faces-Button
+{
+    padding: 0 8px;
+}
+
+.faces-Datagrid > .faces-DivTable 
+{
+   border: 1px solid #d4d4d4;
+}
+
+.faces-Datagrid .faces-DivTable .row .column
+{
+    padding: 4px 0;
+}
+
+.faces-Datagrid .faces-DivTable .row .faces-Button
+{
+    padding: 0 8px;
+}
+
+.faces-Datagrid .faces-DivTable .row .column .gwt-TextBox
+{
+	margin-bottom: 0;
+}
+
+/**********************************************************************
+* (TODO: some of this code should be on backbone)
+* Pagers
+* Types: commonPagerWrapper / swapPagerWrapper / scrollablePagerWrapper
+***********************************************************************/
+
+/* Buttons */
+
+.faces-Pager .faces-Button,
+.faces-Pager .backPanel .faces-Button,
+.faces-Pager .nextPanel .faces-Button
+{
+    display:block;
+    padding: 12px;
+    border: none;
+}
+
+.faces-Pager .previousButton,
+.faces-Pager .backPanel .faces-Button
+{
+    background: svgIconPaginatorPrev no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .previousButton:hover,
+.faces-Pager .backPanel .faces-Button:hover
+{
+    background: #efefef svgIconPaginatorPrev no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .nextButton,
+.faces-Pager .nextPanel .faces-Button
+{
+    background: svgIconPaginatorNext no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .nextButton:hover,
+.faces-Pager .nextPanel .faces-Button:hover
+{
+    background: #efefef svgIconPaginatorNext no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .firstButton
+{
+    background: svgIconPaginatorFirst no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .lastButton
+{
+    background: svgIconPaginatorLast no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .firstButton:hover
+{
+	background: #efefef svgIconPaginatorFirst no-repeat center;
+    background-size: 10px auto;
+}
+
+.faces-Pager .lastButton:hover
+{
+    background: #efefef svgIconPaginatorLast no-repeat center;
+    background-size: 10px auto;
+}
+
+/* Float Left items */
+.faces-SequentialPager > *,
+.faces-PredictivePager > *
+{
+    display: block;
+    float: left;
+}
+
+/***********************************************************************
+* Style for SequentialPager
+***********************************************************************/
+
+.faces-SequentialPager
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px auto;
+}
+
+.faces-SequentialPager > div
+{
+    display: block;
+    float: left;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-width: 0 1px;
+    width: 45px;
+    text-align: center;
+}
+
+/******************************************
+* Style for BulletsPager
+*******************************************/
+.faces-BulletsPager 
+{
+    display: inline-block;
+}
+
+.faces-BulletsPager .bullet
+{
+    width:10px;
+    height:10px;
+    margin: 2px;
+    border-radius:50px;
+    line-height:10px;
+    float: left;
+    background: #fefefe;
+    border: 1px solid #ccc;    
+}
+
+.faces-BulletsPager .bullet:hover
+{
+    background: #ccc;
+}
+
+.faces-BulletsPager .bullet--active
+{
+    background: #4496c6;
+    border-color: #397EA7;
+}
+
+/******************************************
+* Style for PredictivePager
+*******************************************/
+
+.faces-PredictivePager
+{
+    border: 1px solid #ccc !important;
+    display:inline-block;
+    vertical-align: middle;
+}
+
+.faces-PredictivePager > *
+{
+    border-right: 1px solid #ccc !important;
+}
+
+.faces-PredictivePager > *:last-child
+{
+    border-right: 0 !important;
+}
+
+.faces-PredictivePager .gwt-ListBox
+{
+    margin: 0;
+    padding: 3px;
+}
+
+/******************************************
+* Style for SwapPager
+*******************************************/
+
+.swapPagerWrapper .backPanel .faces-Button,
+.swapPagerWrapper .nextPanel .faces-Button 
+{
+    transform: rotate(90deg);
+    max-width: 24px;
 }
 
 /******************************************************************************
@@ -812,7 +1056,7 @@ a.faces-Button:hover
 
 .faces-Button:hover
 {
-	border-color:#084471;
+	background: #6097B7;
 }
 
 .faces-Button:focus

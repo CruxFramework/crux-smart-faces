@@ -60,7 +60,7 @@ import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.dialog.HasDialogAnimationFactory;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,10 +86,10 @@ description="A data grid that use a DataProvider to provide data and a gridDataF
 @TagAttributes({
 	@TagAttribute(value="detailPopupHeader", type=String.class, supportsI18N=true, supportsResources=true, supportsDataBinding=true),
 	@TagAttribute(value="dialogAnimation", processor=DataGridFactory.DialogAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
+	  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the dialog is opened or closed."),
 	@TagAttribute(value="rowAnimation", processor=DataGridFactory.RowAnimationProcessor.class, 
-	  type=HasDialogAnimationFactory.DialogAnimations.class, widgetType=InOutAnimation.class,
+	  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,
 	  description="The animation to be aplied when the row is opened or closed for edit mode."),
 	@TagAttribute(value="rowSelectStrategy",  type=RowSelectStrategy.class, 
 	  description="The strategy used to select rows for this grid."),

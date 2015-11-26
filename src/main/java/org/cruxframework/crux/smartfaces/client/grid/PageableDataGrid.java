@@ -62,6 +62,11 @@ import com.google.gwt.user.client.ui.RadioButton;
  */
 public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> implements HasEnabled, HasAnimation
 {
+	private static final String SYTLE_DATAGRID_HEADER_WRAPPER = "headerWrapper";
+	private static final String SYTLE_DATAGRID_ARROW_UP = "arrowUp";
+	private static final String SYTLE_DATAGRID_ARROW_DOWN = "arrowDown";
+	private static final String SYTLE_DATAGRID_ARROW_UP_DOWN = "arrowUpDown";
+	private static final String SYTLE_DATAGRID_ARROW = "arrow";
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 	private static int nextTableId = 0;
 	private static final String SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
@@ -507,6 +512,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		SelectableFlowPanel headerWrapper = new SelectableFlowPanel();
 
+		headerWrapper.setStyleName(SYTLE_DATAGRID_HEADER_WRAPPER);
+		
 		//Adding the header widget
 		if(column.headerWidget != null)
 		{
@@ -842,7 +849,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			if(!column.sorted)
 			{
-				arrow.setStyleName("arrowUpDown");
+				arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+				arrow.addStyleName(SYTLE_DATAGRID_ARROW_UP_DOWN);
 			}
 			else
 			{
@@ -851,11 +859,13 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				{
 					if(column.columnComparator.multiplier > 0)
 					{
-						arrow.setStyleName("arrowDown");
+						arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+						arrow.addStyleName(SYTLE_DATAGRID_ARROW_DOWN);
 					}
 					else
 					{
-						arrow.setStyleName("arrowUp");
+						arrow.setStyleName(SYTLE_DATAGRID_ARROW);
+						arrow.addStyleName(SYTLE_DATAGRID_ARROW_UP);
 					}
 				}
 			}
