@@ -53,7 +53,7 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String facesBackboneSwapPanel();
 	
 	//Combobox
-	String facesBackboneCombobox();
+	String facesBackboneComboBox();
 	String facesBackboneComboboxText();
 	
 	//ListBox

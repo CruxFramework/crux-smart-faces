@@ -63,9 +63,8 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	
 	private static final String COMBO_BOX_BUTTON = "button";
 	private static final String COMBO_BOX_COMBO_ITEM_LIST = "itemList";
-	private static final String COMBO_BOX_POPUP = "popup";
+	private static final String COMBO_BOX_POPUP = "comboBoxPopup";
 	private static final String COMBO_BOX_TEXT = "text";
-	private static final String DEFAULT_WIDTH = "150px";
 	protected OptionsRenderer<V, T> optionsRenderer = null;
 	private final SelectableFlowPanel bodyPanel = new SelectableFlowPanel();
 	private final Button button = new Button();
@@ -304,7 +303,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		this.optionsRenderer = optionsRenderer;
 		bodyPanel.add(textBox);
-		bodyPanel.setWidth(DEFAULT_WIDTH);
 		bodyPanel.add(button);
 		bodyPanel.addSelectHandler(new SelectHandler()
 		{
@@ -322,7 +320,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 				}
 			}
 		});
-		
 		textBox.setStyleName(COMBO_BOX_TEXT);
 		textBox.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneComboboxText());
 		textBox.setReadOnly(true);

@@ -5,11 +5,14 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @url svgIconClose svgIconClose;
 @url svgIconCloseWhite svgIconCloseWhite;
-@url svgIconArrow svgIconArrow;
+@url svgIconArrowDownWhite svgIconArrowDownWhite;
+@url svgIconArrowUpWhite svgIconArrowUpWhite;
+@url svgIconArrowUpDownWhite svgIconArrowUpDownWhite;
 @url svgIconPaginatorFirst svgIconPaginatorFirst;
 @url svgIconPaginatorLast svgIconPaginatorLast;
 @url svgIconPaginatorNext svgIconPaginatorNext;
 @url svgIconPaginatorPrev svgIconPaginatorPrev;
+@url svgIconArrowDown svgIconArrowDown;
 
 *:focus, *:active, *:hover	
 {
@@ -732,28 +735,29 @@ body
 .faces-DivTable .arrowDown,
 .faces-DivTable .arrowUpDown
 {
-	background: svgIconArrow transparent no-repeat center center;
 	border: none;
-	background-size: 100% 100%, 70% auto;
 	color: rgba(0,0,0,0);
 	padding: 5px;
 }
 
 .faces-DivTable .arrowUp
 {
-	-webkit-transform: rotate(90deg);	
+	background: svgIconArrowUpWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
 
 .faces-DivTable .arrowDown
 {
-	-webkit-transform: rotate(-90deg);
+	background: svgIconArrowDownWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
 
 .faces-DivTable .arrowUpDown
 {
-	-webkit-transform: rotate(-90deg);
-	-webkit-box-reflect: right;
+	background: svgIconArrowUpDownWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
+
 
 .faces-DivTable .row 
 {
@@ -766,15 +770,10 @@ body
 }
 
 .faces-DivTable .headerWrapper > .arrowUp,
-.faces-DivTable .headerWrapper > .arrowDown
+.faces-DivTable .headerWrapper > .arrowDown,
+.faces-DivTable .headerWrapper .arrowUpDown
 {
-    margin-top: 5px;
-}
-
-.faces-DivTable .headerWrapper .arrowUpDown 
-{
-    height: auto;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .faces-DivTable .column
@@ -785,7 +784,7 @@ body
 .faces-DivTable .column,
 .faces-DivTable .columnGroup .headerRow
 {
-    border: solid 1px #d4d4d4;
+    border: 1px solid #A1B9CC;
     vertical-align: middle;
     border-width: 1px 1px 0 0;
 }
@@ -828,7 +827,8 @@ body
 
 .faces-Datagrid > .faces-DivTable 
 {
-   border: 1px solid #d4d4d4;
+   border: 1px solid #A1B9CC;
+    border-width: 0 1px 1px 1px;
 }
 
 .faces-Datagrid .faces-DivTable .row .column
@@ -844,6 +844,7 @@ body
 .faces-Datagrid .faces-DivTable .row .column .gwt-TextBox
 {
 	margin-bottom: 0;
+	padding: 4px 6px;
 }
 
 /**********************************************************************
@@ -1001,6 +1002,7 @@ body
 {
     margin: 0;
     padding: 3px;
+    height: 25px;
 }
 
 /******************************************
@@ -1099,7 +1101,7 @@ td > div > .faces--group
 
 .faces-Button:disabled
 {
-	background: #e5e5e5;
+	background-color: #e5e5e5;
 	border: 1px solid #a5a5a5;
 	color: #9c9c9c;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -1390,6 +1392,12 @@ td > div > .faces--group
 .faces-ComboBox .text
 {
 	width: 200px;
+}
+
+.faces-ComboBox .button
+{
+	background: rgb(221, 221, 221) svgIconArrowDown no-repeat center;
+	background-size: auto 80%;
 }
 
 /* ------------ SwapPanel ---------------- */
