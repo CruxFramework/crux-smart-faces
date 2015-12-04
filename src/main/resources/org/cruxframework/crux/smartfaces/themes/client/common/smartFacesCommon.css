@@ -1003,17 +1003,6 @@ body
 }
 
 /***********************************************************************
-* Style for WidgetList
-***********************************************************************/
-
-.faces-WidgetList .faces-SwapPanel .line > *
-{
-	display: table-cell;
-	vertical-align: middle;
-	margin: 6px 8px;
-}
-
-/***********************************************************************
 * Style for Breadcrumb
 ***********************************************************************/
 
@@ -1572,7 +1561,6 @@ td > div > .faces--group
 /* ------------ Combobox ---------------- */
 .faces-ComboBox
 {
-  width: auto !important;
   border: 1px solid #ccc;
 }
 
@@ -1586,11 +1574,6 @@ td > div > .faces--group
 	background-color: #4496c6;
 	color: #fff;
 	cursor: pointer;
-}
-
-.faces-ComboBox .text
-{
-	width: 200px;
 }
 
 .faces-ComboBox .button
@@ -1610,21 +1593,6 @@ td > div > .faces--group
 .faces-ComboBox .button
 {
   width: 25px;
-}
-
-/* Class for the combo box popup */
-.comboBoxPopup .faces-Pager .page
-{
-  padding: 6px 4px;
-  max-width: 100%;
-  display: table;
-}
-
-/* List items */
-.comboBoxPopup .itemList .faces-Pager .page .optionPanel
-{
-  padding: 4px 2px;
-  display: table-row;
 }
 
 /* ------------ SwapPanel ---------------- */
