@@ -514,7 +514,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		SelectableFlowPanel headerWrapper = new SelectableFlowPanel();
 
 		headerWrapper.setStyleName(SYTLE_DATAGRID_HEADER_WRAPPER);
-		headerWrapper.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDataGridHeaderWrapper());
+		headerWrapper.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneDataGridHeaderWrapper());
 		
 		//Adding the header widget
 		if(column.headerWidget != null)

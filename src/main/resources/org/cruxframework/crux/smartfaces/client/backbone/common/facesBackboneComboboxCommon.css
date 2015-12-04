@@ -1,13 +1,11 @@
-@external button;
-.facesBackboneCombobox{}
-
-.facesBackboneCombobox .button
-{
-	height: 23px;
-	width: 23px;
+.facesBackboneComboBox {
+	
 }
 
-.facesBackboneComboboxText
-{
+.facesBackboneComboboxText {
 	flex: 1;
+}
+
+.facesBackboneComboBoxPopup {
+	position: absolute !important;
 }

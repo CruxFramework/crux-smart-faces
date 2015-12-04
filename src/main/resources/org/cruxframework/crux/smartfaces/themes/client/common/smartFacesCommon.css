@@ -5,11 +5,14 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @url svgIconClose svgIconClose;
 @url svgIconCloseWhite svgIconCloseWhite;
-@url svgIconArrow svgIconArrow;
+@url svgIconArrowDownWhite svgIconArrowDownWhite;
+@url svgIconArrowUpWhite svgIconArrowUpWhite;
+@url svgIconArrowUpDownWhite svgIconArrowUpDownWhite;
 @url svgIconPaginatorFirst svgIconPaginatorFirst;
 @url svgIconPaginatorLast svgIconPaginatorLast;
 @url svgIconPaginatorNext svgIconPaginatorNext;
 @url svgIconPaginatorPrev svgIconPaginatorPrev;
+@url svgIconArrowDown svgIconArrowDown;
 
 *:focus, *:active, *:hover	
 {
@@ -732,28 +735,29 @@ body
 .faces-DivTable .arrowDown,
 .faces-DivTable .arrowUpDown
 {
-	background: svgIconArrow transparent no-repeat center center;
 	border: none;
-	background-size: 100% 100%, 70% auto;
 	color: rgba(0,0,0,0);
 	padding: 5px;
 }
 
 .faces-DivTable .arrowUp
 {
-	-webkit-transform: rotate(90deg);	
+	background: svgIconArrowUpWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
 
 .faces-DivTable .arrowDown
 {
-	-webkit-transform: rotate(-90deg);
+	background: svgIconArrowDownWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
 
 .faces-DivTable .arrowUpDown
 {
-	-webkit-transform: rotate(-90deg);
-	-webkit-box-reflect: right;
+	background: svgIconArrowUpDownWhite transparent no-repeat center center;
+	background-size: 100% auto;
 }
+
 
 .faces-DivTable .row 
 {
@@ -766,15 +770,10 @@ body
 }
 
 .faces-DivTable .headerWrapper > .arrowUp,
-.faces-DivTable .headerWrapper > .arrowDown
+.faces-DivTable .headerWrapper > .arrowDown,
+.faces-DivTable .headerWrapper .arrowUpDown
 {
-    margin-top: 5px;
-}
-
-.faces-DivTable .headerWrapper .arrowUpDown 
-{
-    height: auto;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .faces-DivTable .column
@@ -785,7 +784,7 @@ body
 .faces-DivTable .column,
 .faces-DivTable .columnGroup .headerRow
 {
-    border: solid 1px #d4d4d4;
+    border: 1px solid #A1B9CC;
     vertical-align: middle;
     border-width: 1px 1px 0 0;
 }
@@ -807,14 +806,8 @@ body
 }
 
 /******************************************************************************
-	(TODO: some of this code should be on backbone)
     DataGrid
 *******************************************************************************/
-
-.faces-Datagrid
-{
-	overflow: auto;
-}
 
 .faces-Datagrid .faces-DivTable .row .column
 {
@@ -828,7 +821,8 @@ body
 
 .faces-Datagrid > .faces-DivTable 
 {
-   border: 1px solid #d4d4d4;
+   border: 1px solid #A1B9CC;
+   border-width: 0 1px 1px 1px;
 }
 
 .faces-Datagrid .faces-DivTable .row .column
@@ -844,10 +838,62 @@ body
 .faces-Datagrid .faces-DivTable .row .column .gwt-TextBox
 {
 	margin-bottom: 0;
+	padding: 4px 6px;
+}
+
+/******************************************************************************
+    Div Table
+*******************************************************************************/
+
+/* Grid header */
+.faces-DivTable .headerRow, .faces-DivTable .headerRow .rowOdd
+{
+  background: #4496C6;
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\), .faces-DivTable .row--selected:not\(rowEven\)
+{
+    background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.55)), to(rgba(255, 255, 255, 0)));
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\) .column, .faces-DivTable .row--selected:not\(rowEven\) .column
+{
+  border-color: #1A6299;
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\) .faces-Label, .faces-DivTable .row--selected:not\(rowEven\) .faces-Label 
+{
+    color:#fff;
+}
+
+.faces-DivTable .headerRow .faces-Label
+{
+    color: #fff;
+}
+
+.faces-DivTable .headerRow .column
+{
+    border-color: #396986;
+}
+
+.faces-DivTable .columnGroup .headerRow
+{
+    border-color: #396986;
+}
+
+/* Grid Body */
+
+.faces-DivTable .row .column:last-child
+{
+  border-width: 1px  0 0 0;
+}
+
+.faces-DivTable .row .column .gwt-RadioButton input
+{
+    margin: 7px;
 }
 
 /**********************************************************************
-* (TODO: some of this code should be on backbone)
 * Pagers
 * Types: commonPagerWrapper / swapPagerWrapper / scrollablePagerWrapper
 ***********************************************************************/
@@ -915,6 +961,23 @@ body
     background-size: 10px auto;
 }
 
+.faces-SequentialPager 
+{
+    border: 1px solid #ccc;
+}
+
+.faces-Pager .faces-Button:disabled
+{
+  border: none; 
+}
+
+.faces-Pager .faces-Button,
+.faces-Pager .backPanel .faces-Button,
+.faces-Pager .nextPanel .faces-Button
+{
+  padding: 14px;
+}
+
 /* Float Left items */
 .faces-SequentialPager > *,
 .faces-PredictivePager > *
@@ -923,10 +986,136 @@ body
     float: left;
 }
 
+/* Border items */
+.faces-SequentialPager
+{
+    border: 1px solid #ccc;
+}
+
+.faces-SequentialPager > *
+{
+    border-right: 1px solid #ccc;
+}
+
+.faces-SequentialPager > *:hover
+{
+    background: #efefef;
+}
+
+/***********************************************************************
+* Style for Breadcrumb
+***********************************************************************/
+
+.faces-Breadcrumb {
+	margin: 0;
+	padding: 0;
+	border-radius: 3px;
+	border-width: 1px;
+	border-style: solid;
+	overflow: hidden;
+}
+
+.faces-Breadcrumb ol {
+	padding: 0;
+	list-style: none;
+	margin: 0;
+}
+
+.faces-Breadcrumb ol li {
+	display: inline-block;
+	height: 33px;
+	text-rendering: optimizeLegibility;
+	line-height: 33px;
+	font-size: 12px;
+	font-weight: 300;
+	text-decoration: none;
+	padding: 0 10px 0 20px;
+	position: relative;
+	cursor: pointer;
+	-webkit-user-select: none; /* Chrome all / Safari all */
+	-moz-user-select: none; /* Firefox all */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none; /* Likely future */
+}
+
+.faces-Breadcrumb ol li:first-child {
+	padding-left: 16px;
+}
+
+.faces-Breadcrumb ol li:last-child {
+	padding-right: 16px;
+}
+
+.faces-Breadcrumb ol li:after, .faces-Breadcrumb ol li:before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	border-top: 17px solid transparent;
+	border-bottom: 17px solid transparent;
+	/* make left half the height */
+	border-left: 10px solid transparent;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 100%;
+	z-index: 2;
+}
+
+.faces-Breadcrumb ol li:before {
+	margin-left: 1px;
+	z-index: 1;
+}
+
+.faces-Breadcrumb ol li:last-child {
+	color: #fff;
+}
+
+.faces-Breadcrumb ol li:last-child:after, .faces-Breadcrumb ol li:last-child:before
+	{
+	border: none;
+}
+
+/* LIGHT COLORS */
+.faces-Breadcrumb {
+	border-color: #9C9E9E;
+}
+
+.faces-Breadcrumb ol li {
+	color: #454545;
+	background-color: #e5e9e9;
+	text-shadow: 0 -1px rgba(255, 255, 255, .7);
+	box-shadow: inset 0 1px 0 #fff;
+}
+
+.faces-Breadcrumb ol li:after {
+	border-left-color: #e5e9e9;
+}
+
+.faces-Breadcrumb ol li:before {
+	border-left-color: #9C9E9E;
+}
+
+.faces-Breadcrumb ol li:hover {
+	background: #EDF1F1;
+}
+
+.faces-Breadcrumb ol li:hover:after {
+	border-left-color: #EDF1F1;
+}
+
+.faces-Breadcrumb ol li.item--active {
+	background-color: #d3d7d7;
+}
+
+.faces-Breadcrumb ol li.item--active:after {
+	border-left-color: #d3d7d7;
+}
+
 /***********************************************************************
 * Style for SequentialPager
 ***********************************************************************/
-
 .faces-SequentialPager
 {
     display: inline-block;
@@ -1001,6 +1190,7 @@ body
 {
     margin: 0;
     padding: 3px;
+    height: 25px;
 }
 
 /******************************************
@@ -1099,7 +1289,7 @@ td > div > .faces--group
 
 .faces-Button:disabled
 {
-	background: #e5e5e5;
+	background-color: #e5e5e5;
 	border: 1px solid #a5a5a5;
 	color: #9c9c9c;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -1369,6 +1559,10 @@ td > div > .faces--group
 }
 
 /* ------------ Combobox ---------------- */
+.faces-ComboBox
+{
+  border: 1px solid #ccc;
+}
 
 .faces-ComboBox .optionPanel
 {
@@ -1382,14 +1576,23 @@ td > div > .faces--group
 	cursor: pointer;
 }
 
-.itemList
+.faces-ComboBox .button
 {
-	
+	background: rgb(221, 221, 221) svgIconArrowDown no-repeat center;
+	background-size: auto 80%;
 }
 
-.faces-ComboBox .text
+/* Class for the combo box input */
+.faces-ComboBox .text,
+.faces-ComboBox .button
 {
-	width: 200px;
+  padding: 4px 6px;
+  border: none;
+}
+
+.faces-ComboBox .button
+{
+  width: 25px;
 }
 
 /* ------------ SwapPanel ---------------- */

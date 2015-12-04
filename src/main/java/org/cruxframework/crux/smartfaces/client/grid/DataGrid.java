@@ -47,6 +47,23 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
 	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneDataGrid());
+	}
+
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneDataGrid());
+		}
+	}
 
 	/**
 	 * Put all rolls in the edition mode.

@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.breadcrumb;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
@@ -191,10 +192,19 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 						EscapeUtils.quote(context.itemName) + ");");
 			
 			String viewName = context.readChildProperty("viewName");
+			
 			if (viewName != null && viewName.length() > 0)
 			{
 				String viewId = context.readChildProperty("viewId", viewName);
 				out.println(context.itemVariable + ".setView(" + EscapeUtils.quote(viewName) + ", " + EscapeUtils.quote(viewId) + ");");
+			}
+			else
+			{
+				String viewId = context.readChildProperty("viewId");
+				if(!StringUtils.isEmpty(viewId))
+				{
+					out.println(context.itemVariable + ".setView(" + EscapeUtils.quote(viewId) + ");");
+				}
 			}
 
 			boolean enabled = context.readBooleanChildProperty("enabled", true);

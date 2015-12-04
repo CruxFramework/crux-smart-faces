@@ -34,6 +34,7 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneDataGridCommon.css",
 		"facesBackboneSideMenuDisposalCommon.css",
 		"facesBackboneTopMenuDisposalCommon.css",
+		"facesBackboneCarouselCommon.css",
 		"facesBackboneSwapPanelCommon.css",
 		"facesBackboneComboboxCommon.css",
 		"facesBackboneListboxCommon.css",
@@ -41,6 +42,7 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneScrollablePagerCommon.css", 
 		"facesBackboneSequentialPagerCommon.css", 
 		"facesBackboneBulletsPagerCommon.css",
+		"facesBackboneWidgetListCommon.css",
 		"facesBackbonePredictivePagerCommon.css"
 		})
 	FacesBackboneCSSCommon css();

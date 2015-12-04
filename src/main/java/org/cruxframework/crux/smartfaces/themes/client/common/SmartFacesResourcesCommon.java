@@ -44,4 +44,17 @@ public interface SmartFacesResourcesCommon extends ClientBundle
 	
 	@Source("svg-icon-paginator-prev.svg")
 	DataResource svgIconPaginatorPrev();
+	
+	@Source("svg-icon-arrow-down.svg")
+	DataResource svgIconArrowDown();
+	
+	@Source("svg-icon-arrow-up-down-white.svg")
+	DataResource svgIconArrowUpDownWhite();
+	
+	@Source("svg-icon-arrow-up-white.svg")
+	DataResource svgIconArrowUpWhite();
+	
+	@Source("svg-icon-arrow-down-white.svg")
+	DataResource svgIconArrowDownWhite();
+	
 }
