@@ -331,13 +331,14 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			{
 				showList();
 			}
-		});//TODO trocar pra select handler
+		});//TODO change for select handler
 		
 		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
 		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
 
 		popup = new PopupPanel();
-		popup.setStyleName(COMBO_BOX_POPUP);
+		popup.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneComboBoxPopup());
+		popup.addStyleName(COMBO_BOX_POPUP);
 		popup.setAutoHideEnabled(true);
 		popup.add(optionsList);
 		

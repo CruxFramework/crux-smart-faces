@@ -33,7 +33,10 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String flexBoxThirdChild();
 	String flexBoxInlineContainer();
 	String facesBackboneRollingPanelBody();
-	String facesBackboneTabPanelDeck();	
+	String facesBackboneTabPanelDeck();
+	
+	//Carousel
+	String facesBackboneCarousel();
 	
 	// Menu
 	String facesBackboneMenu();
@@ -55,6 +58,7 @@ public interface FacesBackboneCSSCommon extends CssResource
 	//Combobox
 	String facesBackboneComboBox();
 	String facesBackboneComboboxText();
+	String facesBackboneComboBoxPopup();
 	
 	//ListBox
 	String facesBackboneListbox();
@@ -74,5 +78,6 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String facesPredictivePager();
 	
 	//DataGrid
-	String facesDataGridHeaderWrapper();
+	String facesBackboneDataGridHeaderWrapper();
+	String facesBackboneDataGrid();
 }

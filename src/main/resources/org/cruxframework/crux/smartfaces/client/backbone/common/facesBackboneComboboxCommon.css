@@ -1,9 +1,11 @@
-.facesBackboneComboBox
-{
-
+.facesBackboneComboBox {
+	
 }
 
-.facesBackboneComboboxText
-{
+.facesBackboneComboboxText {
 	flex: 1;
+}
+
+.facesBackboneComboBoxPopup {
+	position: absolute !important;
 }

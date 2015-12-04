@@ -806,14 +806,8 @@ body
 }
 
 /******************************************************************************
-	(TODO: some of this code should be on backbone)
     DataGrid
 *******************************************************************************/
-
-.faces-Datagrid
-{
-	overflow: auto;
-}
 
 .faces-Datagrid .faces-DivTable .row .column
 {
@@ -828,7 +822,7 @@ body
 .faces-Datagrid > .faces-DivTable 
 {
    border: 1px solid #A1B9CC;
-    border-width: 0 1px 1px 1px;
+   border-width: 0 1px 1px 1px;
 }
 
 .faces-Datagrid .faces-DivTable .row .column
@@ -847,8 +841,59 @@ body
 	padding: 4px 6px;
 }
 
+/******************************************************************************
+    Div Table
+*******************************************************************************/
+
+/* Grid header */
+.faces-DivTable .headerRow, .faces-DivTable .headerRow .rowOdd
+{
+  background: #4496C6;
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\), .faces-DivTable .row--selected:not\(rowEven\)
+{
+    background: #4496C6 -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.55)), to(rgba(255, 255, 255, 0)));
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\) .column, .faces-DivTable .row--selected:not\(rowEven\) .column
+{
+  border-color: #1A6299;
+}
+
+.faces-DivTable .row--selected:not\(rowOdd\) .faces-Label, .faces-DivTable .row--selected:not\(rowEven\) .faces-Label 
+{
+    color:#fff;
+}
+
+.faces-DivTable .headerRow .faces-Label
+{
+    color: #fff;
+}
+
+.faces-DivTable .headerRow .column
+{
+    border-color: #396986;
+}
+
+.faces-DivTable .columnGroup .headerRow
+{
+    border-color: #396986;
+}
+
+/* Grid Body */
+
+.faces-DivTable .row .column:last-child
+{
+  border-width: 1px  0 0 0;
+}
+
+.faces-DivTable .row .column .gwt-RadioButton input
+{
+    margin: 7px;
+}
+
 /**********************************************************************
-* (TODO: some of this code should be on backbone)
 * Pagers
 * Types: commonPagerWrapper / swapPagerWrapper / scrollablePagerWrapper
 ***********************************************************************/
@@ -916,6 +961,23 @@ body
     background-size: 10px auto;
 }
 
+.faces-SequentialPager 
+{
+    border: 1px solid #ccc;
+}
+
+.faces-Pager .faces-Button:disabled
+{
+  border: none; 
+}
+
+.faces-Pager .faces-Button,
+.faces-Pager .backPanel .faces-Button,
+.faces-Pager .nextPanel .faces-Button
+{
+  padding: 14px;
+}
+
 /* Float Left items */
 .faces-SequentialPager > *,
 .faces-PredictivePager > *
@@ -924,10 +986,147 @@ body
     float: left;
 }
 
+/* Border items */
+.faces-SequentialPager
+{
+    border: 1px solid #ccc;
+}
+
+.faces-SequentialPager > *
+{
+    border-right: 1px solid #ccc;
+}
+
+.faces-SequentialPager > *:hover
+{
+    background: #efefef;
+}
+
+/***********************************************************************
+* Style for WidgetList
+***********************************************************************/
+
+.faces-WidgetList .faces-SwapPanel .line > *
+{
+	display: table-cell;
+	vertical-align: middle;
+	margin: 6px 8px;
+}
+
+/***********************************************************************
+* Style for Breadcrumb
+***********************************************************************/
+
+.faces-Breadcrumb {
+	margin: 0;
+	padding: 0;
+	border-radius: 3px;
+	border-width: 1px;
+	border-style: solid;
+	overflow: hidden;
+}
+
+.faces-Breadcrumb ol {
+	padding: 0;
+	list-style: none;
+	margin: 0;
+}
+
+.faces-Breadcrumb ol li {
+	display: inline-block;
+	height: 33px;
+	text-rendering: optimizeLegibility;
+	line-height: 33px;
+	font-size: 12px;
+	font-weight: 300;
+	text-decoration: none;
+	padding: 0 10px 0 20px;
+	position: relative;
+	cursor: pointer;
+	-webkit-user-select: none; /* Chrome all / Safari all */
+	-moz-user-select: none; /* Firefox all */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none; /* Likely future */
+}
+
+.faces-Breadcrumb ol li:first-child {
+	padding-left: 16px;
+}
+
+.faces-Breadcrumb ol li:last-child {
+	padding-right: 16px;
+}
+
+.faces-Breadcrumb ol li:after, .faces-Breadcrumb ol li:before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	border-top: 17px solid transparent;
+	border-bottom: 17px solid transparent;
+	/* make left half the height */
+	border-left: 10px solid transparent;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 100%;
+	z-index: 2;
+}
+
+.faces-Breadcrumb ol li:before {
+	margin-left: 1px;
+	z-index: 1;
+}
+
+.faces-Breadcrumb ol li:last-child {
+	color: #fff;
+}
+
+.faces-Breadcrumb ol li:last-child:after, .faces-Breadcrumb ol li:last-child:before
+	{
+	border: none;
+}
+
+/* LIGHT COLORS */
+.faces-Breadcrumb {
+	border-color: #9C9E9E;
+}
+
+.faces-Breadcrumb ol li {
+	color: #454545;
+	background-color: #e5e9e9;
+	text-shadow: 0 -1px rgba(255, 255, 255, .7);
+	box-shadow: inset 0 1px 0 #fff;
+}
+
+.faces-Breadcrumb ol li:after {
+	border-left-color: #e5e9e9;
+}
+
+.faces-Breadcrumb ol li:before {
+	border-left-color: #9C9E9E;
+}
+
+.faces-Breadcrumb ol li:hover {
+	background: #EDF1F1;
+}
+
+.faces-Breadcrumb ol li:hover:after {
+	border-left-color: #EDF1F1;
+}
+
+.faces-Breadcrumb ol li.item--active {
+	background-color: #d3d7d7;
+}
+
+.faces-Breadcrumb ol li.item--active:after {
+	border-left-color: #d3d7d7;
+}
+
 /***********************************************************************
 * Style for SequentialPager
 ***********************************************************************/
-
 .faces-SequentialPager
 {
     display: inline-block;
@@ -1371,6 +1570,11 @@ td > div > .faces--group
 }
 
 /* ------------ Combobox ---------------- */
+.faces-ComboBox
+{
+  width: auto !important;
+  border: 1px solid #ccc;
+}
 
 .faces-ComboBox .optionPanel
 {
@@ -1384,11 +1588,6 @@ td > div > .faces--group
 	cursor: pointer;
 }
 
-.itemList
-{
-	
-}
-
 .faces-ComboBox .text
 {
 	width: 200px;
@@ -1398,6 +1597,34 @@ td > div > .faces--group
 {
 	background: rgb(221, 221, 221) svgIconArrowDown no-repeat center;
 	background-size: auto 80%;
+}
+
+/* Class for the combo box input */
+.faces-ComboBox .text,
+.faces-ComboBox .button
+{
+  padding: 4px 6px;
+  border: none;
+}
+
+.faces-ComboBox .button
+{
+  width: 25px;
+}
+
+/* Class for the combo box popup */
+.comboBoxPopup .faces-Pager .page
+{
+  padding: 6px 4px;
+  max-width: 100%;
+  display: table;
+}
+
+/* List items */
+.comboBoxPopup .itemList .faces-Pager .page .optionPanel
+{
+  padding: 4px 2px;
+  display: table-row;
 }
 
 /* ------------ SwapPanel ---------------- */

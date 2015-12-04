@@ -46,6 +46,7 @@ public class DataGrid<T> extends PageableDataGrid<T> implements HasEnabled
 		super(rowSelectStrategy);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setStyleName(STYLE_FACES_DATAGRID);
+		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneDataGrid());
 	}
 
 	/**
