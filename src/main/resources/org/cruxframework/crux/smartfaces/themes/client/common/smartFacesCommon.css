@@ -13,6 +13,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconPaginatorNext svgIconPaginatorNext;
 @url svgIconPaginatorPrev svgIconPaginatorPrev;
 @url svgIconArrowDown svgIconArrowDown;
+@url svgIconArrow svgIconArrow;
 
 *:focus, *:active, *:hover	
 {
@@ -1190,7 +1191,7 @@ body
 {
     margin: 0;
     padding: 3px;
-    height: 25px;
+    height: 28px;
 }
 
 /******************************************
