@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.rollingpanel;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -37,10 +37,12 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	{
 		protected Widget widget;
 		protected FlowPanel wrappedWidget;
+		protected int index;
 		
-		public WrappedWidget(Widget widget, FlowPanel wrappedWidget)
+		public WrappedWidget(Widget widget, FlowPanel wrappedWidget, int index)
 		{
 			this.widget = widget;
+			this.index = index;
 			this.wrappedWidget = wrappedWidget;
 		}
 
@@ -73,7 +75,7 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 		}
 	}
 	
-	private ArrayList<WrappedWidget> items = new ArrayList<WrappedWidget>();
+	private HashMap<Widget,WrappedWidget> items = new HashMap<Widget,WrappedWidget>();
 	private FlowPanel itemsContainer = new FlowPanel();
 	private boolean scrollToAddedWidgets = false;
 
@@ -88,7 +90,7 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setStyleName(DEFAULT_ITEM_STYLE_NAME);
 		wrapper.add(child);
-		items.add(new WrappedWidget(child, wrapper));
+		items.put(child,new WrappedWidget(child, wrapper, itemsContainer.getWidgetCount()));
 		return wrapper;
 	}
 	
@@ -153,7 +155,7 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	@Override
 	public void scrollToWidget(Widget widget)
 	{
-		ensureVisible(items.get(items.indexOf(widget)).wrappedWidget);
+		ensureVisible(items.get(widget).wrappedWidget);
 	}
 	
 	@Override
@@ -171,7 +173,17 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	@Override
 	public Widget getWidget(int index) 
 	{
-		return items.get(index).widget;
+		if(items.values() != null)
+		{
+			for (WrappedWidget wrappedWidget : items.values())
+			{
+				if(wrappedWidget.index == index)
+				{
+					return wrappedWidget.widget;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -183,6 +195,6 @@ class RollingPanelTouchImpl extends ScrollPanel implements RollingPanel.PanelImp
 	@Override
 	public int getWidgetIndex(Widget child) 
 	{
-		return items.indexOf(child);
+		return items.get(child).index;
 	}
 }
