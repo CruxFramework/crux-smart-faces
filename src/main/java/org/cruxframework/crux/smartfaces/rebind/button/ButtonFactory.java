@@ -42,7 +42,6 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  */
 @DeclarativeFactory(library=Constants.LIBRARY_NAME, id="button", targetWidget=Button.class, 
 					description="A simple button that can handle touch events properly")
-
 @TagAttributes({
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
 			description="If true, the component will call preventDefault on all touch events.")
