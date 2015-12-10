@@ -89,7 +89,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 		return new BreadcrumbContext();
 	}
 		
-	@TagConstraints(tagName="divider")
+	@TagConstraints(tagName="divider", minOccurs="0")
 	@TagChildren({
 		@TagChild(BreadcrumbDividerImageProcessor.class)
 	})
