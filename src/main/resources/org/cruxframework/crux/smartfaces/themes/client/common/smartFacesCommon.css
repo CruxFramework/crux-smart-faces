@@ -1420,6 +1420,26 @@ td > div > .faces--group
 
 /* -------------------- faces-MessageBox -----------------------*/
 
+.faces-MessageBox-success
+{
+	color: green;
+}
+
+.faces-MessageBox-info
+{
+	color: blue;
+}
+
+.faces-MessageBox-warn
+{
+	color: yellow;
+}
+
+.faces-MessageBox-error
+{
+	color: red;
+}
+
 .faces-MessageBox .faces-popup-header
 {
 	background:none;

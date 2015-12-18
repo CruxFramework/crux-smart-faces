@@ -84,6 +84,8 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="tabEnabled", type=Boolean.class, defaultValue="true", 
 								 description="If false, disable the tab, making it be unaccessible."),
+		@TagAttributeDeclaration(value="selected", type=Boolean.class, defaultValue="false", 
+		 	description="Select the current tab."),
 		@TagAttributeDeclaration(value="tabWordWrap", type=Boolean.class, defaultValue="true", 
 								 description="If true, allow long tab titles to be able to break and wrap onto the next line.")
 	})
@@ -218,6 +220,12 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 			if (enabled != null && enabled.length() >0)
 			{
 				out.println(rootWidget+".setTabEnabled("+rootWidget+".getTabCount()-1, "+Boolean.parseBoolean(enabled)+");");
+			}
+			
+			String selected = context.tabElement.optString("tabEnabled");
+			if (selected != null && selected.length() >0 && Boolean.parseBoolean(selected))
+			{
+				out.println(rootWidget+".selectTab("+rootWidget+".getTabCount()-1);");
 			}
 
 			String wordWrap = context.tabElement.optString("wordWrap");
