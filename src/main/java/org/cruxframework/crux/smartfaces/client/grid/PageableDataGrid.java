@@ -626,9 +626,20 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		int rowIndex = getDataProvider().indexOf(boundObject);
 		if(rowIndex < 0)
 		{
+			throw new IllegalStateException("This object should be bounded to the dataprovider. "
+				+ "Maybe you forgot to implement hashCode and equals to your dataObject?");
+		}
+		
+		int currentRowIndex = getCurrentRowIndex(rowIndex);
+		
+		//This can happen when we change the page and select a new record. 
+		//The event of unselecting the previous record will try to access 
+		//a position that is not present anymore in the rows array.
+		if(rowIndex > rows.size())
+		{
 			return null;
 		}
-		int currentRowIndex = getCurrentRowIndex(rowIndex);
+		
 		return rows.get(currentRowIndex);
 	}
 

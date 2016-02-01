@@ -40,7 +40,7 @@ public class Column<T, W extends IsWidget>
 	String key;
 	Row<T> row;
 	RowSelectStrategy rowSelectStrategy = null;
-	boolean sortable = false;
+	boolean sortable = true;
 	boolean sorted;
 	private GridDataFactory<T> dataFactory;
 	private CellEditor<T, ?> editableCell;
