@@ -99,6 +99,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneMenu());
 	}
 	
+	public Menu()
+	{
+		this(LargeType.HORIZONTAL_ACCORDION, SmallType.VERTICAL_ACCORDION);
+	}
+	
 	public Menu(LargeType largeType)
 	{
 		this(largeType, null);
