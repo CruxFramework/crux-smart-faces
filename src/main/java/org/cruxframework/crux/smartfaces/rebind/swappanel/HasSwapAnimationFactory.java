@@ -31,7 +31,10 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation;
 @TagAttributes({ 
 	@TagAttribute(value = "animation", processor = HasSwapAnimationFactory.AnimationProcessor.class, 
 			      type = HasSwapAnimationFactory.SwapAnimations.class,  widgetType=SwapAnimation.class, 
-			      description="The animation to be aplied when the panel swaps the content widget.") 
+			      description="The animation to be aplied when the panel swaps the content widget."),
+    @TagAttribute(value="animationDuration",  type=Double.class,   
+				  description="The duration for the animation to be aplied when the panel changes its content.")
+			      
 })
 public interface HasSwapAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {

@@ -81,6 +81,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	
 	private boolean animating;
 	private InOutAnimation animation;
+	private double animationDuration = -1;
 	private boolean animationEnabled;
 	private boolean autoHide;
 	private boolean autoHideOnHistoryEvents;
@@ -455,6 +456,15 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		this.animation = animation;
 		setAnimationEnabled(animation != null);
+	}
+	
+	/**
+	 * Defines the duration for the animation used to animate popup entrances and exits
+	 * @param duration animatin duration in seconds.
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		this.animationDuration = duration;
 	}
 
 	@Override
@@ -970,7 +980,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 					callback.onStateChange();
 				}
 			}
-		});
+		}, animationDuration);
 	}
 
 	private void setPopupPositionStyle(int left, int top)
@@ -1002,7 +1012,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 							callback.onStateChange();
 						}
 					}
-				});
+				}, animationDuration);
 			}
 			RootPanel.get().add(this);
 			if (!animated && callback != null)
@@ -1029,7 +1039,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 							}
 						}
 
-					});
+					}, animationDuration);
 				}
 				else
 				{

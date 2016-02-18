@@ -197,6 +197,15 @@ public class SwapPager<T> extends AbstractPager<T> implements PageablePager<T>, 
 	{
 		swapPanel.setAnimationEnabled(enable);
 	}
+	
+	/**
+	 * Set the duration for the animations
+	 * @param duration animation duration in seconds
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		swapPanel.setAnimationDuration(duration);
+	}
 
 	/**
 	 * Set the animation that will be used to animate swaps to forward.

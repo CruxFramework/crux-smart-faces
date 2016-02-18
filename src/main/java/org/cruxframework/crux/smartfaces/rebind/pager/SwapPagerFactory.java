@@ -49,7 +49,9 @@ description="A pager widget that can predict the datasource size at the load ins
 			      description="The animation to be aplied when the panel swaps to backward."), 
 	@TagAttribute(value = "animationForward", processor = SwapPagerFactory.ForwardAnimationProcessor.class, 
     			  type = HasSwapAnimationFactory.SwapAnimations.class, widgetType=SwapAnimation.class, 
-    			  description="The animation to be aplied when the panel swaps to forward.") 
+    			  description="The animation to be aplied when the panel swaps to forward."),
+	@TagAttribute(value="animationDuration",  type=Double.class,   
+  				  description="The duration for the animation to be aplied when the panel changes its content.")
 })
 
 public class SwapPagerFactory extends AbstractHasPageableFactory<WidgetCreatorContext> implements HasAnimationFactory<WidgetCreatorContext> 

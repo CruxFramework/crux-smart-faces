@@ -385,9 +385,18 @@ public abstract class InOutAnimation
 		entrance.animate(widget, callback);
 	}	
 
+	public void animateEntrance(Widget widget, Animation.Callback callback, double duration)
+	{
+		entrance.animate(widget, callback, duration);
+	}	
+
 	public void animateExit(Widget widget, Animation.Callback callback)
 	{
 		exit.animate(widget, callback);
+	}	
+	public void animateExit(Widget widget, Animation.Callback callback, double duration)
+	{
+		exit.animate(widget, callback, duration);
 	}	
 
 	protected abstract Animation<?> getEntranceAnimation();

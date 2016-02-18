@@ -33,12 +33,19 @@ public abstract class SwapAnimation
 	
 	public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
 	{
-		animateParallel(in, out, handler, callback);
+		animate(in, out, handler, callback, -1);
 	}
 	
-	protected void animateParallel(final Widget in, final Widget out, final SwapAnimationHandler handler, final SwapAnimationCallback callback)
+	public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
+	{
+		animateParallel(in, out, handler, callback, duration);
+	}
+	
+	protected void animateParallel(final Widget in, final Widget out, 
+								   final SwapAnimationHandler handler, final SwapAnimationCallback callback, 
+								   final double duration)
     {
-	    getExitAnimation().animate(out, null);
+	    getExitAnimation().animate(out, null, duration);
 		if (handler != null)
 		{
 			handler.setInElementInitialState(in);
@@ -53,10 +60,12 @@ public abstract class SwapAnimation
 				handler.setOutElementFinalState(out);
 	            callback.onAnimationCompleted();
             }
-		});
+		}, duration);
     }
 	
-	protected void animateInOrder(final Widget in, final Widget out, final SwapAnimationHandler handler, final SwapAnimationCallback callback)
+	protected void animateInOrder(final Widget in, final Widget out, 
+		final SwapAnimationHandler handler, final SwapAnimationCallback callback, 
+		final double duration)
     {
 		getExitAnimation().animate(out, new Callback()
 		{
@@ -78,9 +87,9 @@ public abstract class SwapAnimation
 						handler.setOutElementFinalState(out);
 	                    callback.onAnimationCompleted();
                     }
-				});
+				}, duration);
             }
-		});
+		}, duration);
     }
 	
 	public static interface SwapAnimationHandler
@@ -116,10 +125,10 @@ public abstract class SwapAnimation
 		}
 
 		@Override
-        public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
-        {
-			animateInOrder(in, out, handler, callback);
-        }
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration) 
+		{
+			animateInOrder(in, out, handler, callback, duration);
+		};
 	};
 	
 	
@@ -142,9 +151,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -167,9 +176,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -193,9 +202,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 
@@ -219,9 +228,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 
@@ -245,9 +254,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -271,9 +280,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -297,9 +306,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -323,9 +332,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -349,9 +358,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -375,9 +384,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -401,9 +410,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -427,9 +436,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -453,9 +462,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -479,9 +488,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -505,9 +514,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -531,9 +540,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -557,9 +566,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -583,9 +592,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -609,9 +618,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -635,9 +644,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 	
@@ -661,9 +670,9 @@ public abstract class SwapAnimation
 		}
 		
 		@Override
-		public void animate(Widget in, Widget out, final SwapAnimationHandler handler, SwapAnimationCallback callback)
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration)
 		{
-			animateInOrder(in, out, handler, callback);
+			animateInOrder(in, out, handler, callback, duration);
 		}
 	};
 

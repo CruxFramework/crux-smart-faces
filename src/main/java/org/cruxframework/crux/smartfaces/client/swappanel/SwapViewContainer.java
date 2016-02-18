@@ -42,25 +42,20 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class SwapViewContainer extends SingleViewContainer implements HasChangeViewHandlers
 {
 
-	public static enum Direction
-	{
-		FORWARD, BACKWARDS
-	}
-
 	/**
 	 * Default css style of the component.
 	 */
 	public static final String DEFAULT_STYLE_NAME = "faces-SwapViewContainer";
 
-	private SwapPanel swapPanel;
 	private Panel active;
-	private Panel swap;
-	private boolean animationEnabled = true;
-	private boolean isAnimationRunning = false;
-	private boolean autoRemoveInactiveViews = false;
-	private SwapAnimation animationForward;
-	private SwapAnimation animationBackward;
 
+	private SwapAnimation animationBackward;
+	private boolean animationEnabled = true;
+	private SwapAnimation animationForward;
+	private boolean autoRemoveInactiveViews = false;
+	private boolean isAnimationRunning = false;
+	private Panel swap;
+	private SwapPanel swapPanel;
 	/**
 	 *  Default constructor.
 	 */
@@ -73,6 +68,44 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		swap = new SimplePanel();
 	}
 
+	@Override
+	public HandlerRegistration addChangeViewHandler(ChangeViewHandler handler)
+	{
+		return addHandler(handler, ChangeViewEvent.getType());
+	}
+
+	/**
+	 * @return the animationBackward
+	 */
+	public SwapAnimation getAnimationBackward()
+	{
+		return animationBackward;
+	}
+
+	/**
+	 * @return the animationForward
+	 */
+	public SwapAnimation getAnimationForward()
+	{
+		return animationForward;
+	}
+
+	/**
+	 * @return - if the animation is enabled
+	 */
+	public boolean isAnimationEnabled()
+	{
+		return animationEnabled;
+	}
+
+	/** Return if the animation is running.
+	 * @return boolean
+	 */
+	public boolean isAnimationRunning()
+	{
+		return isAnimationRunning;
+	}
+
 	/**
 	 * @return boolean - If true the auto remove inactive views is activate.
 	 */
@@ -82,11 +115,83 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	}
 
 	/**
+	 * @param animationBackward the animationBackward to set
+	 */
+	public void setAnimationBackward(SwapAnimation animationBackward)
+	{
+		this.animationBackward = animationBackward;
+	}
+
+	/**
+	 * Set the duration for the animations
+	 * @param duration animations duration in seconds
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		swapPanel.setAnimationDuration(duration);
+	}
+
+	/**
+	 * @param enabled - if true the animation will be enabled
+	 * @param device - type of device
+	 */
+	public void setAnimationEnabled(boolean enabled, Device device)
+	{
+		if (device == Device.all || Screen.getCurrentDevice() == device)
+		{
+			animationEnabled = enabled;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param enabled - if true the animation will be enabled
+	 * @param size - screen size
+	 */
+	public void setAnimationEnabled(boolean enabled, Size size)
+	{
+		if (Screen.getCurrentDevice().getSize() == size)
+		{
+			animationEnabled = enabled;
+		}
+	}
+
+	/** Enable animation to large display device.
+	 * @param enabled - boolean
+	 */
+	public void setAnimationEnabledForLargeDevices(boolean enabled)
+	{
+		setAnimationEnabled(enabled, Size.large);
+	}	
+	
+	/** Enable animation to small display device.
+	 * @param enabled - boolean
+	 */
+	public void setAnimationEnabledForSmallDevices(boolean enabled)
+	{
+		setAnimationEnabled(enabled, Size.small);
+	}
+
+	/**
+	 * @param animationForward the animationForward to set
+	 */
+	public void setAnimationForward(SwapAnimation animationForward)
+	{
+		this.animationForward = animationForward;
+	}
+
+	/**
 	 * @param autoRemoveInactiveViews - If true the swapViewContainer will remove automatically.
 	 */
 	public void setAutoRemoveInactiveViews(boolean autoRemoveInactiveViews)
 	{
 		this.autoRemoveInactiveViews = autoRemoveInactiveViews;
+	}
+
+	@Override
+	public void showView(String viewName)
+	{
+		showView(viewName, Direction.BACKWARDS);
 	}
 
 	/**
@@ -118,12 +223,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	public void showView(String viewName, final String viewId, final Direction direction, final Object parameter)
 	{
 		showView(viewName, viewId, direction, null, parameter);
-	}
-
-	@Override
-	public void showView(String viewName)
-	{
-		showView(viewName, Direction.BACKWARDS);
 	}
 
 	/**
@@ -160,12 +259,51 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		}
 	}
 
+	@Override
+	protected boolean activate(View view, Panel containerPanel, Object parameter)
+	{
+		boolean activated = super.activate(view, containerPanel, parameter);
+		if (activated)
+		{
+			swapPanelVariables();
+		}
+		return activated;
+	}
+
+	@Override
+	protected Panel getContainerPanel(View view)
+	{
+		assert (view != null) : "Can not retrieve a container for a null view";
+		if (activeView != null && activeView.getId().equals(view.getId()))
+		{
+			return active;
+		}
+		return swap;
+	}
+
+	@Override
+	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
+	{
+	}
+
 	protected boolean renderView(View view, Direction direction, Object parameter)
 	{
 		return renderView(view, direction, null, parameter);
 	}
 
 	protected boolean renderView(View view, Direction direction, final SwapAnimationCallback animationCallback, Object parameter)
+	{
+		SwapAnimation animation = (direction==null?null:(direction == Direction.FORWARD?animationForward:animationBackward));
+		return renderView(view, animation, animationCallback, parameter);
+	}
+
+	@Override
+	protected boolean renderView(View view, Object parameter)
+	{
+		return renderView(view, Direction.FORWARD, null, parameter);
+	}
+	
+	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		if (activeView == null || !activeView.getId().equals(view.getId()))
 		{
@@ -177,7 +315,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 				boolean rendered = super.renderView(view, parameter);
 				if (rendered)
 				{
-					if (previous == null || direction == null || !animationEnabled)
+					if (previous == null || animation == null || !animationEnabled)
 					{
 						swapPanel.setCurrentWidget(active);
 						concludeViewsSwapping(previous, next);
@@ -185,7 +323,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 					}
 					else
 					{
-						SwapAnimation animation = (direction == Direction.FORWARD?animationForward:animationBackward);
 						swapPanel.transitTo(active, animation, isAnimationEnabled(), new SwapAnimationCallback()
 						{
 							@Override
@@ -216,91 +353,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		}
 	}
 
-	/**
-	 * @return - if the animation is enabled
-	 */
-	public boolean isAnimationEnabled()
-	{
-		return animationEnabled;
-	}
-
-	/**
-	 * @param enabled - if true the animation will be enabled
-	 * @param device - type of device
-	 */
-	public void setAnimationEnabled(boolean enabled, Device device)
-	{
-		if (device == Device.all || Screen.getCurrentDevice() == device)
-		{
-			animationEnabled = enabled;
-		}
-	}
-
-	/**
-	 * 
-	 * @param enabled - if true the animation will be enabled
-	 * @param size - screen size
-	 */
-	public void setAnimationEnabled(boolean enabled, Size size)
-	{
-		if (Screen.getCurrentDevice().getSize() == size)
-		{
-			animationEnabled = enabled;
-		}
-	}
-
-	/** Enable animation to large display device.
-	 * @param enabled - boolean
-	 */
-	public void setAnimationEnabledForLargeDevices(boolean enabled)
-	{
-		setAnimationEnabled(enabled, Size.large);
-	}
-
-	/** Enable animation to small display device.
-	 * @param enabled - boolean
-	 */
-	public void setAnimationEnabledForSmallDevices(boolean enabled)
-	{
-		setAnimationEnabled(enabled, Size.small);
-	}
-
-	/** Return if the animation is running.
-	 * @return boolean
-	 */
-	public boolean isAnimationRunning()
-	{
-		return isAnimationRunning;
-	}
-
-	@Override
-	protected boolean renderView(View view, Object parameter)
-	{
-		return renderView(view, Direction.FORWARD, null, parameter);
-	}
-
-	@Override
-	protected Panel getContainerPanel(View view)
-	{
-		assert (view != null) : "Can not retrieve a container for a null view";
-		if (activeView != null && activeView.getId().equals(view.getId()))
-		{
-			return active;
-		}
-		return swap;
-	}
-
-	@Override
-	protected boolean activate(View view, Panel containerPanel, Object parameter)
-	{
-		boolean activated = super.activate(view, containerPanel, parameter);
-		if (activated)
-		{
-			swapPanelVariables();
-		}
-		return activated;
-	}
-
 	private void swapPanelVariables()
 	{
 		Panel temp = active;
@@ -308,47 +360,9 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		swap = temp;
 	}
 
-	@Override
-	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
+	public static enum Direction
 	{
-	}
-
-	@Override
-	public HandlerRegistration addChangeViewHandler(ChangeViewHandler handler)
-	{
-		return addHandler(handler, ChangeViewEvent.getType());
-	}
-	
-	/**
-	 * @return the animationForward
-	 */
-	public SwapAnimation getAnimationForward()
-	{
-		return animationForward;
-	}
-
-	/**
-	 * @param animationForward the animationForward to set
-	 */
-	public void setAnimationForward(SwapAnimation animationForward)
-	{
-		this.animationForward = animationForward;
-	}
-
-	/**
-	 * @return the animationBackward
-	 */
-	public SwapAnimation getAnimationBackward()
-	{
-		return animationBackward;
-	}
-
-	/**
-	 * @param animationBackward the animationBackward to set
-	 */
-	public void setAnimationBackward(SwapAnimation animationBackward)
-	{
-		this.animationBackward = animationBackward;
+		BACKWARDS, FORWARD
 	}
 	
 }
