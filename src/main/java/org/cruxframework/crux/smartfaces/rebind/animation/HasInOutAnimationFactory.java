@@ -32,7 +32,9 @@ import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 @TagAttributes({
 	@TagAttribute(value="animation", processor=HasInOutAnimationFactory.AnimationProcessor.class, 
 				  type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,  
-				  description="The animation to be aplied when the dialog is opened or closed.")
+				  description="The animation to be aplied when the dialog is opened or closed."),
+	@TagAttribute(value="animationDuration",  type=Double.class,   
+				  description="The duration for the animation to be aplied when the dialog is opened or closed.")
 })
 public interface HasInOutAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {

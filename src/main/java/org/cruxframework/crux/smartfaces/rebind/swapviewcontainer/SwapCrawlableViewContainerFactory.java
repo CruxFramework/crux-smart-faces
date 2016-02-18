@@ -43,7 +43,9 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 		description="Defines the type of animation to be executed to advance the swap of view."),
 	@TagAttribute(value="animationBackward",type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
 		processor=SwapCrawlableViewContainerFactory.AnimationBackwardProcessor.class, widgetType=SwapAnimation.class,
-		description="Defines the type of animation to be executed to back the swap of view.")
+		description="Defines the type of animation to be executed to back the swap of view."),
+	@TagAttribute(value="animationDuration",  type=Double.class,   
+	  description="The duration for the animation to be aplied when the panel changes its content.")
 })
 @TagChildren({
 	@TagChild(SwapViewContainerFactory.ViewProcessor.class)

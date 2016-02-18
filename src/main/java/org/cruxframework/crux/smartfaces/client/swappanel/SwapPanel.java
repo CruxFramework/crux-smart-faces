@@ -43,27 +43,28 @@ import com.google.gwt.user.client.ui.Widget;
 public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimation
 {
 	/**
-	 * Default css style of the component.
-	 */
-	public static final String DEFAULT_STYLE_NAME = "faces-SwapPanel";
-	
-	/**
 	 * Default css style of the current panel.
 	 */
 	public static final String CURRENT_STYLE_NAME = "faces-SwapPanel-currentPanel";
+	
+	/**
+	 * Default css style of the component.
+	 */
+	public static final String DEFAULT_STYLE_NAME = "faces-SwapPanel";
 	
 	/**
 	 * Default css style of the next panel. 
 	 */
 	public static final String NEXT_STYLE_NAME = "faces-SwapPanel-nextPanel";
 	
+	private boolean animating = false;
+	private SwapAnimation animation;
+	private double animationDuration = -1;
+	
+	private boolean animationEnabled = true;
 	private FlowPanel contentPanel;
 	private SimplePanel currentPanel = new SimplePanel();
 	private SimplePanel nextPanel = new SimplePanel();
-	
-	private SwapAnimation animation;
-	private boolean animating = false;
-	private boolean animationEnabled = true;
 	
 	/**
 	 *  The default constructor.
@@ -103,6 +104,73 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 		this.animationEnabled = enabled;
 	}
 
+	@Override
+    public HandlerRegistration addSwapHandler(SwapHandler handler)
+    {
+		return addHandler(handler, SwapEvent.getType());
+    }
+	
+	/**
+	 *  Clear the Panel.
+	 */
+	public void clear()
+	{
+		currentPanel.clear();
+		nextPanel.clear();
+	}
+	
+	/**
+	 * @return Animation
+	 */
+	public SwapAnimation getAnimation()
+	{
+		return animation;
+	}
+
+	/** Return the current widget in the panel.
+	 *  
+	 * @return Widget the current widget
+	 */
+	public Widget getCurrentWidget()
+	{
+		return this.currentPanel.getWidget();
+	}
+	
+	public boolean isAnimating()
+	{
+		return animating;
+	}
+	
+	@Override
+    public boolean isAnimationEnabled()
+    {
+	    return animationEnabled;
+    }
+
+    /**
+	 * @param animation type Animation type
+	 */
+	public void setAnimation(SwapAnimation animation)
+	{
+		this.animation =  animation;
+	}	
+    
+	/**
+	 * Set the duration for the animations
+	 * @param duration animations duration in seconds
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		this.animationDuration = duration;
+	}
+	
+	@Override
+    public void setAnimationEnabled(boolean enable)
+    {
+	    this.animationEnabled = enable;
+	    
+    }
+	
 	/**
 	 * Sets the widget that will be initially visible on this panel. 
 	 * @param widget widget that will be initially
@@ -121,13 +189,21 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 		}
 	}
 	
-	/** Return the current widget in the panel.
-	 *  
-	 * @return Widget the current widget
-	 */
-	public Widget getCurrentWidget()
+	@Override
+	public void setStyleName(String style)
 	{
-		return this.currentPanel.getWidget();
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSwapPanel());
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSwapPanel());
+		}
 	}
 	
 	/**
@@ -138,7 +214,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	{
 		transitTo(widget, animation, this.animationEnabled, null);
 	}
-
+	
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -148,22 +224,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	{
 		transitTo(widget, animation, this.animationEnabled, null);
 	}
-	
-	private void setPanelHeightOnWidgetAttached(final Widget widget)
-	{
-		widget.addAttachHandler(new Handler() 
-		{
-			@Override
-			public void onAttachOrDetach(AttachEvent event) 
-			{
-				if (event.isAttached())
-				{
-					SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
-				}
-			}
-		});
-	}
-	
+
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -185,13 +246,6 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 				animation.animate(nextPanel, currentPanel, new SwapAnimationHandler()
 				{
 					@Override
-					public void setInElementInitialState(Widget in)
-					{
-						Style style = in.getElement().getStyle();
-						style.setDisplay(Display.BLOCK);
-					}
-
-					@Override
 					public void setInElementFinalState(Widget in)
 					{
 						Style style = in.getElement().getStyle();
@@ -199,10 +253,10 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					}
 
 					@Override
-					public void setOutElementInitialState(Widget out)
+					public void setInElementInitialState(Widget in)
 					{
-						Style style = out.getElement().getStyle();
-						style.setDisplay(Display.NONE);
+						Style style = in.getElement().getStyle();
+						style.setDisplay(Display.BLOCK);
 					}
 
 					@Override
@@ -210,6 +264,13 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					{
 						Style style = out.getElement().getStyle();
 						style.setDisplay(Display.BLOCK);
+					}
+
+					@Override
+					public void setOutElementInitialState(Widget out)
+					{
+						Style style = out.getElement().getStyle();
+						style.setDisplay(Display.NONE);
 					}
 				}, new SwapAnimationCallback()
 				{
@@ -219,7 +280,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					{
 						completedAnimation(callback);
 					}
-				});
+				}, animationDuration);
 			}
 			else
 			{
@@ -228,7 +289,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 		}
 	}
 
-    private void completedAnimation(final SwapAnimationCallback callback)
+	private void completedAnimation(final SwapAnimationCallback callback)
     {
     	if (animating)
 	    {
@@ -242,72 +303,20 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	    		callback.onAnimationCompleted();
 	    	}
 	    }
-    }	
-    
-	/**
-	 *  Clear the Panel.
-	 */
-	public void clear()
+    }
+
+	private void setPanelHeightOnWidgetAttached(final Widget widget)
 	{
-		currentPanel.clear();
-		nextPanel.clear();
-	}
-	
-	@Override
-	public void setStyleName(String style, boolean add)
-	{
-		super.setStyleName(style, add);
-		if (!add)
+		widget.addAttachHandler(new Handler() 
 		{
-		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSwapPanel());
-		}
-	}
-	
-	@Override
-	public void setStyleName(String style)
-	{
-	    super.setStyleName(style);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSwapPanel());
-	}
-	
-	@Override
-    public HandlerRegistration addSwapHandler(SwapHandler handler)
-    {
-		return addHandler(handler, SwapEvent.getType());
-    }
-	
-	/**
-	 * @param animation type Animation type
-	 */
-	public void setAnimation(SwapAnimation animation)
-	{
-		this.animation =  animation;
-	}
-	
-	
-	/**
-	 * @return Animation
-	 */
-	public SwapAnimation getAnimation()
-	{
-		return animation;
-	}
-
-	@Override
-    public boolean isAnimationEnabled()
-    {
-	    return animationEnabled;
-    }
-
-	@Override
-    public void setAnimationEnabled(boolean enable)
-    {
-	    this.animationEnabled = enable;
-	    
-    }
-
-	public boolean isAnimating()
-	{
-		return animating;
+			@Override
+			public void onAttachOrDetach(AttachEvent event) 
+			{
+				if (event.isAttached())
+				{
+					SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
+				}
+			}
+		});
 	}
 }

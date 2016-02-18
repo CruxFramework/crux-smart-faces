@@ -95,6 +95,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private RowSelectStrategy rowSelectStrategy;
+	private double rowAnimationDuration = -1;
 
 	/**
 	 */
@@ -281,6 +282,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.rowAnimation = rowAnimation;
 	}
 
+	public void setAnimationDuration(double duration)
+	{
+		this.rowAnimationDuration = duration;
+	}
+	
 	/**
 	 * @param rowSelectStrategy
 	 */
@@ -550,7 +556,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			//animation
 			if(row.editing && isAnimationEnabled())
 			{
-				getRowAnimation().animateEntrance(row.getDivRow(), null);
+				getRowAnimation().animateEntrance(row.getDivRow(), null, rowAnimationDuration);
 			}
 		}
 		return columnIndex;

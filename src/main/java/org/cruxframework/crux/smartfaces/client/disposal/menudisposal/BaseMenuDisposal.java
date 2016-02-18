@@ -65,6 +65,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 	private BaseMenuHandler handler = GWT.create(BaseMenuHandler.class);
 
 	private boolean animationEnabled;
+	private double animationDuration = -1;
 
 	protected BaseMenuDisposal()
 	{
@@ -134,6 +135,12 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 		setAnimationEnabled(animation != null);
 	}
 
+	public void setAnimationDuration(double animationDuration)
+	{
+		this.animationDuration = animationDuration;
+		
+	}
+	
 	@Override
 	public void setAnimationEnabled(boolean enable)
 	{
@@ -337,7 +344,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 							{
 								disposal.menuPanel.setVisible(false);
 							}
-						});
+						}, disposal.animationDuration);
 					}
 					else
 					{
@@ -350,7 +357,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer impl
 					disposal.menuPanel.setVisible(true);
 					if (disposal.isAnimationEnabled())
 					{
-						disposal.animation.animateEntrance(disposal.menuPanel, null);
+						disposal.animation.animateEntrance(disposal.menuPanel, null, disposal.animationDuration);
 					}
 				}
 				menuVisible = !menuVisible;
