@@ -16,7 +16,6 @@
 package org.cruxframework.crux.smartfaces.rebind.menu;
 
 import java.util.LinkedList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
@@ -31,7 +30,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasSelectionHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.children.TextChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
@@ -48,8 +46,6 @@ import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
@@ -233,21 +229,8 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 		@Override
 		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 
 		{
-			JSONObject jsonLabel = context.getChildElement();
-			String label = "";
-			try {
-				label = jsonLabel.getString("_text");
-			} catch (JSONException e) 
-			{
-				logger.log(Level.SEVERE, e.getMessage());
-			}
-			
+			String label = getWidgetCreator().ensureTextChild(context.getChildElement(), true, context.getWidgetId(), false);
 			String itemClassName = MenuItem.class.getCanonicalName();
-			
-			if(label != null && label.length() > 0)
-			{
-				label = getWidgetCreator().getDeclaredMessage(label);
-			}
 			
 			if(context.itemStack.size() == 1)
 			{
@@ -263,16 +246,8 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 		}
 	}
 	
-	@TagConstraints(tagName="itemHtml", description="Create an item with an HTML body.")
-	@TagChildren({
-		@TagChild(HTMLProcessor.class)
-	})
+	@TagConstraints(tagName="itemHtml", type=HTMLTag.class, description="Create an item with an HTML body.")
 	public static class ItemHTMLProcessor extends WidgetChildProcessor<MenuContext> 
-	{
-	}
-	
-	@TagConstraints(type=HTMLTag.class)
-	public static class HTMLProcessor extends TextChildProcessor<MenuContext>
 	{
 		@Override
 		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 

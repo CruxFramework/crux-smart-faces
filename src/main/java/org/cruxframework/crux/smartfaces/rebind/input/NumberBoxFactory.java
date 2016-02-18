@@ -111,11 +111,11 @@ implements FocusableFactory<WidgetCreatorContext>, HasAllMouseHandlersFactory<Wi
 		}
 		if (!StringUtils.isEmpty(groupSeparator))
 		{
-			out.println(formatterOptions + ".setGroupSeparator(" + getDeclaredMessage(groupSeparator) + ");");
+			out.println(formatterOptions + ".setGroupSeparator(" + resolveI18NString(groupSeparator) + ");");
 		}
 		if (!StringUtils.isEmpty(decimalSeparator))
 		{
-			out.println(formatterOptions + ".setDecimalSeparator(" + getDeclaredMessage(decimalSeparator) + ");");
+			out.println(formatterOptions + ".setDecimalSeparator(" + resolveI18NString(decimalSeparator) + ");");
 		}
 		out.println("final "+className + " " + context.getWidget() + " = new "+className+"(" + formatterOptions + ");");
 	}

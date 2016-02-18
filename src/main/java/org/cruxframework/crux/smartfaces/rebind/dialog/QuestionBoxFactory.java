@@ -81,7 +81,7 @@ public class QuestionBoxFactory extends PanelFactory<WidgetCreatorContext>
 
 			if(label != null && label.length() > 0)
 			{
-				label = getWidgetCreator().getDeclaredMessage(label);
+				label = getWidgetCreator().resolveI18NString(label);
 			}
 			if(styleName != null && styleName.length() > 0)
 			{

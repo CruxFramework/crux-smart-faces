@@ -445,7 +445,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			String childName = getChildName(headerChild);
 			if (childName.equals("text"))
 			{
-				String header = getDeclaredMessage(headerChild.optString("text"));
+				String header = resolveI18NString(headerChild.optString("text"));
 				out.println(columnVar + ".setHeaderWidget(new " + Label.class.getCanonicalName() + "(" + header + "));");
 			}
 			else if (childName.equals("widget"))
@@ -461,7 +461,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		}
 		else
 		{
-			String header = getDeclaredMessage(columnElement.optString("header"));
+			String header = resolveI18NString(columnElement.optString("header"));
 			if (!StringUtils.isEmpty(header))
 			{
 				out.println(columnVar + ".setHeaderWidget(new " + Label.class.getCanonicalName() + "(" + header + "));");
@@ -681,7 +681,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			String childName = getChildName(headerChild);
 			if (childName.equals("text"))
 			{
-				String header = getDeclaredMessage(headerChild.optString("text"));
+				String header = resolveI18NString(headerChild.optString("text"));
 				out.println("return new " + Label.class.getCanonicalName() + "(" + header + ");");
 			}
 			else if (childName.equals("widget"))
@@ -699,7 +699,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		}
 		else
 		{
-			String header = getDeclaredMessage(detailElement.optString("header"));
+			String header = resolveI18NString(detailElement.optString("header"));
 			if (!StringUtils.isEmpty(header))
 			{
 				out.println(context.getWidget() + ".setDetailColumnHeaderWidgetFactory(new "+ GridWidgetFactory.class.getCanonicalName() + "(){");
