@@ -146,7 +146,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				}
 				if (!isBindingExpression)
 				{
-					out.println(context.itemVariable + ".setText(" + getWidgetCreator().getDeclaredMessage(text) + ");");
+					out.println(context.itemVariable + ".setText(" + getWidgetCreator().resolveI18NString(text) + ");");
 				}
 			}
 		}

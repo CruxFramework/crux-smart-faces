@@ -195,7 +195,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 		@Override
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
-			String label = getWidgetCreator().getDeclaredMessage(context.readChildProperty("label"));
+			String label = getWidgetCreator().resolveI18NString(context.readChildProperty("label"));
 			String view = context.readChildProperty("targetView");
 			String menuItem = getWidgetCreator().createVariableName("menuItem");
 			
