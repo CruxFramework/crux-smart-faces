@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.breadcrumb;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
@@ -26,13 +27,16 @@ import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.image.Image;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
 
 /**
@@ -42,7 +46,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class Breadcrumb extends Composite implements HasEnabled
+public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Breadcrumb";
 	public static final String STYLE_BREADCRUMB_ITEM = "item";
@@ -55,7 +59,10 @@ public class Breadcrumb extends Composite implements HasEnabled
 	private HandlerRegistration activateHandler;
 	private boolean activateItemsOnSelectionEnabled = true;
 	private int activeIndex = -1;
+	private double animationDuration = -1;
+	private boolean animationEnabled;
 	private Array<BreadcrumbItem> children = CollectionFactory.createArray();
+	private InOutAnimation collapseAnimation = null;
 	private boolean collapsed = false;
 	private boolean collapsible = false;
 	private Image dividerImage;
@@ -261,6 +268,12 @@ public class Breadcrumb extends Composite implements HasEnabled
 		return activateItemsOnSelectionEnabled;
 	}
 
+	@Override
+    public boolean isAnimationEnabled()
+    {
+	    return animationEnabled;
+    }
+	
 	/**
 	 * Return true if this breadcrumbs is collapsed
 	 * @return true if collapsed
@@ -269,7 +282,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return collapsed;
 	}
-	
+
 	/**
 	 * Return true if this breadcrumbs supports to be collapsed
 	 * @return true if collapsible
@@ -304,7 +317,8 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return singleActivationModeEnabled;
 	}
-
+	
+	
 	/**
 	 * Retrieve the updateOnViewChangeEnabled property value. If this is enabled, the Breadcrumb will
 	 * set the active index for an item when it is bound to a view that is activated on the Breadcrumb's 
@@ -315,7 +329,6 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return updateOnViewChangeEnabled;
 	}
-	
 	
 	/**
 	 * Remove the given item from this Breadcrumb.
@@ -367,67 +380,63 @@ public class Breadcrumb extends Composite implements HasEnabled
 	
 	/**
 	 * Set the index of the current active item on this Breadcrumb.
-	 * @return active item.
+	 * @param index item index.
 	 * @return the Breadcrumb reference.
 	 */
-	public Breadcrumb setActiveIndex(int index)
+	public Breadcrumb setActiveIndex(final int index)
 	{
-		int s = size();
-
-		if (index < 0 || index >= s || activeIndex == index)
-		{
-			return this;
-		}
-				
-		if (singleActivationModeEnabled)
-		{
-			children.get(index).addStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
-		}
-		else
-		{
-			for (int i = 0; i <= index; i++)
-			{
-				children.get(i).addStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
-			}
-		}
-		if (collapsible)
-		{
-			children.get(index).addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
-			if (activeIndex >= 0)
-			{
-				BreadcrumbItem activeItem = children.get(this.activeIndex);
-				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
-				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
-			}
-			if (collapsed)
-			{
-				children.get(index).uncollapse();
-				if (activeIndex >= 0 && removeInactiveItems && activeIndex < index)
-				{
-					children.get(this.activeIndex).collapse();
-				}
-			}
-		}
-		if (removeInactiveItems && (index < size() -1))
-		{
-			removeFrom(index+1);
-		}
-		else if (singleActivationModeEnabled && activeIndex >= 0)
-		{
-			children.get(activeIndex).removeStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
-		}
-		else
-		{
-			for (int i = index+1; i < s; i++)
-			{
-				children.get(i).removeStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
-			}
-		}
-		this.activeIndex = index;
-		
-		return this;
+		return setActiveIndex(index, true);
 	}
 	
+	/**
+	 * Set the index of the current active item on this Breadcrumb.
+	 * @param index item index.
+	 * @param allowAnimations if false no animation will be allowed
+	 * @return the Breadcrumb reference.
+	 */
+	public Breadcrumb setActiveIndex(final int index, final boolean allowAnimations)
+	{
+		if (mainPanel.isAnimating())
+		{
+			new Timer()
+			{
+				@Override
+				public void run()
+				{
+					doSetActivateIndex(index, allowAnimations);
+				}
+			}.schedule((int)(animationDuration*1000));
+			return this;
+		}
+		
+		return doSetActivateIndex(index, allowAnimations);
+	}
+
+	/**
+	 * Set the duration for the animations
+	 * @param duration animations duration in seconds
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		this.animationDuration = duration;
+	}
+	
+	@Override
+    public void setAnimationEnabled(boolean enable)
+    {
+		this.animationEnabled = enable;
+    }
+	
+	/**
+	 * Defines the animation used to animate collapse operations
+	 * @param animation
+	 */
+	public void setCollapseAnimation(InOutAnimation animation)
+	{
+		this.collapseAnimation = animation;
+		setAnimationEnabled(animation != null);
+	}
+
 	/**
 	 * Collapse or expand the breadcrumb. It only will take any effect if the collapsible property is true.
 	 * @param collapsed true to collapse, false to expand
@@ -441,7 +450,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 			this.collapsed = collapsed;
 		}
 	}
-	
+
 	/**
 	 * Set the collapsible property. If this is true breadcrumb will support to be collapsed.
 	 * @param collapsible true if collapsible
@@ -450,7 +459,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		this.collapsible = collapsible;
 	}
-	
+
 	/**
 	 * Set the image to be used as divider between items on this Breadcrumb.
 	 * @param divider divider image
@@ -475,7 +484,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		mainPanel.updateDividers();
 		return this;
 	}
-
+	
 	@Override
 	public void setEnabled(boolean enabled) 
 	{
@@ -552,7 +561,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 						if (updateOnViewChangeEnabled)
 						{
 							String viewId = event.getSenderId();
-							setActiveIndex(indexOfItemByView(viewId));
+							setActiveIndex(indexOfItemByView(viewId), false);
 						}
 					}
 				});
@@ -562,7 +571,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Retrieve the number of items inside this Breadcrumb.
 	 * @return number of children.
@@ -583,9 +592,13 @@ public class Breadcrumb extends Composite implements HasEnabled
 		children.add(item);
 		mainPanel.adopt(item);
 	}
-
+	
 	protected void collapseInactiveItems(boolean collapse)
 	{
+		if (hasDivider())
+		{
+			mainPanel.showDividers(!collapse);
+		}
 		for (int i=0; i < children.size(); i++)
 		{
 			if (i != activeIndex)
@@ -600,10 +613,6 @@ public class Breadcrumb extends Composite implements HasEnabled
 					item.uncollapse();
 				}
 			}
-		}
-		if (hasDivider())
-		{
-			mainPanel.showDividers(!collapse);
 		}
 	}
 	
@@ -631,6 +640,20 @@ public class Breadcrumb extends Composite implements HasEnabled
 		return el;
 	}
 	
+	protected double getAnimationDuration()
+	{
+		return animationDuration;
+	}
+	
+	protected InOutAnimation getCollapseAnimation()
+	{
+		if (collapseAnimation == null)
+		{
+			collapseAnimation = InOutAnimation.bounce;
+		}
+		return collapseAnimation;
+	}
+
 	/**
 	 * Find the index of the item with the given viewId on this Breadcrumb, or -1 if it is not present.
 	 * @param viewID the viewID of the item to find.
@@ -647,7 +670,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Called by {@link BreadcrumbItem} when it is removed from the Breadcrumb. It removes the item
 	 * from the internal children list.
@@ -657,7 +680,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		children.remove(item);
 	    mainPanel.orphan(item);
-	}
+	}	
 	
 	protected Breadcrumb remove(BreadcrumbItem item, int index) 
 	{
@@ -684,6 +707,64 @@ public class Breadcrumb extends Composite implements HasEnabled
 		}    
 	}
 	
+	private Breadcrumb doSetActivateIndex(int index, boolean allowAnimations)
+    {
+	    int s = size();
+
+		if (index < 0 || index >= s || activeIndex == index)
+		{
+			return this;
+		}
+				
+		if (singleActivationModeEnabled)
+		{
+			children.get(index).addStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
+		}
+		else
+		{
+			for (int i = 0; i <= index; i++)
+			{
+				children.get(i).addStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
+			}
+		}
+		if (collapsible)
+		{
+			children.get(index).addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+			if (activeIndex >= 0)
+			{
+				BreadcrumbItem activeItem = children.get(this.activeIndex);
+				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+			}
+			if (collapsed)
+			{
+				children.get(index).uncollapse(allowAnimations);
+				if (activeIndex >= 0 && (!removeInactiveItems || activeIndex < index))
+				{
+					children.get(this.activeIndex).collapse(allowAnimations);
+				}
+			}
+		}
+		if (removeInactiveItems && (index < size() -1))
+		{
+			removeFrom(index+1);
+		}
+		else if (singleActivationModeEnabled && activeIndex >= 0)
+		{
+			children.get(activeIndex).removeStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
+		}
+		else
+		{
+			for (int i = index+1; i < s; i++)
+			{
+				children.get(i).removeStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
+			}
+		}
+		this.activeIndex = index;
+		
+		return this;
+    }
+
 	/**
 	 * Internal class representing the outer panel of a Breadcrumb component.
 	 * It generates a structure like:
@@ -758,6 +839,12 @@ public class Breadcrumb extends Composite implements HasEnabled
 			return dividerElement;
 		}
 
+		protected boolean isAnimating()
+		{
+			NodeList<Element> separators = DOMUtils.getElementsByClassName(listElement, "animated");
+			return separators != null && separators.getLength() > 0;
+		}
+		
 		protected void orphan(BreadcrumbItem item)
 		{
 			SelectablePanel itemPanel = item.getItemPanel();
@@ -767,7 +854,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 				orphan(itemPanel);
 			}
 		}
-		
+
 		protected void remove(BreadcrumbItem item) 
 		{
 			if (breadcrumb.hasDivider())
@@ -784,11 +871,33 @@ public class Breadcrumb extends Composite implements HasEnabled
 		protected void showDividers(boolean show)
 		{
 			NodeList<Element> separators = DOMUtils.getElementsByClassName(listElement, STYLE_BREADCRUMB_SEPARATOR);
-
 			for (int i = 0; i < separators.getLength(); i++)
 			{
-				Element separator = separators.getItem(i);
-				separator.getStyle().setProperty("display", show?"":"none");
+				final Element separator = separators.getItem(i);
+			
+				if (breadcrumb.isAnimationEnabled())
+				{
+					if (show)
+					{
+						separator.getStyle().setProperty("display", "");
+						breadcrumb.getCollapseAnimation().animateEntrance(separator, null, breadcrumb.getAnimationDuration());
+					}
+					else
+					{
+						breadcrumb.getCollapseAnimation().animateExit(separator, new Animation.Callback()
+						{
+							@Override
+							public void onAnimationCompleted()
+							{
+								separator.getStyle().setProperty("display","none");
+							}
+						}, breadcrumb.getAnimationDuration());
+					}
+				}
+				else
+				{
+					separator.getStyle().setProperty("display", show?"":"none");
+				}
 			}
 		}
 		
@@ -803,5 +912,6 @@ public class Breadcrumb extends Composite implements HasEnabled
 				separator.appendChild(breadcrumb.createDivider());
 			}
 		}
-	}	
+	}
+
 }

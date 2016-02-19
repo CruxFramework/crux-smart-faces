@@ -21,10 +21,12 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
+import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
@@ -45,7 +47,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDec
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.Breadcrumb;
 import org.cruxframework.crux.smartfaces.client.breadcrumb.BreadcrumbItem;
+import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
+import org.cruxframework.crux.smartfaces.rebind.animation.HasInOutAnimationFactory;
 import org.cruxframework.crux.smartfaces.rebind.image.ImageFactory;
 
 /**
@@ -81,14 +85,36 @@ import org.cruxframework.crux.smartfaces.rebind.image.ImageFactory;
 							+ "selecting the active item."),
 		@TagAttribute(value = "collapsed", type=Boolean.class, defaultValue="false", 
 					description = "When this property is true, the Breadcrumb will collapse all items "
-							+ "keeping only the active item visible.", processingTime=ProcessingTime.afterAllWidgetsOnView)
+							+ "keeping only the active item visible.", processingTime=ProcessingTime.afterAllWidgetsOnView),
+		@TagAttribute(value="collapseAnimation", processor=BreadcrumbFactory.AnimationProcessor.class, 
+					type=HasInOutAnimationFactory.InOutAnimations.class, widgetType=InOutAnimation.class,  
+					description="The animation to be aplied when perform collapse operations."),
+		@TagAttribute(value="animationDuration",  type=Double.class,   
+					description="The duration for the animation to be aplied when perform collapse operations.")
+							
 })
 @TagChildren({
 	@TagChild(BreadcrumbFactory.BreadcrumbDividerProcessor.class), 
 	@TagChild(BreadcrumbFactory.BreadcrumbItemProcessor.class) 
 })
-public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implements HasEnabledFactory<BreadcrumbContext>
+public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implements HasEnabledFactory<BreadcrumbContext>, 
+							HasAnimationFactory<WidgetCreatorContext>
 {
+	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
+    {
+		public AnimationProcessor(WidgetCreator<?> widgetCreator)
+        {
+	        super(widgetCreator);
+        }
+
+		@Override
+        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+        {
+	        out.println(context.getWidget()+".setCollapseAnimation("+InOutAnimation.class.getCanonicalName()+"."+attributeValue+");");
+        }
+    }
+
+	
 	@Override
 	public BreadcrumbContext instantiateContext() 
 	{

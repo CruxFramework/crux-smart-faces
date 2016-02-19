@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.util.animation;
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.core.client.css.animation.StandardAnimation;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -390,6 +391,16 @@ public abstract class InOutAnimation
 		entrance.animate(widget, callback, duration);
 	}	
 
+	public void animateEntrance(Element element, Animation.Callback callback)
+	{
+		entrance.animate(element, callback);
+	}	
+
+	public void animateEntrance(Element element, Animation.Callback callback, double duration)
+	{
+		entrance.animate(element, callback, duration);
+	}	
+
 	public void animateExit(Widget widget, Animation.Callback callback)
 	{
 		exit.animate(widget, callback);
@@ -397,6 +408,16 @@ public abstract class InOutAnimation
 	public void animateExit(Widget widget, Animation.Callback callback, double duration)
 	{
 		exit.animate(widget, callback, duration);
+	}	
+
+	public void animateExit(Element element, Animation.Callback callback)
+	{
+		exit.animate(element, callback);
+	}	
+	
+	public void animateExit(Element element, Animation.Callback callback, double duration)
+	{
+		exit.animate(element, callback, duration);
 	}	
 
 	protected abstract Animation<?> getEntranceAnimation();
