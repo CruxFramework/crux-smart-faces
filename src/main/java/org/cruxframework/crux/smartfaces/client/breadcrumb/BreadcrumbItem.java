@@ -66,10 +66,21 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 					return;
 				}
 				
-				if (breadcrumb.isActivateItemsOnSelectionEnabled())
+				if (isActive())
+				{
+					if (breadcrumb.isCollapsible())
+					{
+						breadcrumb.setCollapsed(!breadcrumb.isCollapsed());
+					}
+				}
+				else if (breadcrumb.isActivateItemsOnSelectionEnabled())
 				{
 					int index = breadcrumb.indexOf(BreadcrumbItem.this);
 					breadcrumb.setActiveIndex(index);
+					if (breadcrumb.isCollapsible())
+					{
+						breadcrumb.setCollapsed(true);
+					}
 				}
 				
 				SelectEvent.fire(BreadcrumbItem.this);
@@ -81,6 +92,15 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		getElement().appendChild(itemPanel.getElement());
 	}
 
+	/**
+	 * Check if the current item is active on its breadcrumb
+	 * @return
+	 */
+	public boolean isActive()
+    {
+        return BreadcrumbItem.this == breadcrumb.getActiveItem();
+    }
+	
 	/**
 	 * Constructor
 	 * @param name the item name.
@@ -326,4 +346,14 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	{
 		return itemPanel;
 	}
+
+	protected void collapse()
+    {
+		setVisible(false);
+    }
+
+	protected void uncollapse()
+    {
+		setVisible(true);
+    }
 }

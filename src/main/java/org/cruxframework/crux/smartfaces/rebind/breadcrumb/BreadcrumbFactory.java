@@ -75,7 +75,13 @@ import org.cruxframework.crux.smartfaces.rebind.image.ImageFactory;
 							+ "item when it is selected by the user."),
 		@TagAttribute(value = "updateOnViewChangeEnabled", type=Boolean.class, defaultValue="true", 
 					description = "When this property is true, the Breadcrumb will set the active index for an "
-							+ "item when it is bound to a view that is activated on the Breadcrumb's viewContainer.")
+							+ "item when it is bound to a view that is activated on the Breadcrumb's viewContainer."),
+		@TagAttribute(value = "collapsible", type=Boolean.class, defaultValue="false", 
+					description = "When this property is true, the Breadcrumb will allow that you collapse or expand the breadcrumb "
+							+ "selecting the active item."),
+		@TagAttribute(value = "collapsed", type=Boolean.class, defaultValue="false", 
+					description = "When this property is true, the Breadcrumb will collapse all items "
+							+ "keeping only the active item visible.", processingTime=ProcessingTime.afterAllWidgetsOnView)
 })
 @TagChildren({
 	@TagChild(BreadcrumbFactory.BreadcrumbDividerProcessor.class), 
@@ -93,10 +99,22 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 	@TagChildren({
 		@TagChild(BreadcrumbDividerImageProcessor.class)
 	})
-	@TagAttributes({
-		@TagAttribute(value="text", property="dividerText")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="text")
 	})
-	public static class BreadcrumbDividerProcessor extends WidgetChildProcessor<BreadcrumbContext> {}
+	public static class BreadcrumbDividerProcessor extends WidgetChildProcessor<BreadcrumbContext> 
+	{
+		@Override
+		public void processChildren(SourcePrinter out, BreadcrumbContext context) throws CruxGeneratorException
+		{
+			String text = context.readChildProperty("text");
+			if (!StringUtils.isEmpty(text))
+			{
+				out.println(context.getWidget()+".setDividerText("+getWidgetCreator().resolveI18NString(text)+");");
+			}
+			
+		}
+	}
 		
 	@TagConstraints(tagName="image", widgetProperty="dividerImage", type=ImageFactory.class, minOccurs="0", maxOccurs="1")
 	public static class BreadcrumbDividerImageProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}

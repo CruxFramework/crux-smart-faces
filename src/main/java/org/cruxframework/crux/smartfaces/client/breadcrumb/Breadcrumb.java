@@ -49,11 +49,15 @@ public class Breadcrumb extends Composite implements HasEnabled
 	public static final String STYLE_BREADCRUMB_SEPARATOR = "separator";
 	private static final String STYLE_BREADCRUMB_DISABLED_SUFFIX = "-disabled";
 	private static final String STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX = "-active";
+	private static final String STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX = "-contract";
+	private static final String STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX = "-expand";
 
 	private HandlerRegistration activateHandler;
 	private boolean activateItemsOnSelectionEnabled = true;
 	private int activeIndex = -1;
 	private Array<BreadcrumbItem> children = CollectionFactory.createArray();
+	private boolean collapsed = false;
+	private boolean collapsible = false;
 	private Image dividerImage;
 	private String dividerText;
 	private boolean enabled = true;
@@ -83,7 +87,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return add(item, -1);
 	}
-	
+
 	/**
 	 * Add a new {@link BreadcrumbItem} to this component. It is inserted on
 	 * the position informed through beforeIndex parameter.
@@ -101,9 +105,13 @@ public class Breadcrumb extends Composite implements HasEnabled
 		{
 			activeIndex++;
 		}
+		if (collapsed)
+		{
+			item.collapse();
+		}
 		return item;
 	}
-	
+
 	/**
 	 * Create an add a new {@link BreadcrumbItem} to this component. It is appended as the last item on
 	 * this Breadcrumb.
@@ -115,7 +123,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return add(name, label, -1);
 	}
-	
+
 	/**
 	 * Create an add a new {@link BreadcrumbItem} to this component. It is inserted on
 	 * the position informed through beforeIndex parameter.
@@ -138,7 +146,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return activeIndex;
 	}
-	
+
 	/**
 	 * Retrieve the index of the current active item on this Breadcrumb.
 	 * @return active item.
@@ -180,7 +188,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return children.get(index);
 	}
-
+	
 	/**
 	 * Retrieve the item with the given name.
 	 * @param name item name
@@ -206,7 +214,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return viewContainer;
 	}
-
+	
 	/**
 	 * Inform if this Breadcrumb has any divider configured.
 	 * @return true if it has a divider configured.
@@ -225,7 +233,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return children.indexOf(item);
 	}
-
+	
 	/**
 	 * Find the index of the item with the given name on this Breadcrumb, or -1 if it is not present.
 	 * @param name the name of the item to find.
@@ -242,7 +250,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		}
 		return -1;
 	}
-
+	
 	/**
 	 * Retrieve the activateItemsOnSelectionEnabled property value. If this is enabled, the Breadcrumb will
 	 * set the active index for an item when it is selected by the user.
@@ -252,14 +260,31 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return activateItemsOnSelectionEnabled;
 	}
+
+	/**
+	 * Return true if this breadcrumbs is collapsed
+	 * @return true if collapsed
+	 */
+	public boolean isCollapsed()
+	{
+		return collapsed;
+	}
 	
-	
+	/**
+	 * Return true if this breadcrumbs supports to be collapsed
+	 * @return true if collapsible
+	 */
+	public boolean isCollapsible()
+	{
+		return collapsible;
+	}
+
 	@Override
 	public boolean isEnabled() 
 	{
 		return enabled;
 	}
-	
+
 	/**
 	 * Retrieve the removeInactiveItems property value. When this property is true, 
 	 * the Breadcrumb automatically remove the items that are not active anymore
@@ -269,7 +294,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return removeInactiveItems;
 	}
-	
+
 	/**
 	 * Retrieve the singleActivationModeEnabled property value. If this is enabled, the Breadcrumb will
 	 * keep only one item activated at a time. If false, all previous items are also activated.
@@ -279,7 +304,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return singleActivationModeEnabled;
 	}
-	
+
 	/**
 	 * Retrieve the updateOnViewChangeEnabled property value. If this is enabled, the Breadcrumb will
 	 * set the active index for an item when it is bound to a view that is activated on the Breadcrumb's 
@@ -290,6 +315,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		return updateOnViewChangeEnabled;
 	}
+	
 	
 	/**
 	 * Remove the given item from this Breadcrumb.
@@ -320,10 +346,9 @@ public class Breadcrumb extends Composite implements HasEnabled
 	 */
 	public Breadcrumb removeFrom(int index)
 	{
-		int from = index + 1;
-		while (size() > from)
+		while (size() > index)
 		{
-			remove(from);
+			remove(index);
 		}
 		return this;
 	}
@@ -339,7 +364,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		this.activateItemsOnSelectionEnabled = activateItemsOnSelection;
 		return this;
 	}
-
+	
 	/**
 	 * Set the index of the current active item on this Breadcrumb.
 	 * @return active item.
@@ -365,6 +390,24 @@ public class Breadcrumb extends Composite implements HasEnabled
 				children.get(i).addStyleDependentName(STYLE_BREADCRUMB_ITEM_ACTIVE_SUFFIX);
 			}
 		}
+		if (collapsible)
+		{
+			children.get(index).addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+			if (activeIndex >= 0)
+			{
+				BreadcrumbItem activeItem = children.get(this.activeIndex);
+				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+			}
+			if (collapsed)
+			{
+				children.get(index).uncollapse();
+				if (activeIndex >= 0 && removeInactiveItems && activeIndex < index)
+				{
+					children.get(this.activeIndex).collapse();
+				}
+			}
+		}
 		if (removeInactiveItems && (index < size() -1))
 		{
 			removeFrom(index+1);
@@ -384,7 +427,30 @@ public class Breadcrumb extends Composite implements HasEnabled
 		
 		return this;
 	}
-
+	
+	/**
+	 * Collapse or expand the breadcrumb. It only will take any effect if the collapsible property is true.
+	 * @param collapsed true to collapse, false to expand
+	 */
+	public void setCollapsed(boolean collapsed)
+	{
+		if (this.collapsible && this.collapsed != collapsed)
+		{
+			collapseInactiveItems(collapsed);
+			uptadeActiveItemCollapsibleStyles(collapsed);
+			this.collapsed = collapsed;
+		}
+	}
+	
+	/**
+	 * Set the collapsible property. If this is true breadcrumb will support to be collapsed.
+	 * @param collapsible true if collapsible
+	 */
+	public void setCollapsible(boolean collapsible)
+	{
+		this.collapsible = collapsible;
+	}
+	
 	/**
 	 * Set the image to be used as divider between items on this Breadcrumb.
 	 * @param divider divider image
@@ -423,7 +489,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 			addStyleDependentName(STYLE_BREADCRUMB_DISABLED_SUFFIX);
 		}
 	}
-	
+
 	/**
 	 * Set the removeInactiveItems property value. When this property is true, 
 	 * the Breadcrumb automatically remove the items that are not active anymore
@@ -447,7 +513,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		this.singleActivationModeEnabled = singleActivationModeEnabled;
 		return this;
 	}
-
+	
 	/**
 	 * Set the updateOnViewChangeEnabled property value. If this is enabled, the Breadcrumb will
 	 * set the active index for an item when it is bound to a view that is activated on the Breadcrumb's 
@@ -459,7 +525,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		this.updateOnViewChangeEnabled = updateOnViewChangeEnabled;
 	}
-	
+
 	/**
 	 * Inform the associated ViewContainer. If there is a ViewContainer associated, 
 	 * the {@link BreadcrumbItem}s can automatically navigate to views on this container
@@ -516,6 +582,29 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		children.add(item);
 		mainPanel.adopt(item);
+	}
+
+	protected void collapseInactiveItems(boolean collapse)
+	{
+		for (int i=0; i < children.size(); i++)
+		{
+			if (i != activeIndex)
+			{
+				BreadcrumbItem item = children.get(i);
+				if (collapse)
+				{
+					item.collapse();
+				}
+				else
+				{
+					item.uncollapse();
+				}
+			}
+		}
+		if (hasDivider())
+		{
+			mainPanel.showDividers(!collapse);
+		}
 	}
 	
 	/**
@@ -585,6 +674,16 @@ public class Breadcrumb extends Composite implements HasEnabled
 		return this;
 	}
 	
+	protected void uptadeActiveItemCollapsibleStyles(boolean collapsed)
+    {
+		BreadcrumbItem activeItem = getActiveItem();
+		if (activeItem != null)
+		{
+			activeItem.addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+			activeItem.removeStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX:STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+		}    
+	}
+	
 	/**
 	 * Internal class representing the outer panel of a Breadcrumb component.
 	 * It generates a structure like:
@@ -597,7 +696,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 	{
 		private Breadcrumb breadcrumb;
 		private Element listElement;
-
+		
 		protected BreadcrumbPanel(Breadcrumb breadcrumb) 
 		{
 			super("nav");
@@ -605,7 +704,7 @@ public class Breadcrumb extends Composite implements HasEnabled
 		    listElement = Document.get().createElement("ol");
 			getElement().appendChild(listElement);
 		}
-
+		
 		protected void add(BreadcrumbItem item, int beforeIndex)
 		{
 			int listSize = listElement.getChildCount();
@@ -680,6 +779,17 @@ public class Breadcrumb extends Composite implements HasEnabled
 				}
 			}
 			item.getElement().removeFromParent();
+		}
+		
+		protected void showDividers(boolean show)
+		{
+			NodeList<Element> separators = DOMUtils.getElementsByClassName(listElement, STYLE_BREADCRUMB_SEPARATOR);
+
+			for (int i = 0; i < separators.getLength(); i++)
+			{
+				Element separator = separators.getItem(i);
+				separator.getStyle().setProperty("display", show?"":"none");
+			}
 		}
 		
 		protected void updateDividers()
