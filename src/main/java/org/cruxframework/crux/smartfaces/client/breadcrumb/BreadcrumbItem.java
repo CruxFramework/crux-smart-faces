@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.breadcrumb;
 
+import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
@@ -76,7 +77,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 				else if (breadcrumb.isActivateItemsOnSelectionEnabled())
 				{
 					int index = breadcrumb.indexOf(BreadcrumbItem.this);
-					breadcrumb.setActiveIndex(index);
+					breadcrumb.setActiveIndex(index, true);
 					if (breadcrumb.isCollapsible())
 					{
 						breadcrumb.setCollapsed(true);
@@ -92,15 +93,6 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		getElement().appendChild(itemPanel.getElement());
 	}
 
-	/**
-	 * Check if the current item is active on its breadcrumb
-	 * @return
-	 */
-	public boolean isActive()
-    {
-        return BreadcrumbItem.this == breadcrumb.getActiveItem();
-    }
-	
 	/**
 	 * Constructor
 	 * @param name the item name.
@@ -121,7 +113,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		this(name);
 		setWidget(itemWidget);
 	}
-
+	
 	/**
 	 * Constructor
 	 * @param name the item name.
@@ -138,7 +130,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	{
 		return addHandler(handler, SelectEvent.getType());
 	}
-	
+
 	/**
 	 * Verify if the current user has permission to select this item
 	 * 
@@ -151,7 +143,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 			Permissions.markAsUnauthorizedForEdition(this);
 		}
 	}
-
+	
 	/**
 	 * Verify if the current user has permission to see this item.
 	 * 
@@ -164,7 +156,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 			Permissions.markAsUnauthorizedForViewing(this);
 		}
 	}
-	
+
 	@Override
 	public void fireEvent(GwtEvent<?> event)
 	{
@@ -173,7 +165,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 			handlerManager.fireEvent(event);
 		}
 	}
-
+	
 	/**
 	 * Retrieve the name property of this item. It can be used to find the items inside the {@link Breadcrumb}.
 	 * It should be unique to avoid conflicts.
@@ -183,12 +175,12 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	{
 		return name;
 	}
-	
+
 	@Override
 	public String getText() 
 	{
 		return text;
-	}	
+	}
 	
 	/**
 	 * Retrieve the view identifier of this item. If this item has a viewName and viewId, when selected, 
@@ -198,7 +190,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	public String getViewId()
 	{
 		return viewId;
-	}
+	}	
 	
 	/**
 	 * Retrieve the view name of this item. If this item has a viewName and viewId, when selected, 
@@ -208,7 +200,16 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	public String getViewName()
 	{
 		return viewName;
-	}	
+	}
+	
+	/**
+	 * Check if the current item is active on its breadcrumb
+	 * @return
+	 */
+	public boolean isActive()
+    {
+        return BreadcrumbItem.this == breadcrumb.getActiveItem();
+    }	
 
 	@Override
 	public boolean isEnabled() 
@@ -307,6 +308,30 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		return this;
 	}
 
+	protected void collapse()
+    {
+		collapse(true);
+    }
+	
+	protected void collapse(boolean allowAnimations)
+    {
+		if (allowAnimations && breadcrumb.isAnimationEnabled())
+		{
+			breadcrumb.getCollapseAnimation().animateExit(getElement(), new Animation.Callback()
+			{
+				@Override
+                public void onAnimationCompleted()
+                {
+					setVisible(false);
+                }
+			}, breadcrumb.getAnimationDuration());
+		}
+		else
+		{
+			setVisible(false);
+		}
+    }
+	
 	protected void setBreadcrumb(Breadcrumb breadcrumb, int onPosition)
 	{
 		if (this.breadcrumb != breadcrumb)
@@ -327,11 +352,24 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 		}
 	}
 	
+	protected void uncollapse()
+    {
+		uncollapse(true);
+    }
+	protected void uncollapse(boolean allowAnimations)
+    {
+		setVisible(true);
+		if (allowAnimations && breadcrumb.isAnimationEnabled())
+		{
+			breadcrumb.getCollapseAnimation().animateEntrance(getElement(), null, breadcrumb.getAnimationDuration());
+		}
+    }
+	
 	<H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type)
 	{
 		return ensureHandlers().addHandler(type, handler);
 	}
-	
+
 	/**
 	 * Ensures the existence of the handler manager.
 	 * 
@@ -341,19 +379,9 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 	{
 		return handlerManager == null ? handlerManager = new HandlerManager(this) : handlerManager;
 	}
-	
+
 	SelectablePanel getItemPanel()
 	{
 		return itemPanel;
 	}
-
-	protected void collapse()
-    {
-		setVisible(false);
-    }
-
-	protected void uncollapse()
-    {
-		setVisible(true);
-    }
 }
