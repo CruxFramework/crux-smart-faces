@@ -108,13 +108,20 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		item.setBreadcrumb(this, beforeIndex);
 		mainPanel.add(item, beforeIndex);
 		
-		if (activeIndex >= 0 && activeIndex >= beforeIndex)
+		if (activeIndex >= 0)
 		{
-			activeIndex++;
-		}
-		if (collapsed)
-		{
-			item.collapse();
+			if (beforeIndex >= 0 && activeIndex >= beforeIndex)
+			{
+				activeIndex++;
+			}
+			else
+			{
+				setActiveIndex(beforeIndex, false);
+			}
+			if (collapsed)
+			{
+				item.collapse();
+			}
 		}
 		return item;
 	}
