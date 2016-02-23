@@ -36,6 +36,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer;
+import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer.Direction;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 class SwapContainerContext extends WidgetCreatorContext
@@ -57,6 +58,7 @@ class SwapContainerContext extends WidgetCreatorContext
 	@TagAttribute(value="autoRemoveInactiveViews", type=Boolean.class, defaultValue="false"), 
 	@TagAttribute(value="animationEnabledForLargeDevices", type=Boolean.class, defaultValue="true"), 
 	@TagAttribute(value="animationEnabledForSmallDevices", type=Boolean.class, defaultValue="true"),
+	@TagAttribute(value="defaultDirection", type=Direction.class, defaultValue="BACKWARDS")
 })
 @TagEvents({
 	@TagEvent(ChangeViewEvtBind.class)
@@ -92,7 +94,7 @@ public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext
     		{
     			if (context.hasActiveView)
     			{
-    				throw new CruxGeneratorException("SwapViewContainer ["+context.getWidgetId()+"], declared on view ["+getWidgetCreator().getView().getId()+"], declares more than one active View. Only one active view is allowed form the container.");
+    				throw new CruxGeneratorException("SwapViewContainer ["+context.getWidgetId()+"], declared on view ["+getWidgetCreator().getView().getId()+"], declares more than one active View. Only one active view is allowed by the container.");
     			}
     			context.hasActiveView = true;
     		}

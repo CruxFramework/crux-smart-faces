@@ -693,6 +693,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		else if (activeIndex == index)
 		{
 			activeIndex = -1;
+			setCollapsed(false);
 		}
 		return this;
 	}
