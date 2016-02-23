@@ -120,7 +120,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 			}
 			if (collapsed)
 			{
-				item.collapse();
+				item.collapse(false);
 			}
 		}
 		return item;
@@ -403,22 +403,9 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	 */
 	public Breadcrumb setActiveIndex(final int index, final boolean allowAnimations)
 	{
-		if (mainPanel.isAnimating())
-		{
-			new Timer()
-			{
-				@Override
-				public void run()
-				{
-					doSetActivateIndex(index, allowAnimations);
-				}
-			}.schedule((int)(animationDuration*1000));
-			return this;
-		}
-		
-		return doSetActivateIndex(index, allowAnimations);
+		return setActiveIndex(index, allowAnimations, false);
 	}
-
+	
 	/**
 	 * Set the duration for the animations
 	 * @param duration animations duration in seconds
@@ -427,7 +414,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	{
 		this.animationDuration = duration;
 	}
-	
+
 	@Override
     public void setAnimationEnabled(boolean enable)
     {
@@ -443,7 +430,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		this.collapseAnimation = animation;
 		setAnimationEnabled(animation != null);
 	}
-
+	
 	/**
 	 * Collapse or expand the breadcrumb. It only will take any effect if the collapsible property is true.
 	 * @param collapsed true to collapse, false to expand
@@ -491,7 +478,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		mainPanel.updateDividers();
 		return this;
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) 
 	{
@@ -505,7 +492,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 			addStyleDependentName(STYLE_BREADCRUMB_DISABLED_SUFFIX);
 		}
 	}
-
+	
 	/**
 	 * Set the removeInactiveItems property value. When this property is true, 
 	 * the Breadcrumb automatically remove the items that are not active anymore
@@ -529,7 +516,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		this.singleActivationModeEnabled = singleActivationModeEnabled;
 		return this;
 	}
-	
+
 	/**
 	 * Set the updateOnViewChangeEnabled property value. If this is enabled, the Breadcrumb will
 	 * set the active index for an item when it is bound to a view that is activated on the Breadcrumb's 
@@ -541,7 +528,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	{
 		this.updateOnViewChangeEnabled = updateOnViewChangeEnabled;
 	}
-
+	
 	/**
 	 * Inform the associated ViewContainer. If there is a ViewContainer associated, 
 	 * the {@link BreadcrumbItem}s can automatically navigate to views on this container
@@ -578,7 +565,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Retrieve the number of items inside this Breadcrumb.
 	 * @return number of children.
@@ -660,7 +647,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 		}
 		return collapseAnimation;
 	}
-
+	
 	/**
 	 * Find the index of the item with the given viewId on this Breadcrumb, or -1 if it is not present.
 	 * @param viewID the viewID of the item to find.
@@ -687,8 +674,8 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	{
 		children.remove(item);
 	    mainPanel.orphan(item);
-	}	
-	
+	}
+
 	protected Breadcrumb remove(BreadcrumbItem item, int index) 
 	{
 		item.setBreadcrumb(null, -1);
@@ -703,6 +690,29 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 			setCollapsed(false);
 		}
 		return this;
+	}	
+	
+	protected Breadcrumb setActiveIndex(final int index, final boolean allowAnimations, final boolean collpase)
+	{
+		if (mainPanel.isAnimating())
+		{
+			new Timer()
+			{
+				@Override
+				public void run()
+				{
+					doSetActivateIndex(index, allowAnimations);
+					if (collpase && isCollapsible())
+					{
+						setCollapsed(true);
+					}
+
+				}
+			}.schedule((int)(animationDuration*1000));
+			return this;
+		}
+		
+		return doSetActivateIndex(index, allowAnimations);
 	}
 	
 	protected void uptadeActiveItemCollapsibleStyles(boolean collapsed)
