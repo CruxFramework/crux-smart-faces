@@ -56,6 +56,8 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	private boolean isAnimationRunning = false;
 	private Panel swap;
 	private SwapPanel swapPanel;
+	private Direction defaultDirection = Direction.BACKWARDS;
+
 	/**
 	 *  Default constructor.
 	 */
@@ -188,12 +190,27 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		this.autoRemoveInactiveViews = autoRemoveInactiveViews;
 	}
 
+	/**
+	 * Define the default direction for showView animations.
+	 * @param direction
+	 */
+	public void setDefaultDirection(Direction direction)
+	{
+		defaultDirection = direction;
+	}
+	
 	@Override
 	public void showView(String viewName)
 	{
-		showView(viewName, Direction.BACKWARDS);
+		showView(viewName, defaultDirection);
 	}
 
+	@Override
+	public void showView(String viewName, String viewId)
+	{
+	    showView(viewName, viewId, defaultDirection);
+	}
+	
 	/**
 	 * @param viewName - The name of view will be show
 	 * @param direction
