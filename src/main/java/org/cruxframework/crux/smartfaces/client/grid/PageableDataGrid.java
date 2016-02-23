@@ -828,9 +828,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 	private void handleSelectionStrategy(final int dataProviderRowIndex, final Row<T> row)
 	{
-		if(rowSelectStrategy.equals(RowSelectStrategy.row) && row.onSelectionHandlerRegistration == null)
+		if(rowSelectStrategy.equals(RowSelectStrategy.row))
 		{
-			HandlerRegistration selectHandler = row.getDivRow().addSelectHandler(new SelectHandler()
+			row.getDivRow().addSelectHandler(new SelectHandler()
 			{
 				@Override
 				public void onSelect(SelectEvent event)
@@ -839,7 +839,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 					getDataProvider().select(dataProviderRowIndex, !selected);
 				}
 			});
-			row.onSelectionHandlerRegistration = selectHandler;
 		}
 		setRowSelectionState(row, getDataProvider().isSelected(dataProviderRowIndex));
 	}

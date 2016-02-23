@@ -17,9 +17,6 @@ package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RadioButton;
 
@@ -38,7 +35,6 @@ class Row<T>
 	final PageableDataGrid<T> grid;
 	int index;
 	T oldDataObject;
-	HandlerRegistration onSelectionHandlerRegistration;
 	RadioButton radioButton;
 	private DivRow divRow;
 	
@@ -93,18 +89,6 @@ class Row<T>
 	void setDivRow(DivRow divRow)
 	{
 		this.divRow = divRow;
-		this.divRow.addAttachHandler(new Handler()
-		{
-			@Override
-			public void onAttachOrDetach(AttachEvent event)
-			{
-				if(!event.isAttached() && onSelectionHandlerRegistration != null)
-				{
-					onSelectionHandlerRegistration.removeHandler();
-					onSelectionHandlerRegistration = null;
-				}
-			}
-		});
 	}
 
 	/**
