@@ -555,7 +555,11 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 						if (updateOnViewChangeEnabled)
 						{
 							String viewId = event.getSenderId();
-							setActiveIndex(indexOfItemByView(viewId), false);
+							int viewIndex = indexOfItemByView(viewId);
+							if (viewIndex >= 0 && viewIndex != activeIndex)
+							{
+								setActiveIndex(viewIndex, false);
+							}
 						}
 					}
 				});
