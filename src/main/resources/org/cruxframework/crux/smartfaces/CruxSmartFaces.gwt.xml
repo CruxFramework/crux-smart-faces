@@ -104,5 +104,5 @@
 			<when-property-is name="device.features" value="smallDisplayArrows" />
 			<when-property-is name="device.features" value="smallDisplayTouch" />
 		</any>
-	</replace-with>	
+	</replace-with>		
 </module>
