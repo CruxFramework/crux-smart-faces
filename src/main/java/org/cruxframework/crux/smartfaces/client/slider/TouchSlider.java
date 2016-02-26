@@ -44,8 +44,8 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	protected boolean circularShowing = false;
 	protected FlowPanel contentPanel;
 	protected int currentWidget = -1;
-	protected boolean isSliding = false;
 	protected int slideTransitionDuration = 500;
+	protected boolean sliding = false;
 	protected FocusPanel touchPanel;
 	
 	/**
@@ -91,7 +91,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		add(w.asWidget());
 	}
-	
+
 	@Override
 	public void add(Widget widget)
 	{
@@ -106,7 +106,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
     {
 		return addHandler(handler, SelectEvent.getType());
     }
-
+	
 	@Override
     public HandlerRegistration addSlideEndHandler(SlideEndHandler handler)
     {
@@ -130,7 +130,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		contentPanel.clear();
 	}
-	
+
 	/**
 	 * Retrieve the current widget being shown on this slider.
 	 * @return current widget
@@ -148,7 +148,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		return slideTransitionDuration;
 	}
-
+	
 	@Override
 	public Widget getWidget(int index)
 	{
@@ -182,6 +182,15 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
     {
     	return circularShowing;
     }
+
+	/**
+	 * Check if the panel is slinding any widget
+	 * @return true if sliding
+	 */
+	public boolean isSliding()
+	{
+		return sliding;
+	}
 
 	@Override
 	public Iterator<Widget> iterator() 
@@ -388,7 +397,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 
 	void slide(final int slideBy, boolean fireSlidingStartEvent)
 	{
-		isSliding = true;
+		sliding = true;
 		if (fireSlidingStartEvent)
 		{
 			SlideStartEvent.fire(this);
@@ -399,7 +408,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 			public void onTransitionCompleted()
 			{
 				int nextIndex = getNextIndexAfterSlide(slideBy);
-				isSliding = false;
+				sliding = false;
 				setCurrentWidget(nextIndex);
 				SlideEndEvent.fire(TouchSlider.this);
 			}

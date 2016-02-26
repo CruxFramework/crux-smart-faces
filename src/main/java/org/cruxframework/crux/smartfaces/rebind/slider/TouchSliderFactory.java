@@ -27,6 +27,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.slider.TouchSlider;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
@@ -46,6 +48,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttribute(value="showFirstWidget", type=Boolean.class, processingTime=ProcessingTime.afterAllWidgetsOnView,
 				  defaultValue="true", processor=TouchSliderFactory.ShowFirstWidgetProcessor.class, supportsDataBinding=false)
 })
+@TagEvents({
+	@TagEvent(value=SlideStartEvtBind.class),
+	@TagEvent(value=SlideEndEvtBind.class)
+})
+	
 @TagChildren({
 	@TagChild(TouchSliderFactory.SliderChildrenProcessor.class)
 })

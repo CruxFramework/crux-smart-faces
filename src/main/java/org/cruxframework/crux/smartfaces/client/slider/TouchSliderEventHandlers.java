@@ -68,7 +68,7 @@ class TouchSliderEventHandlers implements TouchStartHandler, TouchMoveHandler, T
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
-		if (touchSlider.isSliding)
+		if (touchSlider.sliding)
 		{
 			return;
 		}
@@ -98,7 +98,7 @@ class TouchSliderEventHandlers implements TouchStartHandler, TouchMoveHandler, T
 	@Override
 	public void onTouchMove(TouchMoveEvent event)
 	{
-		if (touchSlider.isSliding)
+		if (touchSlider.sliding)
 		{
 			return;
 		}
