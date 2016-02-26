@@ -23,7 +23,6 @@ import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseEvent;
