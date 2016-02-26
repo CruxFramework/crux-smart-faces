@@ -20,11 +20,8 @@ import org.cruxframework.crux.core.client.css.transition.Transition.Callback;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
-import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -57,7 +54,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	protected MenuOrientation menuOrientation;
 	protected SimplePanel menuPanel;
 	protected boolean open = false;
-	protected int slideTransitionDuration = 500;
+	protected int slideTransitionDuration = 250;
 	protected boolean sliding = false;
 	protected FocusPanel touchPanel;
 	/**
@@ -87,27 +84,8 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 
 		contentPanel.add(mainPanel);
 		
-		final SlideOutPanelEventHandlers eventHandlers = new SlideOutPanelEventHandlers(this);
+		SlideOutPanelEventHandlers eventHandlers = new SlideOutPanelEventHandlers(this);
 		touchPanel.addTouchStartHandler(eventHandlers);
-
-		addAttachHandler(new Handler()
-		{
-			private HandlerRegistration orientationHandlerRegistration;
-
-			@Override
-			public void onAttachOrDetach(AttachEvent event)
-			{
-				if (event.isAttached())
-				{
-					orientationHandlerRegistration = Screen.addOrientationChangeHandler(eventHandlers);
-				}
-				else if (orientationHandlerRegistration != null)
-				{
-					orientationHandlerRegistration.removeHandler();
-					orientationHandlerRegistration = null;
-				}
-			}
-		});
 		
 		setMenuOrientation(MenuOrientation.left);
 	}

@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.cruxframework.crux.core.client.css.transition.Transition;
 import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.MenuOrientation;
 
 import com.google.gwt.event.dom.client.TouchEndEvent;
@@ -20,8 +19,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @author Thiago da Rosa de Bustamante
  *
  */
-class SlideOutPanelEventHandlers implements TouchStartHandler, TouchMoveHandler, TouchEndHandler, 
-										  OrientationChangeHandler
+class SlideOutPanelEventHandlers implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 {
 	private static final int SWIPE_THRESHOLD = 50;
 	private static final long SWIPE_TIME_THRESHOLD = 250;
@@ -41,12 +39,6 @@ class SlideOutPanelEventHandlers implements TouchStartHandler, TouchMoveHandler,
 		this.slideOutPanel = slideOutPanel;
 	}
 	
-	@Override
-	public void onOrientationChange()
-	{
-		Transition.resetTransition(slideOutPanel.mainPanel);
-	}
-
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
