@@ -42,7 +42,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @DeclarativeFactory(library=Constants.LIBRARY_NAME, id="slideOutPanel", targetWidget=SlideOutPanel.class, 
 	description="A slide out panel that contains a collapsible menu and a main area.")
 @TagAttributes({
-	@TagAttribute(value="slideTransitionDuration", type=Integer.class),
+	@TagAttribute(value="slideTransitionDuration", type=Integer.class, defaultValue="250"),
 	@TagAttribute(value="menuOrientation", type=MenuOrientation.class)
 })
 @TagEvents({
