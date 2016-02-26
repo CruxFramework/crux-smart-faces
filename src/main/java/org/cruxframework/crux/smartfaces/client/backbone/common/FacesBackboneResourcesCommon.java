@@ -44,7 +44,8 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneBulletsPagerCommon.css",
 		"facesBackboneWidgetListCommon.css",
 		"facesBackbonePredictivePagerCommon.css", 
-		"facesBackboneTouchSliderCommon.css"
+		"facesBackboneTouchSliderCommon.css", 
+		"facesBackboneSlideOutPanelCommon.css"
 		})
 	FacesBackboneCSSCommon css();
 }

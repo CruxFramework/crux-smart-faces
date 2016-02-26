@@ -84,4 +84,9 @@ public interface FacesBackboneCSSCommon extends CssResource
 	//TouchSlider
 	String facesTouchSliderContentPanel();
 	String facesTouchSliderItem();
+
+	//SlideOutPanel
+	String facesSlideOutContentPanel();
+	String facesSlideOutMenu();
+	String facesSlideOutMain();
 }
