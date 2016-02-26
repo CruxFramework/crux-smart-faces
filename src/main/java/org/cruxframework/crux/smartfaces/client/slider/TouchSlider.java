@@ -267,13 +267,18 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	@Override
 	public boolean remove(IsWidget w) 
 	{
-		return contentPanel.remove(w);
+		return remove(w.asWidget());
 	}
 	
 	@Override
 	public boolean remove(Widget w) 
 	{
-		return contentPanel.remove(w);
+		int index = getWidgetIndex(w);
+		if (index < 0) 
+		{
+			return false;
+		}
+		return remove(index);
 	}
 
 	/**
