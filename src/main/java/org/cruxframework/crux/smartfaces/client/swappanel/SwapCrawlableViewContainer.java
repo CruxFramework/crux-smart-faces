@@ -51,7 +51,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	private boolean animationEnabled = true;
 	private SwapAnimation animationForward;
 	private boolean autoRemoveInactiveViews = false;
-	private SwapAnimation defaultAnimation;
+	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
 	private boolean isAnimationRunning = false;
 	private Panel swap;
 	private SwapPanel swapPanel;
