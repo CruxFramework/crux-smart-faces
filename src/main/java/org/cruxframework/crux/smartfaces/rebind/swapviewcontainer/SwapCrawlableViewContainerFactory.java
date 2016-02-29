@@ -50,7 +50,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 		description="Defines the type of animation to be executed to back the swap of view."),
 	@TagAttribute(value="animationDuration",  type=Double.class,   
 	  description="The duration for the animation to be aplied when the panel changes its content."),
-	@TagAttribute(value="defaultAnimation", type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
+	@TagAttribute(value="defaultAnimation", type=SwapCrawlableViewContainerFactory.Animations.class, 
 		processor=SwapCrawlableViewContainerFactory.DefaultAnimationProcessor.class, widgetType=SwapAnimation.class,   
 	    description="The default animation to be aplied when the panel changes its content.")
 })

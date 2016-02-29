@@ -127,7 +127,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		if (open)
 		{
-			slide(menuPanel.getElement().getOffsetWidth(), true, false);
+			slide(0, true, false);
 		}
 	}
 
@@ -166,7 +166,12 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		if (!open && hasHiddenWidget())
 		{
-			slide(-menuPanel.getElement().getOffsetWidth(), true, true);
+			int slideBy = menuPanel.getElement().getOffsetWidth();
+			if (menuOrientation == MenuOrientation.right)
+			{
+				slideBy *= -1;
+			}
+			slide(slideBy, true, true);
 		}
 	}
 	
