@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.shared.Experimental;
-import org.cruxframework.crux.smartfaces.client.slider.TouchSlider;
+import org.cruxframework.crux.smartfaces.client.slider.Slider;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
@@ -40,13 +40,13 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="touchSlider", targetWidget=TouchSlider.class, 
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="slider", targetWidget=Slider.class, 
 	description="A slider that shows various widgets, allowing touch slides between them.")
 @TagAttributes({
 	@TagAttribute(value="circularShowing", type=Boolean.class, defaultValue="false"),
 	@TagAttribute(value="slideTransitionDuration", type=Integer.class),
 	@TagAttribute(value="showFirstWidget", type=Boolean.class, processingTime=ProcessingTime.afterAllWidgetsOnView,
-				  defaultValue="true", processor=TouchSliderFactory.ShowFirstWidgetProcessor.class, supportsDataBinding=false)
+				  defaultValue="true", processor=SliderFactory.ShowFirstWidgetProcessor.class, supportsDataBinding=false)
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),
@@ -54,9 +54,9 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 	
 @TagChildren({
-	@TagChild(TouchSliderFactory.SliderChildrenProcessor.class)
+	@TagChild(SliderFactory.SliderChildrenProcessor.class)
 })
-public class TouchSliderFactory extends WidgetCreator<WidgetCreatorContext>
+public class SliderFactory extends WidgetCreator<WidgetCreatorContext>
 {
 	public static class ShowFirstWidgetProcessor extends AttributeProcessor<WidgetCreatorContext> 
 	{

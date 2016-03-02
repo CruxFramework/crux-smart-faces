@@ -13,8 +13,10 @@ import org.cruxframework.crux.core.client.event.swap.SwapEvent;
 import org.cruxframework.crux.core.client.event.swap.SwapHandler;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.PartialSupport;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
@@ -33,11 +35,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  */
 @PartialSupport
-public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideStartHandlers, 
+public class Slider extends Composite implements HasSwapHandlers, HasSlideStartHandlers, 
 											HasSlideEndHandlers, HasSelectHandlers, 
 											HasWidgets.ForIsWidget, IndexedPanel.ForIsWidget
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-TouchSlider";
+	public static final String DEFAULT_STYLE_NAME = "faces-Slider";
 	private static Boolean supported = null;
 	private static final String TOUCH_SLIDER_ITEM_STYLE_NAME = "item";
 	
@@ -51,7 +53,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	/**
 	 * Constructor
 	 */
-	public TouchSlider() 
+	public Slider() 
 	{
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		touchPanel = new FocusPanel();
@@ -61,29 +63,11 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 		initWidget(touchPanel);
 		setStyleName(DEFAULT_STYLE_NAME);
 
-		contentPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesTouchSliderContentPanel());
+		contentPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesSliderContentPanel());
 
-		final TouchSliderEventHandlers eventHandlers = new TouchSliderEventHandlers(this);
-		touchPanel.addTouchStartHandler(eventHandlers);
-		
-		addAttachHandler(new Handler()
-		{
-			private HandlerRegistration orientationHandlerRegistration;
-
-			@Override
-			public void onAttachOrDetach(AttachEvent event)
-			{
-				if (event.isAttached())
-				{
-					orientationHandlerRegistration = Screen.addOrientationChangeHandler(eventHandlers);
-				}
-				else if (orientationHandlerRegistration != null)
-				{
-					orientationHandlerRegistration.removeHandler();
-					orientationHandlerRegistration = null;
-				}
-			}
-		});
+		SliderEventHandlers eventHandlers = GWT.create(SliderEventHandlers.class);
+		eventHandlers.setSlider(this);
+		eventHandlers.handleSliderEvents();
 	}
 
 	@Override
@@ -91,7 +75,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		add(w.asWidget());
 	}
-
+	
 	@Override
 	public void add(Widget widget)
 	{
@@ -100,7 +84,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 		itemWrapper.add(widget);
 		wrapItem(itemWrapper);
 	}
-	
+
 	@Override
     public HandlerRegistration addSelectHandler(SelectHandler handler)
     {
@@ -112,7 +96,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
     {
 		return addHandler(handler, SlideEndEvent.getType());
     }
-
+	
 	@Override
     public HandlerRegistration addSlideStartHandler(SlideStartHandler handler)
     {
@@ -139,7 +123,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		return currentWidget;
 	}
-	
+
 	/**
 	 * Gets the duration of the slide animations in milliseconds.
 	 * @return animations duration
@@ -154,7 +138,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	{
 		return contentPanel.getWidget(index);
 	}
-
+	
 	@Override
 	public int getWidgetCount()
 	{
@@ -222,7 +206,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 				{
 					throw new IllegalStateException();
 				}
-				TouchSlider.this.remove(index--);
+				Slider.this.remove(index--);
             }
 		};
     }
@@ -241,7 +225,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 			slide(-contentPanel.getElement().getOffsetWidth(), true);
 		}
 	}
-	
+
 	/**
 	 * Show the previous widget, sliding back horizontally to it.
 	 */
@@ -257,12 +241,12 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 		}
 	}
 	
-	
 	@Override
 	public boolean remove(int index)
 	{
 		return contentPanel.remove(index);
 	}
+	
 	
 	@Override
 	public boolean remove(IsWidget w) 
@@ -280,7 +264,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 		}
 		return remove(index);
 	}
-
+	
 	/**
 	 * set the circularShowing property value. If this property is true, the slider will start
 	 * again on first item when the end of widgets collection is reached.
@@ -327,7 +311,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 	public void wrapItem(SimplePanel itemPanel)
 	{
 		itemPanel.setStyleName(TOUCH_SLIDER_ITEM_STYLE_NAME);
-		itemPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesTouchSliderItem());
+		itemPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesSliderItem());
 		itemPanel.setVisible(false);
 		
 		contentPanel.add(itemPanel);
@@ -415,7 +399,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 				int nextIndex = getNextIndexAfterSlide(slideBy);
 				sliding = false;
 				setCurrentWidget(nextIndex);
-				SlideEndEvent.fire(TouchSlider.this);
+				SlideEndEvent.fire(Slider.this);
 			}
 		});
 		if (hasPreviousWidget())
@@ -507,12 +491,12 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 			SwapEvent.fire(this);
 		}
 	}
-	
-	public static TouchSlider createIfSupported()
+
+	public static Slider createIfSupported()
 	{
 		if (isSupported())
 		{
-			return new TouchSlider();
+			return new Slider();
 		}
 		return null;
 	}
@@ -525,11 +509,68 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlideS
 		}
 		return (supported);
 	}
-
+	
 	private static Boolean supportDetection()
     {
 	    return Screen.getCurrentDevice().getInput().equals(Input.touch);
     }
+
+	static class SliderEventHandlers implements OrientationChangeHandler
+	{
+		protected Slider slider;
+
+		@Override
+		public void onOrientationChange()
+		{
+			if (slider.getWidgetCount() > 0)
+			{
+				boolean hasNextPanel = slider.hasNextWidget();
+				boolean hasPreviousPanel = slider.hasPreviousWidget();
+
+				if (hasNextPanel || hasPreviousPanel)
+				{
+					Transition.translateX(slider.getCurrentPanel(), 0, null);
+					if (hasPreviousPanel)
+					{
+						Widget previousPanel = slider.getPreviousPanel();
+						Transition.translateX(previousPanel, -previousPanel.getOffsetWidth(), null);
+					}
+					if (hasNextPanel)
+					{
+						Widget nextPanel = slider.getNextPanel();
+						Transition.translateX(nextPanel, nextPanel.getOffsetWidth(), null);
+					}
+				}
+			}
+		}
+		
+		protected void handleSliderEvents()
+		{
+			slider.addAttachHandler(new Handler()
+			{
+				private HandlerRegistration orientationHandlerRegistration;
+
+				@Override
+				public void onAttachOrDetach(AttachEvent event)
+				{
+					if (event.isAttached())
+					{
+						orientationHandlerRegistration = Screen.addOrientationChangeHandler(SliderEventHandlers.this);
+					}
+					else if (orientationHandlerRegistration != null)
+					{
+						orientationHandlerRegistration.removeHandler();
+						orientationHandlerRegistration = null;
+					}
+				}
+			});
+		}
+		
+		void setSlider(Slider slider)
+		{
+			this.slider = slider;
+		}
+	}
 	
 	
 }
