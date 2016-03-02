@@ -1,11 +1,11 @@
-.facesTouchSliderContentPanel {
+.facesSliderContentPanel {
 	position: relative;
 	overflow: hidden;
 	width: 100%;
 	height: 100%;
 }
 
-.facesTouchSliderItem {
+.facesSliderItem {
 	position: absolute;
 	top: 0;
 	left: 0;

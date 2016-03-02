@@ -22,6 +22,7 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -84,12 +85,13 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 
 		contentPanel.add(mainPanel);
 		
-		SlideOutPanelEventHandlers eventHandlers = new SlideOutPanelEventHandlers(this);
-		touchPanel.addTouchStartHandler(eventHandlers);
+		SlideOutPanelEventHandlers eventHandlers = GWT.create(SlideOutPanelEventHandlers.class);
+		eventHandlers.setSlideOutPanel(this);
+		eventHandlers.handleEvents();
 		
 		setMenuOrientation(MenuOrientation.left);
 	}
-
+	
 	@Override
 	public HandlerRegistration addCloseHandler(CloseHandler<SlideOutPanel> handler)
 	{
@@ -131,16 +133,11 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		}
 	}
 
-	public boolean isOpen()
-	{
-		return open;
-	}
-	
 	public MenuOrientation getMenuOrientation()
 	{
 		return menuOrientation;
 	}
-	
+
 	/**
 	 * Gets the duration of the slide animations in milliseconds.
 	 * @return animations duration
@@ -149,7 +146,12 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		return slideTransitionDuration;
 	}
-
+	
+	public boolean isOpen()
+	{
+		return open;
+	}
+	
 	/**
 	 * Check if the panel is slinding any widget
 	 * @return true if sliding
@@ -174,27 +176,17 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			slide(slideBy, true, true);
 		}
 	}
-	
+
 	public void setMainWidget(IsWidget w) 
 	{
 		setMainWidget(w.asWidget());
 	}
-		
+	
 	public void setMainWidget(Widget widget)
 	{
 		mainPanel.add(widget);
 	}
-
-	public void setMenuWidget(IsWidget w) 
-	{
-		setMenuWidget(w.asWidget());
-	}
-
-	public void setMenuWidget(Widget widget)
-	{
-		menuPanel.add(widget);
-	}
-
+		
 	public void setMenuOrientation(MenuOrientation menuOrientation)
 	{
 		this.menuOrientation = menuOrientation;
@@ -208,6 +200,16 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			menuPanel.getElement().getStyle().setProperty("right", "0px");
 			menuPanel.getElement().getStyle().setProperty("left", "");
 		}
+	}
+
+	public void setMenuWidget(IsWidget w) 
+	{
+		setMenuWidget(w.asWidget());
+	}
+
+	public void setMenuWidget(Widget widget)
+	{
+		menuPanel.add(widget);
 	}
 
 	/**
@@ -259,4 +261,19 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	}
 
 	public static enum MenuOrientation {left, right}
+
+	static class SlideOutPanelEventHandlers
+	{
+		protected SlideOutPanel slideOutPanel;
+
+		protected void handleEvents()
+		{
+			
+		}
+		
+		void setSlideOutPanel(SlideOutPanel slideOutPanel)
+		{
+			this.slideOutPanel = slideOutPanel;
+		}
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import org.cruxframework.crux.core.client.css.transition.Transition;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.MenuOrientation;
+import org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.SlideOutPanelEventHandlers;
 
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
@@ -19,7 +20,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @author Thiago da Rosa de Bustamante
  *
  */
-class SlideOutPanelEventHandlers implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers 
+							implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 {
 	private static final int SWIPE_THRESHOLD = 50;
 	private static final long SWIPE_TIME_THRESHOLD = 250;
@@ -28,15 +30,16 @@ class SlideOutPanelEventHandlers implements TouchStartHandler, TouchMoveHandler,
 	private int currentTouchPosition;
 	private boolean didMove;
 	private int menuPanelWidth;
-	private SlideOutPanel slideOutPanel;
 	private int startTouchPosition;
 	private long startTouchTime;
 	private HandlerRegistration touchEndHandler;
 	private HandlerRegistration touchMoveHandler;
 
-	SlideOutPanelEventHandlers(SlideOutPanel slideOutPanel) 
+	@Override
+	protected void handleEvents()
 	{
-		this.slideOutPanel = slideOutPanel;
+	    super.handleEvents();
+		slideOutPanel.touchPanel.addTouchStartHandler(this);
 	}
 	
 	@Override

@@ -104,5 +104,23 @@
 			<when-property-is name="device.features" value="smallDisplayArrows" />
 			<when-property-is name="device.features" value="smallDisplayTouch" />
 		</any>
-	</replace-with>		
+	</replace-with>
+	
+	<!-- Slider -->
+	<replace-with class="org.cruxframework.crux.smartfaces.client.slider.TouchSliderEventHandlers">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.slider.Slider.SliderEventHandlers" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</any>
+	</replace-with>
+			
+	<!-- SlideOutPanel -->
+	<replace-with class="org.cruxframework.crux.smartfaces.client.slider.SlideOutPanelTouchEventHandlers">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.SlideOutPanelEventHandlers" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</any>
+	</replace-with>
 </module>
