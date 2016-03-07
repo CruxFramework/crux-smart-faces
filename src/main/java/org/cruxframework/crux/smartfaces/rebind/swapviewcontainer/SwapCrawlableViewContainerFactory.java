@@ -63,7 +63,7 @@ public class SwapCrawlableViewContainerFactory extends WidgetCreator<SwapContain
 	public static enum Animations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
 		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, roll, bounceUpward, bounceDownward,
-		bounceForward, bounceBackward, fadeForward,fadeBackward, fadeUpward, fadeDownward}
+		bounceForward, bounceBackward, fadeForward,fadeBackward, fadeUpward, fadeDownward, fadeAndSlide}
 	
 	public static class AnimationForwardProcessor extends AttributeProcessor<WidgetCreatorContext>
     {
