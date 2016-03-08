@@ -50,7 +50,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	private static final String SLIDE_OUT_MENU_STYLE_NAME = "menu";
 
 	protected FlowPanel contentPanel;
-	
 	protected SimplePanel mainPanel;
 	protected MenuOrientation menuOrientation;
 	protected SimplePanel menuPanel;
@@ -58,6 +57,8 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	protected int slideTransitionDuration = 250;
 	protected boolean sliding = false;
 	protected FocusPanel touchPanel;
+	private SlideOutPanelEventHandlers eventHandlers;
+	
 	/**
 	 * Constructor
 	 */
@@ -85,25 +86,22 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 
 		contentPanel.add(mainPanel);
 		
-		SlideOutPanelEventHandlers eventHandlers = GWT.create(SlideOutPanelEventHandlers.class);
-		eventHandlers.setSlideOutPanel(this);
-		eventHandlers.handleEvents();
-		
+		setSlideEnabled(true);
 		setMenuOrientation(MenuOrientation.left);
 	}
-	
+
 	@Override
 	public HandlerRegistration addCloseHandler(CloseHandler<SlideOutPanel> handler)
 	{
 		return addHandler(handler, CloseEvent.getType());
 	}
-
+	
 	@Override
 	public HandlerRegistration addOpenHandler(OpenHandler<SlideOutPanel> handler) 
 	{
 		return addHandler(handler, OpenEvent.getType());
 	}
-
+	
 	@Override
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
@@ -133,6 +131,10 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		}
 	}
 
+	/**
+	 * Retrieve the menu orientation
+	 * @return
+	 */
 	public MenuOrientation getMenuOrientation()
 	{
 		return menuOrientation;
@@ -146,10 +148,32 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		return slideTransitionDuration;
 	}
-	
+
+	/**
+	 * Verify if the slide movement is horizontally orientated
+	 * @return
+	 */
+	public boolean isHorizontalOrientation()
+    {
+	    return menuOrientation == MenuOrientation.right || menuOrientation == MenuOrientation.left;
+    }
+
+	/**
+	 * Check if the panel is open
+	 * @return
+	 */
 	public boolean isOpen()
 	{
 		return open;
+	}
+	
+	/**
+	 * If enabled, slide will be available for touch devices
+	 * @return
+	 */
+	public boolean isSlideEnabled()
+	{
+		return eventHandlers != null;
 	}
 	
 	/**
@@ -168,49 +192,114 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		if (!open && hasHiddenWidget())
 		{
-			int slideBy = menuPanel.getElement().getOffsetWidth();
-			if (menuOrientation == MenuOrientation.right)
-			{
-				slideBy *= -1;
+			int slideBy;
+			switch (menuOrientation)
+            {
+				case left:
+					slideBy = menuPanel.getElement().getOffsetWidth();
+				break;
+				case right:
+					slideBy = -menuPanel.getElement().getOffsetWidth();
+				break;
+				case top:
+					slideBy = menuPanel.getElement().getOffsetHeight();
+				break;
+				case bottom:
+					slideBy = -menuPanel.getElement().getOffsetHeight();
+				break;
+				default:
+					slideBy = 0;
+				break;
 			}
 			slide(slideBy, true, true);
 		}
 	}
 
+	/**
+	 * Sets the widget to be displayed into the main area
+	 * @param w
+	 */
 	public void setMainWidget(IsWidget w) 
 	{
 		setMainWidget(w.asWidget());
 	}
 	
+	/**
+	 * Sets the widget to be displayed into the main area
+	 * @param widget
+	 */
 	public void setMainWidget(Widget widget)
 	{
 		mainPanel.add(widget);
 	}
-		
+
+	/**
+	 * Define the menu orientation
+	 * @param menuOrientation
+	 */
 	public void setMenuOrientation(MenuOrientation menuOrientation)
 	{
 		this.menuOrientation = menuOrientation;
-		if (menuOrientation == MenuOrientation.left)
-		{
-			menuPanel.getElement().getStyle().setProperty("left", "0px");
-			menuPanel.getElement().getStyle().setProperty("right", "");
-		}
-		else
-		{
-			menuPanel.getElement().getStyle().setProperty("right", "0px");
-			menuPanel.getElement().getStyle().setProperty("left", "");
+		switch (menuOrientation)
+        {
+			case left:
+				menuPanel.getElement().getStyle().setProperty("left", "0px");
+				menuPanel.getElement().getStyle().setProperty("right", "");
+				menuPanel.getElement().getStyle().setProperty("top", "");
+				menuPanel.getElement().getStyle().setProperty("bottom", "");
+			break;
+			case right:
+				menuPanel.getElement().getStyle().setProperty("left", "");
+				menuPanel.getElement().getStyle().setProperty("right", "0px");
+				menuPanel.getElement().getStyle().setProperty("top", "");
+				menuPanel.getElement().getStyle().setProperty("bottom", "");
+			break;
+			case top:
+				menuPanel.getElement().getStyle().setProperty("left", "");
+				menuPanel.getElement().getStyle().setProperty("right", "");
+				menuPanel.getElement().getStyle().setProperty("top", "0px");
+				menuPanel.getElement().getStyle().setProperty("bottom", "");
+			break;
+			case bottom:
+				menuPanel.getElement().getStyle().setProperty("left", "");
+				menuPanel.getElement().getStyle().setProperty("right", "");
+				menuPanel.getElement().getStyle().setProperty("top", "");
+				menuPanel.getElement().getStyle().setProperty("bottom", "0px");
+			break;
 		}
 	}
 
+	/**
+	 * Sets the widget to be displayed into the menu area
+	 * @param w
+	 */
 	public void setMenuWidget(IsWidget w) 
 	{
 		setMenuWidget(w.asWidget());
 	}
 
+	/**
+	 * Sets the widget to be displayed into the menu area
+	 * @param widget
+	 */
 	public void setMenuWidget(Widget widget)
 	{
 		menuPanel.add(widget);
 	}
+
+	public void setSlideEnabled(boolean enabled)
+    {
+		if (eventHandlers != null && !enabled)
+		{
+			eventHandlers.releaseEvents();
+			eventHandlers = null;
+		}
+		if (eventHandlers == null && enabled)
+		{
+			eventHandlers = GWT.create(SlideOutPanelEventHandlers.class);
+			eventHandlers.handleEvents(this);
+		}
+    }
 
 	/**
 	 * Sets the duration of the slide animations in milliseconds.
@@ -237,41 +326,69 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		{
 			SlideStartEvent.fire(this);
 		}
-		Transition.translateX(mainPanel, slideBy, slideTransitionDuration, new Callback()
+		if (isHorizontalOrientation())
 		{
-			@Override
-			public void onTransitionCompleted()
+			Transition.translateX(mainPanel, slideBy, slideTransitionDuration, new Callback()
 			{
-				SlideEndEvent.fire(SlideOutPanel.this);
-				sliding = false;
-				if (open != openMenu)
+				@Override
+				public void onTransitionCompleted()
 				{
-					open = openMenu;
-					if (open)
+					SlideEndEvent.fire(SlideOutPanel.this);
+					sliding = false;
+					if (open != openMenu)
 					{
-						OpenEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
-					}
-					else
-					{
-						CloseEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
+						open = openMenu;
+						if (open)
+						{
+							OpenEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
+						}
+						else
+						{
+							CloseEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
+						}
 					}
 				}
-			}
-		});
+			});
+		}
+		else
+		{
+			Transition.translateY(mainPanel, slideBy, slideTransitionDuration, new Callback()
+			{
+				@Override
+				public void onTransitionCompleted()
+				{
+					SlideEndEvent.fire(SlideOutPanel.this);
+					sliding = false;
+					if (open != openMenu)
+					{
+						open = openMenu;
+						if (open)
+						{
+							OpenEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
+						}
+						else
+						{
+							CloseEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
+						}
+					}
+				}
+			});
+			
+		}
 	}
-
-	public static enum MenuOrientation {left, right}
+	
+	public static enum MenuOrientation {bottom, left, right, top}
 
 	static class SlideOutPanelEventHandlers
 	{
 		protected SlideOutPanel slideOutPanel;
 
-		protected void handleEvents()
-		{
-			
-		}
-		
-		void setSlideOutPanel(SlideOutPanel slideOutPanel)
+		public void releaseEvents()
+        {
+			this.slideOutPanel = null;
+        }
+
+		protected void handleEvents(SlideOutPanel slideOutPanel)
 		{
 			this.slideOutPanel = slideOutPanel;
 		}
