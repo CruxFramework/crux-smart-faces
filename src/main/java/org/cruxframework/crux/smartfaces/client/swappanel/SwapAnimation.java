@@ -131,6 +131,30 @@ public abstract class SwapAnimation
 		};
 	};
 	
+	/**
+	 * This is an inOrder animation.
+	 */
+	public static SwapAnimation fadeAndSlide = new SwapAnimation()
+	{
+		
+		@Override
+		protected StandardAnimation getEntranceAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.slideInRight);
+		}
+		
+		@Override
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.fadeOut);
+		}
+
+		@Override
+		public void animate(Widget in, Widget out, SwapAnimationHandler handler, SwapAnimationCallback callback, double duration) 
+		{
+			animateInOrder(in, out, handler, callback, duration);
+		};
+	};
 	
 	/**
 	 * This is an inOrder animation.
