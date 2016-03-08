@@ -57,6 +57,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	private Panel swap;
 	private SwapPanel swapPanel;
 	private Direction defaultDirection = Direction.BACKWARDS;
+	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
 
 	/**
 	 *  Default constructor.
@@ -311,13 +312,18 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	protected boolean renderView(View view, Direction direction, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		SwapAnimation animation = (direction==null?null:(direction == Direction.FORWARD?animationForward:animationBackward));
+		if (animation == null && direction != null)
+		{
+			animation = defaultAnimation;
+		}
+		
 		return renderView(view, animation, animationCallback, parameter);
 	}
 
 	@Override
 	protected boolean renderView(View view, Object parameter)
 	{
-		return renderView(view, Direction.FORWARD, null, parameter);
+		return renderView(view, defaultDirection, null, parameter);
 	}
 	
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
@@ -380,6 +386,22 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	public static enum Direction
 	{
 		BACKWARDS, FORWARD
+	}
+	
+	/**
+	 * @param defaultAnimation the default animation.
+	 */
+	public void setDefaultAnimation(SwapAnimation defaultAnimation)
+	{
+		this.defaultAnimation = defaultAnimation;
+	}
+
+	/**
+	 * @return the default animation.
+	 */
+	public SwapAnimation getDefaultAnimation()
+	{
+		return defaultAnimation;
 	}
 	
 }
