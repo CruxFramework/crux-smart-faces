@@ -42,7 +42,8 @@ public interface HasSwapAnimationFactory<C extends WidgetCreatorContext> extends
 	{
 		bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, fadeUpDown, fadeLeft, fadeRight, 
 		fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, rotate, rotateDownLeft, rotateDownRight,
-		rotateUpLeft, rotateUpRight, roll, bounceUpward, bounceDownward, bounceForward, bounceBackward, fadeForward, fadeBackward, fadeUpward
+		rotateUpLeft, rotateUpRight, roll, bounceUpward, bounceDownward, bounceForward, bounceBackward, fadeForward, fadeBackward, 
+		fadeUpward, fadeAndSlide
 	}
 
 	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
