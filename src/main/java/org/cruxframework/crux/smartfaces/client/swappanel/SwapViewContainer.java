@@ -53,11 +53,11 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	private boolean animationEnabled = true;
 	private SwapAnimation animationForward;
 	private boolean autoRemoveInactiveViews = false;
+	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
+	private Direction defaultDirection = Direction.FORWARD;
 	private boolean isAnimationRunning = false;
 	private Panel swap;
 	private SwapPanel swapPanel;
-	private Direction defaultDirection = Direction.BACKWARDS;
-	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
 
 	/**
 	 *  Default constructor.
@@ -91,6 +91,14 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	public SwapAnimation getAnimationForward()
 	{
 		return animationForward;
+	}
+
+	/**
+	 * @return the default animation.
+	 */
+	public SwapAnimation getDefaultAnimation()
+	{
+		return defaultAnimation;
 	}
 
 	/**
@@ -133,7 +141,15 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		swapPanel.setAnimationDuration(duration);
 	}
-
+	
+	/**
+	 * @param enabled - if true the animation will be enabled
+	 */
+	public void setAnimationEnabled(boolean enabled)
+	{
+		animationEnabled = enabled;
+	}
+	
 	/**
 	 * @param enabled - if true the animation will be enabled
 	 * @param device - type of device
@@ -145,7 +161,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 			animationEnabled = enabled;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param enabled - if true the animation will be enabled
@@ -157,16 +173,16 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		{
 			animationEnabled = enabled;
 		}
-	}
-
+	}	
+	
 	/** Enable animation to large display device.
 	 * @param enabled - boolean
 	 */
 	public void setAnimationEnabledForLargeDevices(boolean enabled)
 	{
 		setAnimationEnabled(enabled, Size.large);
-	}	
-	
+	}
+
 	/** Enable animation to small display device.
 	 * @param enabled - boolean
 	 */
@@ -190,6 +206,14 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.autoRemoveInactiveViews = autoRemoveInactiveViews;
 	}
+	
+	/**
+	 * @param defaultAnimation the default animation.
+	 */
+	public void setDefaultAnimation(SwapAnimation defaultAnimation)
+	{
+		this.defaultAnimation = defaultAnimation;
+	}
 
 	/**
 	 * Define the default direction for showView animations.
@@ -206,12 +230,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		showView(viewName, defaultDirection);
 	}
 
-	@Override
-	public void showView(String viewName, String viewId)
-	{
-	    showView(viewName, viewId, defaultDirection);
-	}
-	
 	/**
 	 * @param viewName - The name of view will be show
 	 * @param direction
@@ -219,6 +237,12 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	public void showView(String viewName, Direction direction)
 	{
 		showView(viewName, viewName, direction);
+	}
+
+	@Override
+	public void showView(String viewName, String viewId)
+	{
+	    showView(viewName, viewId, defaultDirection);
 	}
 
 	/**
@@ -308,7 +332,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		return renderView(view, direction, null, parameter);
 	}
-
+	
 	protected boolean renderView(View view, Direction direction, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		SwapAnimation animation = (direction==null?null:(direction == Direction.FORWARD?animationForward:animationBackward));
@@ -325,7 +349,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		return renderView(view, defaultDirection, null, parameter);
 	}
-	
+
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		if (activeView == null || !activeView.getId().equals(view.getId()))
@@ -375,7 +399,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 			previous.removeFromContainer();
 		}
 	}
-
+	
 	private void swapPanelVariables()
 	{
 		Panel temp = active;
@@ -386,22 +410,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	public static enum Direction
 	{
 		BACKWARDS, FORWARD
-	}
-	
-	/**
-	 * @param defaultAnimation the default animation.
-	 */
-	public void setDefaultAnimation(SwapAnimation defaultAnimation)
-	{
-		this.defaultAnimation = defaultAnimation;
-	}
-
-	/**
-	 * @return the default animation.
-	 */
-	public SwapAnimation getDefaultAnimation()
-	{
-		return defaultAnimation;
 	}
 	
 }

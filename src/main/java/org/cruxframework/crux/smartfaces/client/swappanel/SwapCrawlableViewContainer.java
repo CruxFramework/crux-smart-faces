@@ -52,7 +52,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	private SwapAnimation animationForward;
 	private boolean autoRemoveInactiveViews = false;
 	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
-	private Direction defaultDirection = Direction.BACKWARDS;
+	private Direction defaultDirection = Direction.FORWARD;
 	private boolean isAnimationRunning = false;
 	private Panel swap;
 	private SwapPanel swapPanel;
@@ -155,6 +155,14 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 
 	/**
 	 * @param enabled - if true the animation will be enabled
+	 */
+	public void setAnimationEnabled(boolean enabled)
+	{
+		animationEnabled = enabled;
+	}
+
+	/**
+	 * @param enabled - if true the animation will be enabled
 	 * @param device - type of device
 	 */
 	public void setAnimationEnabled(boolean enabled, Device device)
@@ -164,7 +172,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 			animationEnabled = enabled;
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param enabled - if true the animation will be enabled

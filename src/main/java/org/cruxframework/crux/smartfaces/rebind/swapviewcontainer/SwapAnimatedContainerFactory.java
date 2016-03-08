@@ -43,6 +43,7 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer.Dire
 	@TagAttribute(value="autoRemoveInactiveViews", type=Boolean.class, defaultValue="false"), 
 	@TagAttribute(value="animationEnabledForLargeDevices", type=Boolean.class, defaultValue="true"), 
 	@TagAttribute(value="animationEnabledForSmallDevices", type=Boolean.class, defaultValue="true"),
+	@TagAttribute(value="animationEnabled", type=Boolean.class, defaultValue="true"), 
 	@TagAttribute(value="defaultDirection", type=Direction.class, defaultValue="BACKWARDS"),
 	@TagAttribute(value="animationForward", type=SwapAnimatedContainerFactory.Animations.class, required=true, 
 				processor=SwapAnimatedContainerFactory.AnimationForwardProcessor.class , widgetType=SwapAnimation.class,
