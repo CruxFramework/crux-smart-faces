@@ -15,19 +15,13 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.swapviewcontainer;
 
-import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.CrawlableViewContainerFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasViewHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.shared.Experimental;
-import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapCrawlableViewContainer;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
@@ -38,75 +32,13 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  */
 @Experimental
 @DeclarativeFactory(id="swapCrawlableViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapCrawlableViewContainer.class)
-@TagAttributes({
-	@TagAttribute(value="autoRemoveInactiveViews", type=Boolean.class, defaultValue="false"), 
-	@TagAttribute(value="animationEnabledForLargeDevices", type=Boolean.class, defaultValue="true"), 
-	@TagAttribute(value="animationEnabledForSmallDevices", type=Boolean.class, defaultValue="true"),
-	@TagAttribute(value="animationForward", type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
-		processor=SwapCrawlableViewContainerFactory.AnimationForwardProcessor.class , widgetType=SwapAnimation.class,
-		description="Defines the type of animation to be executed to advance the swap of view."),
-	@TagAttribute(value="animationBackward",type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 
-		processor=SwapCrawlableViewContainerFactory.AnimationBackwardProcessor.class, widgetType=SwapAnimation.class,
-		description="Defines the type of animation to be executed to back the swap of view."),
-	@TagAttribute(value="animationDuration",  type=Double.class,   
-	  description="The duration for the animation to be aplied when the panel changes its content."),
-	@TagAttribute(value="defaultAnimation", type=SwapCrawlableViewContainerFactory.Animations.class, 
-		processor=SwapCrawlableViewContainerFactory.DefaultAnimationProcessor.class, widgetType=SwapAnimation.class,   
-	    description="The default animation to be aplied when the panel changes its content.")
-})
 @TagChildren({
-	@TagChild(SwapViewContainerFactory.ViewProcessor.class)
+	@TagChild(SwapAnimatedContainerFactory.ViewProcessor.class)
 })
 public class SwapCrawlableViewContainerFactory extends WidgetCreator<SwapContainerContext> 
-						implements HasViewHandlersFactory<SwapContainerContext>, CrawlableViewContainerFactory<SwapContainerContext>
+						implements CrawlableViewContainerFactory<SwapContainerContext>,
+								   SwapAnimatedContainerFactory<WidgetCreatorContext>
 {
-	public static enum Animations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
-		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
-		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, roll, bounceUpward, bounceDownward,
-		bounceForward, bounceBackward, fadeForward,fadeBackward, fadeUpward, fadeDownward, fadeAndSlide}
-	
-	public static class AnimationForwardProcessor extends AttributeProcessor<WidgetCreatorContext>
-    {
-		public AnimationForwardProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-	        out.println(context.getWidget()+".setAnimationForward("+SwapAnimation.class.getCanonicalName()+"."+attributeValue+");");
-        }
-    }
-	
-	public static class AnimationBackwardProcessor extends AttributeProcessor<WidgetCreatorContext>
-    {
-		public AnimationBackwardProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-	        out.println(context.getWidget()+".setAnimationBackward("+SwapAnimation.class.getCanonicalName()+"."+attributeValue+");");
-        }
-    }
-	
-	public static class DefaultAnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
-    {
-		public DefaultAnimationProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-	        out.println(context.getWidget()+".setDefaultAnimation("+SwapAnimation.class.getCanonicalName()+"."+attributeValue+");");
-        }
-    }
-	
 	@Override
     public SwapContainerContext instantiateContext()
     {

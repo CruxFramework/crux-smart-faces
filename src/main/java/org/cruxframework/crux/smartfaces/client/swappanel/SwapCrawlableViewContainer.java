@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnimationCallback;
+import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer.Direction;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Panel;
@@ -35,8 +36,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * @author bruno.rafael
  *
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
+ * - EXPERIMENTAL - THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
 public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer implements HasChangeViewHandlers
@@ -52,6 +52,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	private SwapAnimation animationForward;
 	private boolean autoRemoveInactiveViews = false;
 	private SwapAnimation defaultAnimation = SwapAnimation.bounceLeft;
+	private Direction defaultDirection = Direction.FORWARD;
 	private boolean isAnimationRunning = false;
 	private Panel swap;
 	private SwapPanel swapPanel;
@@ -63,10 +64,11 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	{
 		this(false);
 	}
-	
+
 	/**
-	 *  Default constructor.
-	 *  @param clearPanelsForDeactivatedViews if true will clean panels if a view is deactivated. 
+	 * Default constructor.
+	 * 
+	 * @param clearPanelsForDeactivatedViews if true will clean panels if a view is deactivated.
 	 */
 	public SwapCrawlableViewContainer(boolean clearPanelsForDeactivatedViews)
 	{
@@ -98,15 +100,14 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	{
 		return animationForward;
 	}
-	
+
 	/**
 	 * @return the default animation.
 	 */
-	public SwapAnimation getDefaultAnimation() 
+	public SwapAnimation getDefaultAnimation()
 	{
 		return defaultAnimation;
 	}
-	
 
 	/**
 	 * @return - if the animation is enabled
@@ -116,7 +117,9 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 		return animationEnabled;
 	}
 
-	/** Return if the animation is running.
+	/**
+	 * Return if the animation is running.
+	 * 
 	 * @return boolean
 	 */
 	public boolean isAnimationRunning()
@@ -142,11 +145,20 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 
 	/**
 	 * Set the duration for the animations
+	 * 
 	 * @param duration animations duration in seconds
 	 */
 	public void setAnimationDuration(double duration)
 	{
 		swapPanel.setAnimationDuration(duration);
+	}
+
+	/**
+	 * @param enabled - if true the animation will be enabled
+	 */
+	public void setAnimationEnabled(boolean enabled)
+	{
+		animationEnabled = enabled;
 	}
 
 	/**
@@ -160,7 +172,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 			animationEnabled = enabled;
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param enabled - if true the animation will be enabled
@@ -174,15 +186,19 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 		}
 	}
 
-	/** Enable animation to large display device.
+	/**
+	 * Enable animation to large display device.
+	 * 
 	 * @param enabled - boolean
 	 */
 	public void setAnimationEnabledForLargeDevices(boolean enabled)
 	{
 		setAnimationEnabled(enabled, Size.large);
 	}
-	
-	/** Enable animation to small display device.
+
+	/**
+	 * Enable animation to small display device.
+	 * 
 	 * @param enabled - boolean
 	 */
 	public void setAnimationEnabledForSmallDevices(boolean enabled)
@@ -209,9 +225,19 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	/**
 	 * @param defaultAnimation the default animation.
 	 */
-	public void setDefaultAnimation(SwapAnimation defaultAnimation) 
+	public void setDefaultAnimation(SwapAnimation defaultAnimation)
 	{
 		this.defaultAnimation = defaultAnimation;
+	}
+
+	/**
+	 * Define the default direction for showView animations.
+	 * 
+	 * @param direction
+	 */
+	public void setDefaultDirection(Direction direction)
+	{
+		defaultDirection = direction;
 	}
 
 	/**
@@ -220,17 +246,23 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	@Override
 	public void showView(String viewName)
 	{
-		showView(viewName, false);
+		showView(viewName, viewName, null);
 	}
 
 	/**
 	 * @param viewName - The name of view will be show
 	 * @param viewId - The id of view will be show
-	 * @param parameter 
+	 * @param parameter
 	 */
 	public void showView(String viewName, final String viewId, final Object parameter)
 	{
-		showView(viewName, viewId, defaultAnimation, null, parameter);
+		SwapAnimation animation = (defaultDirection == Direction.BACKWARDS)?animationBackward:animationForward;
+		if (animation == null)
+		{
+			animation = defaultAnimation;
+		}
+		
+		showView(viewName, viewId, animation, null, parameter);
 	}
 
 	/**
@@ -240,8 +272,8 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	 * @param animationCallback - the callback that will be called when the animation finished
 	 * @param parameter
 	 */
-	public void showView(String viewName, final String viewId, final SwapAnimation animation, final SwapAnimationCallback animationCallback,
-	    final Object parameter)
+	public void showView(String viewName, final String viewId, final SwapAnimation animation,
+	    final SwapAnimationCallback animationCallback, final Object parameter)
 	{
 		if (views.containsKey(viewId))
 		{
@@ -299,7 +331,13 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	@Override
 	protected boolean renderView(View view, Object parameter)
 	{
-		return renderView(view, defaultAnimation, null, parameter);
+		SwapAnimation animation = (defaultDirection == Direction.BACKWARDS)?animationBackward:animationForward;
+		if (animation == null)
+		{
+			animation = defaultAnimation;
+		}
+		
+		return renderView(view, animation, null, parameter);
 	}
 
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
@@ -345,15 +383,16 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	@Override
 	protected void showView(String viewName, boolean backButtonPressed)
 	{
-	    if (backButtonPressed)
-	    {
-	    	showView(viewName, viewName, this.animationBackward != null ? this.animationBackward : this.defaultAnimation, null, null);
-	    } else
-	    {
-	    	showView(viewName, viewName, this.animationForward != null ? this.animationForward : this.defaultAnimation, null, null);
-	    }
+		if (backButtonPressed)
+		{
+			showView(viewName, viewName, this.animationBackward != null ? this.animationBackward : this.defaultAnimation, null, null);
+		}
+		else
+		{
+			showView(viewName, viewName, this.animationForward != null ? this.animationForward : this.defaultAnimation, null, null);
+		}
 	}
-	
+
 	private void concludeViewsSwapping(final View previous, final View next)
 	{
 		swap.clear();
