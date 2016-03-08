@@ -29,19 +29,14 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 
 	private int currentTouchPosition;
 	private boolean didMove;
+	private int menuPanelHeight;
 	private int menuPanelWidth;
 	private int startTouchPosition;
 	private long startTouchTime;
 	private HandlerRegistration touchEndHandler;
 	private HandlerRegistration touchMoveHandler;
+	private HandlerRegistration touchStartHandler;
 
-	@Override
-	protected void handleEvents()
-	{
-	    super.handleEvents();
-		slideOutPanel.touchPanel.addTouchStartHandler(this);
-	}
-	
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
@@ -71,7 +66,7 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 			touchEndHandler.removeHandler();
 		}
 	}
-
+	
 	@Override
 	public void onTouchMove(TouchMoveEvent event)
 	{
@@ -79,52 +74,51 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		{
 			return;
 		}
-		int clientX = event.getTouches().get(0).getClientX();
-		int diff = clientX - startTouchPosition;
-		int absDiff = Math.abs(diff);
-		if (absDiff < menuPanelWidth)
+		if (slideOutPanel.isHorizontalOrientation())
 		{
-			int delta = diff;
-			if (slideOutPanel.open)
-			{
-				delta += slideOutPanel.menuOrientation == MenuOrientation.left?menuPanelWidth:-menuPanelWidth;
-			}
-			// check boundaries
-			if ((slideOutPanel.menuOrientation == MenuOrientation.right && delta < 0 && delta > -menuPanelWidth) || 
-				(slideOutPanel.menuOrientation == MenuOrientation.left && delta > 0 && delta < menuPanelWidth))
-			{
-				currentTouchPosition = clientX;
-				Transition.translateX(slideOutPanel.mainPanel, delta, null);
-			}
+			handleHorizontalTouchMove(event);
 		}
-		if (!didMove && (absDiff > TAP_EVENT_THRESHOLD))
+		else
 		{
-			didMove = true;
+			handleVerticalTouchMove(event);
 		}
 	}
-
+	
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
 		didMove = false;
 		SlideStartEvent.fire(slideOutPanel);
-		startTouchPosition = event.getTouches().get(0).getClientX();
+		startTouchPosition = slideOutPanel.isHorizontalOrientation()?event.getTouches().get(0).getClientX():event.getTouches().get(0).getClientY();
 		currentTouchPosition = startTouchPosition;
 		startTouchTime = new Date().getTime();
 		touchMoveHandler = slideOutPanel.touchPanel.addTouchMoveHandler(this);
 		touchEndHandler = slideOutPanel.touchPanel.addTouchEndHandler(this);
 		menuPanelWidth = slideOutPanel.menuPanel.getElement().getOffsetWidth();
+		menuPanelHeight = slideOutPanel.menuPanel.getElement().getOffsetHeight();
 	}
-	
-	/**
-	 * return the final width used to slide the panels.
-	 * @param hasPreviousPanel
-	 * @param hasNextPanel
-	 * @return negative width means "go to next", positive "go to previous" and zero "keep on current"
-	 */
-	private int getSlideBy()
+
+	@Override
+	public void releaseEvents()
 	{
-		int slideBy;
+	    if (touchStartHandler != null)
+	    {
+	    	touchStartHandler.removeHandler();
+	    	touchStartHandler = null;
+	    }
+	    super.releaseEvents();
+	}
+
+	@Override
+	protected void handleEvents(SlideOutPanel slideOutPanel)
+	{
+	    super.handleEvents(slideOutPanel);
+		touchStartHandler = slideOutPanel.touchPanel.addTouchStartHandler(this);
+	}
+
+	private int getHorizontalSlideBy()
+    {
+	    int slideBy;
 		int distX = currentTouchPosition - startTouchPosition;
 		int width = slideOutPanel.menuPanel.getElement().getOffsetWidth();
 
@@ -155,7 +149,109 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		}
 
 		return slideBy;
+    }
+
+	/**
+	 * return the final width used to slide the panels.
+	 * @param hasPreviousPanel
+	 * @param hasNextPanel
+	 * @return negative width means "go to next", positive "go to previous" and zero "keep on current"
+	 */
+	private int getSlideBy()
+	{
+		if (slideOutPanel.isHorizontalOrientation())
+		{
+			return getHorizontalSlideBy();
+		}
+		return getVerticalSlideBy();
 	}
+	
+	private int getVerticalSlideBy()
+    {
+	    int slideBy;
+		int distY = currentTouchPosition - startTouchPosition;
+		int height = slideOutPanel.menuPanel.getElement().getOffsetHeight();
+
+		if (isSwapEvent(distY))
+		{
+			slideBy = distY > 0?height:-height;
+		}
+		else
+		{
+			if (Math.abs(distY) > height / 2)
+			{
+				slideBy = (distY > 0) ? height : height * -1;
+			}
+			else if (slideOutPanel.open)
+			{
+				slideBy = menuPanelHeight;
+			}
+			else
+			{
+				slideBy = 0;
+			}
+		}
+
+		if ((slideBy > 0 && slideOutPanel.menuOrientation == MenuOrientation.bottom) 
+			|| (slideBy < 0 && slideOutPanel.menuOrientation == MenuOrientation.top))
+		{
+			slideBy = 0;
+		}
+
+		return slideBy;
+    }
+
+	private void handleHorizontalTouchMove(TouchMoveEvent event)
+    {
+	    int clientX = event.getTouches().get(0).getClientX();
+		int diff = clientX - startTouchPosition;
+		int absDiff = Math.abs(diff);
+		if (absDiff < menuPanelWidth)
+		{
+			int delta = diff;
+			if (slideOutPanel.open)
+			{
+				delta += slideOutPanel.menuOrientation == MenuOrientation.left?menuPanelWidth:-menuPanelWidth;
+			}
+			// check boundaries
+			if ((slideOutPanel.menuOrientation == MenuOrientation.right && delta < 0 && delta > -menuPanelWidth) || 
+				(slideOutPanel.menuOrientation == MenuOrientation.left && delta > 0 && delta < menuPanelWidth))
+			{
+				currentTouchPosition = clientX;
+				Transition.translateX(slideOutPanel.mainPanel, delta, null);
+			}
+		}
+		if (!didMove && (absDiff > TAP_EVENT_THRESHOLD))
+		{
+			didMove = true;
+		}
+    }	
+	
+	private void handleVerticalTouchMove(TouchMoveEvent event)
+    {
+	    int clientY = event.getTouches().get(0).getClientY();
+		int diff = clientY - startTouchPosition;
+		int absDiff = Math.abs(diff);
+		if (absDiff < menuPanelHeight)
+		{
+			int delta = diff;
+			if (slideOutPanel.open)
+			{
+				delta += slideOutPanel.menuOrientation == MenuOrientation.top?menuPanelHeight:-menuPanelHeight;
+			}
+			// check boundaries
+			if ((slideOutPanel.menuOrientation == MenuOrientation.bottom && delta < 0 && delta > -menuPanelHeight) || 
+				(slideOutPanel.menuOrientation == MenuOrientation.top && delta > 0 && delta < menuPanelHeight))
+			{
+				currentTouchPosition = clientY;
+				Transition.translateY(slideOutPanel.mainPanel, delta, null);
+			}
+		}
+		if (!didMove && (absDiff > TAP_EVENT_THRESHOLD))
+		{
+			didMove = true;
+		}
+    }
 
 	private boolean isSwapEvent(int distX)
 	{

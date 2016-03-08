@@ -43,7 +43,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	description="A slide out panel that contains a collapsible menu and a main area.")
 @TagAttributes({
 	@TagAttribute(value="slideTransitionDuration", type=Integer.class, defaultValue="250"),
-	@TagAttribute(value="menuOrientation", type=MenuOrientation.class)
+	@TagAttribute(value="menuOrientation", type=MenuOrientation.class),
+	@TagAttribute(value="slideEnabled", type=Boolean.class, defaultValue="true")
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),
