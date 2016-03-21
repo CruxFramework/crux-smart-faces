@@ -66,7 +66,8 @@ public interface SwapAnimatedContainerFactory<C extends WidgetCreatorContext> ex
 	public static enum Animations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
 		rotate, rotateDownLeft, rotateDownRight, rotateUpLeft, rotateUpRight, roll, bounceUpward, bounceDownward,
-		bounceForward, bounceBackward, fadeForward,fadeBackward, fadeUpward, fadeDownward, fadeAndSlide}
+		bounceForward, bounceBackward, fadeForward,fadeBackward, fadeUpward, fadeDownward, fadeAndSlideRight, fadeAndSlideLeft,
+		slideBackward, slideForward}
 	
 	public static class AnimationForwardProcessor extends AttributeProcessor<WidgetCreatorContext>
     {

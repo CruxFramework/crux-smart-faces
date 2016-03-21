@@ -25,6 +25,7 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnim
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -257,6 +258,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					{
 						Style style = in.getElement().getStyle();
 						style.setDisplay(Display.BLOCK);
+						style.setTop(0, Unit.PX);
 					}
 
 					@Override
@@ -271,6 +273,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					{
 						Style style = out.getElement().getStyle();
 						style.setDisplay(Display.NONE);
+						style.setTop(0, Unit.PX);
 					}
 				}, new SwapAnimationCallback()
 				{
