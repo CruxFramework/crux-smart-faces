@@ -255,7 +255,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 			String itemClassName = MenuItem.class.getCanonicalName();
 			
 			String safeHtmlStr = "(new "+SafeHtmlBuilder.class.getCanonicalName()+".appendHtmlConstant("
-					+getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId())+")).toSafeHtml()";
+					+getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context)+")).toSafeHtml()";
 			
 			if(context.itemStack.size() == 1)
 			{

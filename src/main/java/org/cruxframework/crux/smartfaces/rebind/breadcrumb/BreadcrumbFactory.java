@@ -166,7 +166,7 @@ public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implemen
 				boolean isBindingExpression = false;
 				
 				String widgetPropertyPath = "text";
-				String getUiObjectExpression = "getItem(\""+context.itemName+"\")";
+				String getUiObjectExpression = "{0}.getItem(\""+context.itemName+"\")";
 				String uiObjectClassName = BreadcrumbItem.class.getCanonicalName();
 				
 				PropertyBindInfo binding = getWidgetCreator().getObjectDataBinding(text, getWidgetCreator().getWidgetClassName(), 
