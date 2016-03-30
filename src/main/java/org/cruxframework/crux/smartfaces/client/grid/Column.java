@@ -42,6 +42,7 @@ public class Column<T, W extends IsWidget>
 	RowSelectStrategy rowSelectStrategy = null;
 	boolean sortable = true;
 	boolean sorted;
+	String width;
 	private GridDataFactory<T> dataFactory;
 	private CellEditor<T, ?> editableCell;
 	private final PageableDataGrid<T> grid;
@@ -126,6 +127,12 @@ public class Column<T, W extends IsWidget>
 		return this;
 	}
 
+	public Column<T, W> setWidth(String width)
+	{
+		this.width = width;
+		return this;
+	}
+	
 	public void sort()
 	{
 		assert(grid.getDataProvider() != null) :"No dataProvider set for this component.";
@@ -171,7 +178,7 @@ public class Column<T, W extends IsWidget>
 
 	private IsWidget renderToEdit(boolean detailColumn)
 	{
-		return editableCell.render(grid, row, index, detailColumn);
+		return editableCell.render(grid, row, index, detailColumn, width);
 	}
 
 	private IsWidget renderToView(boolean detailColumn) 
@@ -180,7 +187,7 @@ public class Column<T, W extends IsWidget>
 
 		if(widget != null && !detailColumn)
 		{
-			grid.drawCell(row, index, widget);
+			grid.drawCell(row, index, widget, width);
 		}
 
 		return widget;

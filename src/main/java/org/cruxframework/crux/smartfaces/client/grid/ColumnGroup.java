@@ -30,6 +30,7 @@ public class ColumnGroup<T>
 	IsWidget header;
 	int index = Integer.MAX_VALUE;
 	String key;
+	String width;
 
 	protected ColumnGroup(String key)
 	{
@@ -55,6 +56,12 @@ public class ColumnGroup<T>
 	public ColumnGroup<T> setHeaderWidget(IsWidget header)
 	{
 		this.header = header;
+		return this;
+	}
+	
+	public ColumnGroup<T> setWidth(String width)
+	{
+		this.width = width;
 		return this;
 	}
 }

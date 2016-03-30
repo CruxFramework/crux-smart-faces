@@ -126,6 +126,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			columnVar = createColumnByProperty(out, context, columnElement, dataObject); 
 		}
 
+		processColumnWidth(out, context, columnElement, columnVar);
 		createColumnHeader(out, context, columnElement, columnVar);
 		createColumnComparator(out, context, columnElement, columnVar, dataObject);
 		createColumnEditor(out, context, columnElement, columnVar, dataObject);
@@ -431,11 +432,22 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 		out.println(columnGroupClassName + " " + columnGroupVar + " = " + context.getWidget()+".newColumnGroup(" + EscapeUtils.quote(key) + ");");
 
 		createColumnHeader(out, context, columnGroupElement, columnGroupVar);
+		processColumnWidth(out, context, columnGroupElement, columnGroupVar);
+
 		processChildren(out, context, columnGroupElement, columnGroupVar);
 
 		return columnGroupVar;
 	}
 
+	protected void processColumnWidth(SourcePrinter out, WidgetCreatorContext context, JSONObject columnElement, String columnVar)
+	{
+		String width = columnElement.optString("width");
+		if (!StringUtils.isEmpty(width))
+		{
+			out.println(columnVar + ".setWidth(" + EscapeUtils.quote(width) + ");");
+		}
+	}
+	
 	protected void createColumnHeader(SourcePrinter out, WidgetCreatorContext context, JSONObject columnElement, String columnVar)
 	{
 		JSONObject headerTag = getChildTag(columnElement, "header", context.getWidgetId());
@@ -840,7 +852,8 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			supportsDataBinding=false,  
 			description="The column key, used to identify the column on this grid."),
 			@TagAttributeDeclaration(value="header", supportsI18N=true, supportsResources=true, 
-			description="The column header.")
+			description="The column header."),
+			@TagAttributeDeclaration(value="width", description="The column group width.")
 	})
 	@TagChildren({
 		@TagChild(HeaderCreator.class),
@@ -871,7 +884,8 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			@TagAttributeDeclaration(value="detailOnInput", type=Input.class,
 			description="If informed, this column will be displayed inside a details popup for the devices with the given input type."),
 			@TagAttributeDeclaration(value="detailOnSize", type=Size.class,  
-			description="If informed, this column will be displayed inside a details popup for the devices with the given size.")
+			description="If informed, this column will be displayed inside a details popup for the devices with the given size."),
+			@TagAttributeDeclaration(value="width", description="The column width.")
 	})
 	public static class ColumnProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
 

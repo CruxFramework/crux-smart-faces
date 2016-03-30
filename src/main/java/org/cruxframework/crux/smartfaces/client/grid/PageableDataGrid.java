@@ -488,9 +488,9 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		super.setForEdition(index, object);
 	}
 
-	void drawCell(final Row<T> row, int columnIndex, IsWidget widget)
+	void drawCell(final Row<T> row, int columnIndex, IsWidget widget, String width)
 	{
-		final DivRow divRow = getPagePanel().setWidget(row.index, columnIndex, widget);
+		final DivRow divRow = getPagePanel().setWidget(row.index, columnIndex, widget, width);
 
 		//for each row...
 		if(columnIndex == 0)
@@ -611,16 +611,17 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 						dialogBox.center();
 					}
 				});
+				Column<T, ?> column = columns.get(columnIndex);
 
 				//first line 
 				if(row.index == 0)
 				{
 					//handle header
-					headerSection.setWidget(0, columnIndex, getDetailColumnHeaderWidgetFactory().createWidget());
+					headerSection.setWidget(0, columnIndex, getDetailColumnHeaderWidgetFactory().createWidget(), column.width);
 				}
 
 				//draw button
-				drawCell(row, columnIndex, selectablePanel);
+				drawCell(row, columnIndex, selectablePanel, column.width);
 			}
 		}
 	}
@@ -726,21 +727,21 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			{
 				columnGroupTable = new DivTable(tableId);
 				headerSection.addStyleName(SYTLE_FACES_DATAGRID_HEADER);
-				columnGroupTable.setWidget(0, 0, column.columnGroup.header);			
+				columnGroupTable.setWidget(0, 0, column.columnGroup.header, column.columnGroup.width);			
 				column.columnGroup.header.asWidget().getParent().setStyleName(SYTLE_DATAGRID_COLUMNGROUP_HEADER);
 				columnGroupTable.addStyleName(SYTLE_FACES_DATAGRID_HEADER_ROW);
 
-				headerSection.setWidget(0, column.columnGroup.index, columnGroupTable);
+				headerSection.setWidget(0, column.columnGroup.index, columnGroupTable, column.columnGroup.width);
 				columnGroupTable.getParent().setStyleName(
 					getStyleProperties(SYTLE_DATAGRID_COLUMNGROUP, column.columnGroup.index, column.index-column.columnGroup.index));
 			}
 
 			columnGroupTable.setWidget(1, column.index-column.columnGroup.index, headerWrapper, 
-				getStyleProperties(DivRow.STYLES_FACES_GRID_COLUMN, column.index, column.index));
+				getStyleProperties(DivRow.STYLES_FACES_GRID_COLUMN, column.index, column.index), column.width);
 		}
 		else
 		{
-			DivRow divRow = headerSection.setWidget(0, column.index, headerWrapper);
+			DivRow divRow = headerSection.setWidget(0, column.index, headerWrapper, column.width);
 			if(!divRow.getStyleName().contains(SYTLE_FACES_DATAGRID_HEADER_ROW))
 			{
 				divRow.addStyleName(SYTLE_FACES_DATAGRID_HEADER_ROW);

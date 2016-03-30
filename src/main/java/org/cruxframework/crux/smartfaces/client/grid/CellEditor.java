@@ -47,18 +47,20 @@ public abstract class CellEditor<T, K> implements GridDataFactory<T>
 
 	/**
 	 * Renders the cell.
+	 * 
 	 * @param grid
-	 * @param rowIndex
-	 * @param columnIndex
-	 * @param dataProviderRowIndex 
-	 * @param dataObject
-	 * @param row 
+	 * @param row
+	 * @param index
+	 * @param detailColumn
+	 * @param width
+	 * @return
 	 */
 	public IsWidget render(
 		PageableDataGrid<T> grid, 
 		Row<T> row, 
 		int index, 
-		boolean detailColumn
+		boolean detailColumn, 
+		String width
 		)
 	{
 		final IsWidget widget = CellEditor.this.createData(row.dataObject, row.index);
@@ -66,7 +68,7 @@ public abstract class CellEditor<T, K> implements GridDataFactory<T>
 
 		if(!detailColumn)
 		{
-			grid.drawCell(row, index, (Widget) widget);
+			grid.drawCell(row, index, (Widget) widget, width);
 		}
 
 		maybeAddHandlerToUpdateRow(grid, row.index, row.dataObject, widget);
