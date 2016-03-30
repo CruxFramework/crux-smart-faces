@@ -101,12 +101,12 @@ public class DivTable extends Composite
 		table.remove(rowIndex);
 	}
 
-	public DivRow setWidget(int row, int column, IsWidget widget)
+	public DivRow setWidget(int row, int column, IsWidget widget, String width)
 	{
-		return setWidget(row, column, widget, null);
+		return setWidget(row, column, widget, null, width);
 	}
 	
-	public DivRow setWidget(int row, int column, IsWidget widget, String styleName)
+	public DivRow setWidget(int row, int column, IsWidget widget, String styleName, String width)
 	{
 		DivRow rowList;
 
@@ -119,7 +119,7 @@ public class DivTable extends Composite
 			rowList = rows.get(row);
 		}
 
-		rowList.insert(widget, column, styleName);
+		rowList.insert(widget, column, styleName, width);
 
 		return rowList;
 	}
