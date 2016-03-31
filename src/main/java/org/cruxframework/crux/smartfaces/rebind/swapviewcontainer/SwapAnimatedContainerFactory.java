@@ -61,7 +61,7 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer.Dire
 @TagEvents({
 	@TagEvent(ChangeViewEvtBind.class)
 })
-public interface SwapAnimatedContainerFactory<C extends WidgetCreatorContext> extends HasViewHandlersFactory<SwapContainerContext>
+public interface SwapAnimatedContainerFactory<C extends WidgetCreatorContext> extends HasViewHandlersFactory<C>
 {
 	public static enum Animations{bounce, bounceUpDown, bounceLeft, bounceRight, bounceDownUp, fade, fadeDownUp, 
 		fadeUpDown, fadeLeft, fadeRight, fadeDownUpBig, fadeUpDownBig, fadeLeftBig, fadeRightBig, flipX, flipY, lightSpeed, 
