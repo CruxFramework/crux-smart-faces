@@ -16,7 +16,6 @@
 package org.cruxframework.crux.smartfaces.rebind.swapviewcontainer;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.CrawlableViewContainerFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
@@ -37,7 +36,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 public class SwapCrawlableViewContainerFactory extends WidgetCreator<SwapContainerContext> 
 						implements CrawlableViewContainerFactory<SwapContainerContext>,
-								   SwapAnimatedContainerFactory<WidgetCreatorContext>
+								   SwapAnimatedContainerFactory<SwapContainerContext>
 {
 	@Override
     public SwapContainerContext instantiateContext()
