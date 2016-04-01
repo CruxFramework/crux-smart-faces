@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.rebind.slider;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasOpenHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -48,16 +50,15 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),
-	@TagEvent(value=SlideEndEvtBind.class),
-	@TagEvent(value=SlideOpenEvtBind.class),
-	@TagEvent(value=SlideCloseEvtBind.class)
+	@TagEvent(value=SlideEndEvtBind.class)
 })
 	
 @TagChildren({
 	@TagChild(SlideOutPanelFactory.MenuProcessor.class),
 	@TagChild(SlideOutPanelFactory.MainProcessor.class)
 })
-public class SlideOutPanelFactory extends WidgetCreator<WidgetCreatorContext>
+public class SlideOutPanelFactory extends WidgetCreator<WidgetCreatorContext> 
+				implements HasOpenHandlersFactory<WidgetCreatorContext>, HasCloseHandlersFactory<WidgetCreatorContext>
 {
 	@TagConstraints(tagName="menu")
 	@TagChildren({
