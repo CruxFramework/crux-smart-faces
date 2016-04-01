@@ -48,7 +48,9 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),
-	@TagEvent(value=SlideEndEvtBind.class)
+	@TagEvent(value=SlideEndEvtBind.class),
+	@TagEvent(value=SlideOpenEvtBind.class),
+	@TagEvent(value=SlideCloseEvtBind.class)
 })
 	
 @TagChildren({

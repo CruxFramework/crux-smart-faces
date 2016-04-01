@@ -335,8 +335,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 				{
 					SlideEndEvent.fire(SlideOutPanel.this);
 					sliding = false;
-					if (open != openMenu)
-					{
 						open = openMenu;
 						if (open)
 						{
@@ -346,7 +344,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 						{
 							CloseEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
 						}
-					}
 				}
 			});
 		}
@@ -359,8 +356,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 				{
 					SlideEndEvent.fire(SlideOutPanel.this);
 					sliding = false;
-					if (open != openMenu)
-					{
 						open = openMenu;
 						if (open)
 						{
@@ -371,7 +366,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 							CloseEvent.fire(SlideOutPanel.this, SlideOutPanel.this);
 						}
 					}
-				}
 			});
 			
 		}
