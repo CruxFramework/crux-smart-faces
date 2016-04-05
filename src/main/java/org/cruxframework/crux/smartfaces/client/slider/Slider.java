@@ -13,6 +13,7 @@ import org.cruxframework.crux.core.client.event.swap.SwapEvent;
 import org.cruxframework.crux.core.client.event.swap.SwapHandler;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.screen.views.OrientationChangeEvent;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
@@ -520,7 +521,7 @@ public class Slider extends Composite implements HasSwapHandlers, HasSlideStartH
 		protected Slider slider;
 
 		@Override
-		public void onOrientationChange()
+		public void onOrientationChange(OrientationChangeEvent event)
 		{
 			if (slider.getWidgetCount() > 0)
 			{
