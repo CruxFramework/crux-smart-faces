@@ -355,7 +355,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	public Breadcrumb remove(int index)
 	{
 		BreadcrumbItem item = getItem(index);
-		remove(item);
+		remove(item, index);
 		return this;
 	}
 	
@@ -554,7 +554,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 					{
 						if (updateOnViewChangeEnabled)
 						{
-							String viewId = event.getSenderId();
+							String viewId = event.getView().getId();
 							int viewIndex = indexOfItemByView(viewId);
 							if (viewIndex >= 0 && viewIndex != activeIndex)
 							{
@@ -684,14 +684,9 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation
 	{
 		item.setBreadcrumb(null, -1);
 		mainPanel.remove(item);
-		if (activeIndex > index && !singleActivationModeEnabled)
+		if ((activeIndex >= index))
 		{
 			activeIndex--;
-		}
-		else if (activeIndex == index)
-		{
-			activeIndex = -1;
-			setCollapsed(false);
 		}
 		return this;
 	}	
