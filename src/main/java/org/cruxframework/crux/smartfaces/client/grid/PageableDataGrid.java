@@ -846,7 +846,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 	private void handleSortEvents(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
-		if(column.sortable && (!getDataProvider().isDirty() || getDataProvider() instanceof LazyProvider))
+		if(column.isSortable() && (!getDataProvider().isDirty() || getDataProvider() instanceof LazyProvider))
 		{
 			//create arrow button
 			final Image arrow = new Image();

@@ -877,7 +877,7 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			description="The expression used to bind the column hint from the dataProvider object"),
 			@TagAttributeDeclaration(value="header", supportsI18N=true, supportsResources=true, 
 			description="The column header."),
-			@TagAttributeDeclaration(value="sortable", type=Boolean.class, 
+			@TagAttributeDeclaration(value="sortable", type=Boolean.class, defaultValue="false", 
 			description="If true makes this column sortable"),
 			@TagAttributeDeclaration(value="detail", type=Boolean.class, defaultValue="false",  
 			description="If true, this column will only be displayed inside a details popup"),

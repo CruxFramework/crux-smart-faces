@@ -40,7 +40,7 @@ public class Column<T, W extends IsWidget>
 	String key;
 	Row<T> row;
 	RowSelectStrategy rowSelectStrategy = null;
-	boolean sortable = true;
+	boolean sortable = false;
 	boolean sorted;
 	String width;
 	private GridDataFactory<T> dataFactory;
@@ -164,6 +164,11 @@ public class Column<T, W extends IsWidget>
 		row = null;
 	}
 
+	boolean isSortable()
+	{
+		return sortable && columnComparator != null;
+	}
+	
 	IsWidget render(boolean detailColumn) 
 	{
 		if(row.editing && editableCell != null)
