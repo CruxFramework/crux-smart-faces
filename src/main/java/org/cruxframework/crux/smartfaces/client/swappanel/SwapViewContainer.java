@@ -231,7 +231,23 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 
 	public void setFitToChildrenHeight(boolean fitToChildrenHeight)
 	{
+		if (!isFitToChildrenHeight() && fitToChildrenHeight)
+		{
+			active.setHeight("auto");
+			swap.setHeight("auto");
+		}
 		swapPanel.setFitToChildrenHeight(fitToChildrenHeight);
+	}
+		
+	@Override
+	public void setHeight(String height)
+	{
+	    swapPanel.setHeight(height);
+	    if (!isFitToChildrenHeight())
+	    {
+	    	active.setHeight(height);
+	    	swap.setHeight(height);
+	    }
 	}
 
 	@Override
@@ -321,7 +337,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		}
 		return activated;
 	}
-
+	
 	@Override
 	protected Panel getContainerPanel(View view)
 	{
@@ -332,7 +348,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		}
 		return swap;
 	}
-	
+
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
@@ -353,17 +369,11 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		
 		return renderView(view, animation, animationCallback, parameter);
 	}
-
+	
 	@Override
 	protected boolean renderView(View view, Object parameter)
 	{
 		return renderView(view, defaultDirection, null, parameter);
-	}
-	
-	@Override
-	public void setHeight(String height)
-	{
-	    swapPanel.setHeight(height);
 	}
 	
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
