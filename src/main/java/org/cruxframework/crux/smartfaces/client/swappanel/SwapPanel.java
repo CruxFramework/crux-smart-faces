@@ -65,6 +65,10 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	private boolean animationEnabled = true;
 	private FlowPanel contentPanel;
 	private SimplePanel currentPanel = new SimplePanel();
+	private boolean fitToChildrenHeight = true;
+	
+	private String height = "auto";
+
 	private SimplePanel nextPanel = new SimplePanel();
 	
 	/**
@@ -148,14 +152,19 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	    return animationEnabled;
     }
 
-    /**
+    public boolean isFitToChildrenHeight()
+	{
+		return fitToChildrenHeight;
+	}	
+    
+	/**
 	 * @param animation type Animation type
 	 */
 	public void setAnimation(SwapAnimation animation)
 	{
 		this.animation =  animation;
-	}	
-    
+	}
+	
 	/**
 	 * Set the duration for the animations
 	 * @param duration animations duration in seconds
@@ -190,6 +199,33 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 		}
 	}
 	
+	public void setFitToChildrenHeight(boolean fitToChildrenHeight)
+	{
+		if (!this.fitToChildrenHeight && fitToChildrenHeight)
+		{
+			currentPanel.setHeight("auto");
+			nextPanel.setHeight("auto");
+		}
+		else if (!fitToChildrenHeight)
+		{
+			setHeight(height);
+		}
+		this.fitToChildrenHeight = fitToChildrenHeight;
+	}
+	
+	@Override
+	public void setHeight(String height)
+	{
+	    this.height = height;
+		super.setHeight(height);
+	    
+	    if (!fitToChildrenHeight)
+	    {
+	    	currentPanel.setHeight(height);
+	    	nextPanel.setHeight(height);
+	    }
+	}
+	
 	@Override
 	public void setStyleName(String style)
 	{
@@ -206,7 +242,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSwapPanel());
 		}
 	}
-	
+
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -215,7 +251,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	{
 		transitTo(widget, animation, this.animationEnabled, null);
 	}
-	
+
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -310,16 +346,19 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 
 	private void setPanelHeightOnWidgetAttached(final Widget widget)
 	{
-		widget.addAttachHandler(new Handler() 
+		if (fitToChildrenHeight)
 		{
-			@Override
-			public void onAttachOrDetach(AttachEvent event) 
+			widget.addAttachHandler(new Handler() 
 			{
-				if (event.isAttached())
+				@Override
+				public void onAttachOrDetach(AttachEvent event) 
 				{
-					SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
+					if (event.isAttached())
+					{
+						SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 }

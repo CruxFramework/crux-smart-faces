@@ -18,6 +18,8 @@ package org.cruxframework.crux.smartfaces.rebind.swapviewcontainer;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.shared.Experimental;
@@ -36,6 +38,10 @@ class SwapContainerContext extends WidgetCreatorContext
  */
 @Experimental
 @DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
+@TagAttributes({
+	@TagAttribute(value="fitToChildrenHeight", type=Boolean.class, description="If true the panel will change its height to fit the "
+		+ "height every time a transition to a new widget is performed. If false, it will keep its original height.", defaultValue="true")
+})
 @TagChildren({
 	@TagChild(SwapAnimatedContainerFactory.ViewProcessor.class)
 })
