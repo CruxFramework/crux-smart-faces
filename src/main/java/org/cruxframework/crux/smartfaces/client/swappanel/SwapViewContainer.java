@@ -360,6 +360,12 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		return renderView(view, defaultDirection, null, parameter);
 	}
 	
+	@Override
+	public void setHeight(String height)
+	{
+	    swapPanel.setHeight(height);
+	}
+	
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		if (activeView == null || !activeView.getId().equals(view.getId()))
