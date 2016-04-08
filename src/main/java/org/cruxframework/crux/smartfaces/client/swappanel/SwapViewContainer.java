@@ -125,6 +125,11 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		return autoRemoveInactiveViews;
 	}
 
+	public boolean isFitToChildrenHeight()
+	{
+		return swapPanel.isFitToChildrenHeight();
+	}
+
 	/**
 	 * @param animationBackward the animationBackward to set
 	 */
@@ -132,7 +137,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.animationBackward = animationBackward;
 	}
-
+	
 	/**
 	 * Set the duration for the animations
 	 * @param duration animations duration in seconds
@@ -149,7 +154,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		animationEnabled = enabled;
 	}
-	
+
 	/**
 	 * @param enabled - if true the animation will be enabled
 	 * @param device - type of device
@@ -160,8 +165,8 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		{
 			animationEnabled = enabled;
 		}
-	}
-
+	}	
+	
 	/**
 	 * 
 	 * @param enabled - if true the animation will be enabled
@@ -173,8 +178,8 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		{
 			animationEnabled = enabled;
 		}
-	}	
-	
+	}
+
 	/** Enable animation to large display device.
 	 * @param enabled - boolean
 	 */
@@ -198,7 +203,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.animationForward = animationForward;
 	}
-
+	
 	/**
 	 * @param autoRemoveInactiveViews - If true the swapViewContainer will remove automatically.
 	 */
@@ -206,7 +211,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.autoRemoveInactiveViews = autoRemoveInactiveViews;
 	}
-	
+
 	/**
 	 * @param defaultAnimation the default animation.
 	 */
@@ -214,7 +219,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.defaultAnimation = defaultAnimation;
 	}
-
+	
 	/**
 	 * Define the default direction for showView animations.
 	 * @param direction
@@ -223,7 +228,12 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		defaultDirection = direction;
 	}
-	
+
+	public void setFitToChildrenHeight(boolean fitToChildrenHeight)
+	{
+		swapPanel.setFitToChildrenHeight(fitToChildrenHeight);
+	}
+
 	@Override
 	public void showView(String viewName)
 	{
@@ -322,7 +332,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 		}
 		return swap;
 	}
-
+	
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
@@ -332,7 +342,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		return renderView(view, direction, null, parameter);
 	}
-	
+
 	protected boolean renderView(View view, Direction direction, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		SwapAnimation animation = (direction==null?null:(direction == Direction.FORWARD?animationForward:animationBackward));
@@ -349,7 +359,7 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		return renderView(view, defaultDirection, null, parameter);
 	}
-
+	
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
 	{
 		if (activeView == null || !activeView.getId().equals(view.getId()))
@@ -411,5 +421,5 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		BACKWARDS, FORWARD
 	}
-	
+
 }
