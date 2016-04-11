@@ -119,6 +119,15 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		return addHandler(handler, SlideStartEvent.getType());
 	}
+	
+	/**
+	 * Defines the menu area's width
+	 * @param width
+	 */
+	public void setMenuWidth(String width)
+	{
+		menuPanel.setWidth(width);
+	}
 
 	/**
 	 * Hide the nav widget, sliding back horizontally to it.
