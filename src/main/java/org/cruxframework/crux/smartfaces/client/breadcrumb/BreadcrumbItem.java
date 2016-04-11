@@ -24,6 +24,7 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
@@ -85,6 +86,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 				}
 				
 				SelectEvent.fire(BreadcrumbItem.this);
+				SelectionEvent.fire(breadcrumb, BreadcrumbItem.this);
 			}
 		});		
 		

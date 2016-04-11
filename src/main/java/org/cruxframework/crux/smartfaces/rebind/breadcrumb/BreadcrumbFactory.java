@@ -28,6 +28,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasSelectionHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
@@ -98,7 +99,7 @@ import org.cruxframework.crux.smartfaces.rebind.image.ImageFactory;
 	@TagChild(BreadcrumbFactory.BreadcrumbItemProcessor.class) 
 })
 public class BreadcrumbFactory extends WidgetCreator<BreadcrumbContext> implements HasEnabledFactory<BreadcrumbContext>, 
-							HasAnimationFactory<WidgetCreatorContext>
+							HasAnimationFactory<WidgetCreatorContext>, HasSelectionHandlersFactory<WidgetCreatorContext>							
 {
 	public static class AnimationProcessor extends AttributeProcessor<WidgetCreatorContext>
     {
