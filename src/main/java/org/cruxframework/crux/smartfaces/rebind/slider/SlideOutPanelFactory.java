@@ -15,6 +15,10 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.slider;
 
+import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
@@ -23,7 +27,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetC
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
@@ -61,10 +67,24 @@ public class SlideOutPanelFactory extends WidgetCreator<WidgetCreatorContext>
 				implements HasOpenHandlersFactory<WidgetCreatorContext>, HasCloseHandlersFactory<WidgetCreatorContext>
 {
 	@TagConstraints(tagName="menu")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="width", supportsDataBinding=false)
+	})
 	@TagChildren({
 		@TagChild(SlideOutPanelFactory.MenuWidgetProcessor.class)
 	})
-	public static class MenuProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	public static class MenuProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	{
+		@Override
+		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
+		{
+			String width = context.readChildProperty("width");
+			if (!StringUtils.isEmpty(width))
+			{
+				out.println(context.getWidget()+".setMenuWidth("+EscapeUtils.quote(width)+");");
+			}
+		}
+	}
 
 	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=true, method="setMenuWidget")
 	public static class MenuWidgetProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
