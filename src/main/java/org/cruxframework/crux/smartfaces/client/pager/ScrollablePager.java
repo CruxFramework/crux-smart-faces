@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
@@ -27,6 +29,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -48,6 +52,17 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 	private int lastScrollPos = 0;
 	private DivElement loadingElement;
 	private ScrollPanel scrollable;
+
+	private int startVisiblePage = 0;
+	private Array<ScrollingData> backingScrollingData = CollectionFactory.createArray();
+	private Array<ScrollingData> forwardScrollingData = CollectionFactory.createArray();
+
+	private IsWidget pagePanel;
+	private int scrollableHeight;
+	private int pagePanelHeight;
+
+	private int visibleWindowMinScrollTop;
+	private int visibleWindowMaxScrollTop;
 	
 	public ScrollablePager()
     {
@@ -70,12 +85,13 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 				// If scrolling up, ignore the event.
 				int oldScrollPos = lastScrollPos;
 				lastScrollPos = scrollable.getVerticalScrollPosition();
+				int maxScrollTop = pagePanelHeight - scrollableHeight;
 				if (oldScrollPos >= lastScrollPos)
 				{
+					maybeUpdateBackwardVisibleWindow();
 					return;
 				}
-
-				int maxScrollTop = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
+				maybeUpdateForwardVisibleWindow();
 				if (lastScrollPos >= maxScrollTop)
 				{
 					if (hasNextPage() && isEnabled())
@@ -87,7 +103,7 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 							PageEvent pageEvent = PageEvent.fire(ScrollablePager.this, nextRequestedPage);
 							if(!pageEvent.isCanceled())
 							{
-								nextPage();
+								nextPage(maxScrollTop);
 							}
 						}
 					}
@@ -95,6 +111,128 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 			}
 		});
     }
+	
+	private void nextPage(int scrollTop)
+	{
+		int currentPage = getDataProvider().getCurrentPage();
+		if (currentPage > 1)
+		{
+			updateForwardVisibleWindow(null, scrollTop);
+		}
+		
+	    nextPage();
+	}
+	
+	private void maybeUpdateBackwardVisibleWindow()
+    {
+		if (visibleWindowMinScrollTop > lastScrollPos)
+		{
+			int size = backingScrollingData.size();
+			if (size > 0)
+			{
+				ScrollingData scrollingData = backingScrollingData.get(backingScrollingData.size() - 1);
+				if (scrollingData != null)
+				{
+					updateBackwardVisibleWindow(scrollingData);
+					backingScrollingData.remove(size - 1);
+				}
+			}
+		}
+    }
+	
+	private void maybeUpdateForwardVisibleWindow()
+    {
+		if (visibleWindowMaxScrollTop < lastScrollPos)
+		{
+			int size = forwardScrollingData.size();
+			if (size > 0)
+			{
+				ScrollingData scrollingData = forwardScrollingData.get(forwardScrollingData.size() - 1);
+				if (scrollingData != null)
+				{
+					updateForwardVisibleWindow(scrollingData, scrollingData.scrollTop);
+					forwardScrollingData.remove(size - 1);
+				}
+			}
+		}
+    }
+
+	
+	private void updateBackwardVisibleWindow(ScrollingData scrollingData)
+    {
+	    restorePage(scrollingData);
+	    int pageSize = getDataProvider().getPageSize();
+		int startRecord = startVisiblePage + (2*pageSize) -1;
+		startVisiblePage--;
+		ScrollingData pageScrollingData = hidePage(startRecord, lastScrollPos);
+		forwardScrollingData.add(pageScrollingData);
+		visibleWindowMinScrollTop -= scrollingData.size;
+		visibleWindowMaxScrollTop -= pageScrollingData.size;
+    }
+
+	private void updateForwardVisibleWindow(ScrollingData scrollingData, int scrollTop)
+    {
+		if (scrollingData != null)
+		{
+		    restorePage(scrollingData);
+		}
+		int startRecord = startVisiblePage;
+		this.startVisiblePage++;
+	    
+	    ScrollingData pageScrollingData = hidePage(startRecord, scrollTop);
+		backingScrollingData.add(pageScrollingData);
+	    visibleWindowMinScrollTop = scrollingData != null?visibleWindowMinScrollTop+scrollingData.size:scrollTop;
+	    visibleWindowMaxScrollTop = visibleWindowMinScrollTop + pageScrollingData.size;
+    }
+
+	private void restorePage(ScrollingData scrollingData)
+    {
+	    int pageSize = scrollingData.children.size();
+		for (int i = 0; i < pageSize; i++)
+	    {
+		    pagePanel.asWidget().getElement().insertBefore(scrollingData.children.get(i), scrollingData.replacement);
+	    }
+		scrollingData.replacement.removeFromParent();
+    }
+
+	private ScrollingData hidePage(int startRecord, int scrollTop)
+    {
+	    int pageSize = getDataProvider().getPageSize();
+	    
+	    ScrollingData scrollingData = new ScrollingData();
+	    scrollingData.size = 0;
+	    scrollingData.scrollTop = scrollTop;
+	    for (int i = 0; i < pageSize; i++)
+	    {
+	    	Element child = pagePanel.asWidget().getElement().getChild(startRecord).cast();
+	    	scrollingData.children.add(child);
+	    	scrollingData.size += child.getOffsetHeight();
+	    	child.removeFromParent();
+	    }
+	    scrollingData.replacement = Document.get().createDivElement();
+	    scrollingData.replacement.setAttribute("style", "height: "+scrollingData.size+"px");
+	    Element element = pagePanel.asWidget().getElement();
+	    if (element.getChildCount() > startRecord)
+	    {
+	    	Node refChild = element.getChild(startRecord);
+	    	pagePanel.asWidget().getElement().insertBefore(scrollingData.replacement, refChild);
+	    }
+	    else
+	    {
+	    	pagePanel.asWidget().getElement().appendChild(scrollingData.replacement);
+	    }
+	    scrollable.setVerticalScrollPosition(lastScrollPos);
+	    return scrollingData;
+    }
+
+	static class ScrollingData
+	{
+		int scrollTop;
+		int size;
+		Array<Element> children = CollectionFactory.createArray();
+		Element replacement;
+	}
+	
 
 	@Override
     public void initializeContentPanel(final Panel contentPanel)
@@ -139,6 +277,7 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 	@Override
     public void updatePagePanel(IsWidget pagePanel, boolean forward)
     {
+		this.pagePanel = pagePanel;
 		scrollable.setWidget(pagePanel);
     }
 
@@ -164,7 +303,15 @@ public class ScrollablePager<T> extends AbstractPager<T> implements PageablePage
 	@Override
     protected void onUpdate()
     {
-	    // Do nothing
+		scrollableHeight = scrollable.getOffsetHeight();
+		if (pagePanel != null)
+		{
+			pagePanelHeight = pagePanel.asWidget().getOffsetHeight();
+		}
+		else
+		{
+			pagePanelHeight = 0;
+		}
     }
 	
 
