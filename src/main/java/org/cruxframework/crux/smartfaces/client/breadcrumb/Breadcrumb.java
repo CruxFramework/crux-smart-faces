@@ -33,7 +33,13 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -49,7 +55,8 @@ import com.google.gwt.user.client.ui.HasEnabled;
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, HasSelectionHandlers<BreadcrumbItem>
+public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, HasSelectionHandlers<BreadcrumbItem>, 
+						HasOpenHandlers<BreadcrumbItem>, HasCloseHandlers<BreadcrumbItem>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-Breadcrumb";
 	public static final String STYLE_BREADCRUMB_ITEM = "item";
@@ -156,11 +163,23 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	}
 	
 	@Override
+    public HandlerRegistration addCloseHandler(CloseHandler<BreadcrumbItem> handler)
+    {
+	    return addHandler(handler, CloseEvent.getType());
+    }
+
+	@Override
+    public HandlerRegistration addOpenHandler(OpenHandler<BreadcrumbItem> handler)
+    {
+	    return addHandler(handler, OpenEvent.getType());
+    }
+
+	@Override
     public HandlerRegistration addSelectionHandler(SelectionHandler<BreadcrumbItem> handler)
     {
 	    return addHandler(handler, SelectionEvent.getType());
     }
-
+	
 	/**
 	 * Retrieve the index of the current active item on this Breadcrumb.
 	 * @return active item.
@@ -169,7 +188,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return activeIndex;
 	}
-
+	
 	/**
 	 * Retrieve the index of the current active item on this Breadcrumb.
 	 * @return active item.
@@ -211,7 +230,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return children.get(index);
 	}
-	
+
 	/**
 	 * Retrieve the item with the given name.
 	 * @param name item name
@@ -237,7 +256,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return viewContainer;
 	}
-
+	
 	/**
 	 * Inform if this Breadcrumb has any divider configured.
 	 * @return true if it has a divider configured.
@@ -246,7 +265,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return dividerText != null || dividerImage != null;
 	}
-	
+
 	/**
 	 * Find the index of the given item on this Breadcrumb, or -1 if it is not present.
 	 * @param item item to find.
@@ -283,7 +302,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return activateItemsOnSelectionEnabled;
 	}
-	
+
 	@Override
     public boolean isAnimationEnabled()
     {
@@ -307,13 +326,14 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return collapsible;
 	}
-
+	
+	
 	@Override
 	public boolean isEnabled() 
 	{
 		return enabled;
 	}
-
+	
 	/**
 	 * Retrieve the removeInactiveItems property value. When this property is true, 
 	 * the Breadcrumb automatically remove the items that are not active anymore
@@ -323,7 +343,6 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return removeInactiveItems;
 	}
-	
 	
 	/**
 	 * Retrieve the singleActivationModeEnabled property value. If this is enabled, the Breadcrumb will
@@ -393,7 +412,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		this.activateItemsOnSelectionEnabled = activateItemsOnSelection;
 		return this;
 	}
-	
+
 	/**
 	 * Set the index of the current active item on this Breadcrumb.
 	 * @param index item index.
@@ -414,7 +433,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		return setActiveIndex(index, allowAnimations, false);
 	}
-
+	
 	/**
 	 * Set the duration for the animations
 	 * @param duration animations duration in seconds
@@ -423,13 +442,13 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		this.animationDuration = duration;
 	}
-	
+
 	@Override
     public void setAnimationEnabled(boolean enable)
     {
 		this.animationEnabled = enable;
     }
-	
+
 	/**
 	 * Defines the animation used to animate collapse operations
 	 * @param animation
@@ -451,6 +470,14 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 			collapseInactiveItems(collapsed);
 			uptadeActiveItemCollapsibleStyles(collapsed);
 			this.collapsed = collapsed;
+			if (collapsed)
+			{
+				CloseEvent.fire(this, getActiveItem());
+			}
+			else
+			{
+				OpenEvent.fire(this, getActiveItem());
+			}
 		}
 	}
 
@@ -462,7 +489,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		this.collapsible = collapsible;
 	}
-
+	
 	/**
 	 * Set the image to be used as divider between items on this Breadcrumb.
 	 * @param divider divider image
@@ -487,7 +514,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		mainPanel.updateDividers();
 		return this;
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) 
 	{
@@ -501,7 +528,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 			addStyleDependentName(STYLE_BREADCRUMB_DISABLED_SUFFIX);
 		}
 	}
-
+	
 	/**
 	 * Set the removeInactiveItems property value. When this property is true, 
 	 * the Breadcrumb automatically remove the items that are not active anymore
@@ -537,7 +564,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		this.updateOnViewChangeEnabled = updateOnViewChangeEnabled;
 	}
-
+	
 	/**
 	 * Inform the associated ViewContainer. If there is a ViewContainer associated, 
 	 * the {@link BreadcrumbItem}s can automatically navigate to views on this container
@@ -646,12 +673,12 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		
 		return el;
 	}
-	
+
 	protected double getAnimationDuration()
 	{
 		return animationDuration;
 	}
-	
+
 	protected InOutAnimation getCollapseAnimation()
 	{
 		if (collapseAnimation == null)
@@ -659,8 +686,8 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 			collapseAnimation = InOutAnimation.bounce;
 		}
 		return collapseAnimation;
-	}
-
+	}	
+	
 	/**
 	 * Find the index of the item with the given viewId on this Breadcrumb, or -1 if it is not present.
 	 * @param viewID the viewID of the item to find.
@@ -677,7 +704,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		}
 		return -1;
 	}
-
+	
 	/**
 	 * Called by {@link BreadcrumbItem} when it is removed from the Breadcrumb. It removes the item
 	 * from the internal children list.
@@ -687,7 +714,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 	{
 		children.remove(item);
 	    mainPanel.orphan(item);
-	}	
+	}
 	
 	protected Breadcrumb remove(BreadcrumbItem item, int index) 
 	{
@@ -699,7 +726,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		}
 		return this;
 	}
-	
+
 	protected Breadcrumb setActiveIndex(final int index, final boolean allowAnimations, final boolean collpase)
 	{
 		if (mainPanel.isAnimating())
@@ -722,7 +749,7 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		
 		return doSetActivateIndex(index, allowAnimations);
 	}
-	
+
 	protected void uptadeActiveItemCollapsibleStyles(boolean collapsed)
     {
 		BreadcrumbItem activeItem = getActiveItem();
