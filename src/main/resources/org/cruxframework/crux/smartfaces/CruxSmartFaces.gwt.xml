@@ -123,4 +123,11 @@
 			<when-property-is name="device.features" value="smallDisplayTouch" />
 		</any>
 	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.slider.SlideOutPanelNoTouchEventHandlers">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.SlideOutPanelEventHandlers" />
+		<none>
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</none>
+	</replace-with>
 </module>

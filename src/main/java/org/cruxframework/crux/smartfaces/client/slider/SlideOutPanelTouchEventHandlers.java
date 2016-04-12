@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 cruxframework.org.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.cruxframework.crux.smartfaces.client.slider;
 
 import java.util.Date;
@@ -25,7 +40,6 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 {
 	private static final int SWIPE_THRESHOLD = 50;
 	private static final long SWIPE_TIME_THRESHOLD = 250;
-	private static final int TAP_EVENT_THRESHOLD = 5;
 
 	private int currentTouchPosition;
 	private boolean didMove;
@@ -44,18 +58,24 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		{
 			return;
 		}
-		if (currentTouchPosition != startTouchPosition)
+		if (slideOutPanel.slideEnabled)
 		{
-			final int slideBy = getSlideBy();
-			slideOutPanel.slide(slideBy, false, slideBy != 0);
-		}
-		else
-		{
-			SlideEndEvent.fire(slideOutPanel);
+			if (currentTouchPosition != startTouchPosition)
+			{
+				final int slideBy = getSlideBy();
+				slideOutPanel.slide(slideBy, false, slideBy != 0);
+			}
+			else
+			{
+				SlideEndEvent.fire(slideOutPanel);
+			}
 		}
 		if (!didMove)
 		{
-			SelectEvent.fire(slideOutPanel);
+			if (!eventTargetsMenu(event.getNativeEvent()))
+			{
+				SelectEvent.fire(slideOutPanel);
+			}
 		}
 		if(touchMoveHandler != null)
 		{
@@ -206,6 +226,10 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 	    int clientX = event.getTouches().get(0).getClientX();
 		int diff = clientX - startTouchPosition;
 		int absDiff = Math.abs(diff);
+		if (!didMove && (absDiff > slideOutPanel.slideSensitivity))
+		{
+			didMove = true;
+		}
 		if (absDiff < menuPanelWidth)
 		{
 			int delta = diff;
@@ -218,12 +242,11 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 				(slideOutPanel.menuOrientation == MenuOrientation.left && delta > 0 && delta < menuPanelWidth))
 			{
 				currentTouchPosition = clientX;
-				Transition.translateX(slideOutPanel.mainPanel, delta, null);
+				if (slideOutPanel.slideEnabled && didMove)
+				{
+					Transition.translateX(slideOutPanel.mainPanel, delta, null);
+				}
 			}
-		}
-		if (!didMove && (absDiff > TAP_EVENT_THRESHOLD))
-		{
-			didMove = true;
 		}
     }	
 	
@@ -232,6 +255,10 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 	    int clientY = event.getTouches().get(0).getClientY();
 		int diff = clientY - startTouchPosition;
 		int absDiff = Math.abs(diff);
+		if (!didMove && (absDiff > slideOutPanel.slideSensitivity))
+		{
+			didMove = true;
+		}
 		if (absDiff < menuPanelHeight)
 		{
 			int delta = diff;
@@ -244,12 +271,11 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 				(slideOutPanel.menuOrientation == MenuOrientation.top && delta > 0 && delta < menuPanelHeight))
 			{
 				currentTouchPosition = clientY;
-				Transition.translateY(slideOutPanel.mainPanel, delta, null);
+				if (slideOutPanel.slideEnabled && didMove)
+				{
+					Transition.translateY(slideOutPanel.mainPanel, delta, null);
+				}
 			}
-		}
-		if (!didMove && (absDiff > TAP_EVENT_THRESHOLD))
-		{
-			didMove = true;
 		}
     }
 

@@ -60,10 +60,10 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		this(new InternalPanel(element));
 	}
 	
-	public SelectablePanel(SelectHandler buttonSelectHandler) 
+	public SelectablePanel(SelectHandler selectHandler) 
 	{
 		this();
-		addSelectHandler(buttonSelectHandler);
+		addSelectHandler(selectHandler);
 	}
 	
 	protected SelectablePanel(SimplePanel panel)
