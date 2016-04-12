@@ -52,7 +52,10 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @TagAttributes({
 	@TagAttribute(value="slideTransitionDuration", type=Integer.class, defaultValue="250"),
 	@TagAttribute(value="menuOrientation", type=MenuOrientation.class),
-	@TagAttribute(value="slideEnabled", type=Boolean.class, defaultValue="true")
+	@TagAttribute(value="slideEnabled", type=Boolean.class, defaultValue="true"),
+	@TagAttribute(value="autoHideMenu", type=Boolean.class, defaultValue="false"),
+	@TagAttribute(value="slideSensitivity", type=Integer.class, defaultValue="5")
+	
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),

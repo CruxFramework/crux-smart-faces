@@ -23,6 +23,9 @@ import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -46,18 +49,25 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 														HasCloseHandlers<SlideOutPanel>
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SlideOutPanel";
+	private static final int DEFAULT_SLIDE_SENSITIVITY = 5;
 	private static final String SLIDE_OUT_MAIN_STYLE_NAME = "main";
 	private static final String SLIDE_OUT_MENU_STYLE_NAME = "menu";
 
+	protected boolean autoHideMenu = false;
 	protected FlowPanel contentPanel;
 	protected SimplePanel mainPanel;
 	protected MenuOrientation menuOrientation;
 	protected SimplePanel menuPanel;
 	protected boolean open = false;
+	protected boolean slideEnabled;
+	protected int slideSensitivity = DEFAULT_SLIDE_SENSITIVITY;
 	protected int slideTransitionDuration = 250;
 	protected boolean sliding = false;
 	protected FocusPanel touchPanel;
+	
+	private HandlerRegistration autoHideSelectHandler;
 	private SlideOutPanelEventHandlers eventHandlers;
+	private boolean hasSelectHandlers = false;
 	
 	/**
 	 * Constructor
@@ -105,6 +115,12 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	@Override
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
+		if (eventHandlers == null)
+		{
+			eventHandlers = GWT.create(SlideOutPanelEventHandlers.class);
+			eventHandlers.handleEvents(this);
+		}
+		this.hasSelectHandlers = true;
 		return addHandler(handler, SelectEvent.getType());
 	}
 
@@ -120,15 +136,6 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		return addHandler(handler, SlideStartEvent.getType());
 	}
 	
-	/**
-	 * Defines the menu area's width
-	 * @param width
-	 */
-	public void setMenuWidth(String width)
-	{
-		menuPanel.setWidth(width);
-	}
-
 	/**
 	 * Hide the nav widget, sliding back horizontally to it.
 	 */
@@ -149,6 +156,11 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		return menuOrientation;
 	}
 
+	public int getSlideSensitivity()
+	{
+		return slideSensitivity;
+	}
+
 	/**
 	 * Gets the duration of the slide animations in milliseconds.
 	 * @return animations duration
@@ -156,6 +168,11 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	public int getSlideTransitionDuration()
 	{
 		return slideTransitionDuration;
+	}
+
+	public boolean isAutoHideMenu()
+	{
+		return autoHideMenu;
 	}
 
 	/**
@@ -166,7 +183,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
     {
 	    return menuOrientation == MenuOrientation.right || menuOrientation == MenuOrientation.left;
     }
-
+	
 	/**
 	 * Check if the panel is open
 	 * @return
@@ -182,9 +199,9 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	 */
 	public boolean isSlideEnabled()
 	{
-		return eventHandlers != null;
+		return slideEnabled;
 	}
-	
+
 	/**
 	 * Check if the panel is slinding any widget
 	 * @return true if sliding
@@ -223,6 +240,33 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			slide(slideBy, true, true);
 		}
 	}
+	
+	public void setAutoHideMenu(boolean autoHideMenu)
+	{
+		this.autoHideMenu = autoHideMenu;
+		if (autoHideMenu)
+		{
+			autoHideSelectHandler = addSelectHandler(new SelectHandler()
+			{
+				@Override
+				public void onSelect(SelectEvent event)
+				{
+					if (isOpen())
+					{
+						close();
+					}
+				}
+			});
+		}
+		else
+		{
+			if (autoHideSelectHandler != null)
+			{
+				autoHideSelectHandler.removeHandler();
+				autoHideSelectHandler = null;
+			}
+		}
+	}
 
 	/**
 	 * Sets the widget to be displayed into the main area
@@ -232,7 +276,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	{
 		setMainWidget(w.asWidget());
 	}
-	
+
 	/**
 	 * Sets the widget to be displayed into the main area
 	 * @param widget
@@ -296,9 +340,18 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		menuPanel.add(widget);
 	}
 
+	/**
+	 * Defines the menu area's width
+	 * @param width
+	 */
+	public void setMenuWidth(String width)
+	{
+		menuPanel.setWidth(width);
+	}
+
 	public void setSlideEnabled(boolean enabled)
     {
-		if (eventHandlers != null && !enabled)
+		if (eventHandlers != null && !enabled && !hasSelectHandlers)
 		{
 			eventHandlers.releaseEvents();
 			eventHandlers = null;
@@ -308,7 +361,13 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			eventHandlers = GWT.create(SlideOutPanelEventHandlers.class);
 			eventHandlers.handleEvents(this);
 		}
+		this.slideEnabled = enabled;
     }
+	
+	public void setSlideSensitivity(int slideSensitivity)
+	{
+		this.slideSensitivity = slideSensitivity;
+	}
 
 	/**
 	 * Sets the duration of the slide animations in milliseconds.
@@ -379,7 +438,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			
 		}
 	}
-	
+
 	public static enum MenuOrientation {bottom, left, right, top}
 
 	static class SlideOutPanelEventHandlers
@@ -391,6 +450,16 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			this.slideOutPanel = null;
         }
 
+		protected boolean eventTargetsMenu(NativeEvent event)
+		{
+			EventTarget target = event.getEventTarget();
+			if (Element.is(target))
+			{
+				return slideOutPanel.menuPanel.getElement().isOrHasChild(Element.as(target));
+			}
+			return false;
+		}
+		
 		protected void handleEvents(SlideOutPanel slideOutPanel)
 		{
 			this.slideOutPanel = slideOutPanel;
