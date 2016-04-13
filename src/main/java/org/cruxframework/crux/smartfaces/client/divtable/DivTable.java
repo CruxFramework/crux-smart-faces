@@ -38,16 +38,17 @@ public class DivTable extends Composite
 	
 	private ArrayList<DivRow> rows = new ArrayList<DivRow>();
 	private FlowPanel table = new FlowPanel();
-	private final String tableId;
 
-	public DivTable(String tableId)
+	private DivTableHandler tableHandler;
+
+	public DivTable(DivTableHandler tableHandler)
 	{
-		this.tableId = tableId;
+		this.tableHandler = tableHandler;
 		initWidget(table);
 		setStyleName(STYLE_FACES_GRID);
 		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableContainer());
 	}
-
+	
 	public void add(Widget widget)
 	{
 		rows.get(rows.size()-1).add(widget);
@@ -105,7 +106,7 @@ public class DivTable extends Composite
 	{
 		return setWidget(row, column, widget, null, width);
 	}
-	
+
 	public DivRow setWidget(int row, int column, IsWidget widget, String styleName, String width)
 	{
 		DivRow rowList;
@@ -123,7 +124,22 @@ public class DivTable extends Composite
 
 		return rowList;
 	}
+	
+	protected String getColumnClassName(int columnIndex)
+    {
+		return tableHandler.getColumnClassName(columnIndex);
+    }
 
+	protected boolean initClassNameForColumn(int columnIndex)
+	{
+		return tableHandler.initClassNameForColumn(columnIndex);
+	}
+	
+	protected void injectStyle(String rule)
+	{
+		tableHandler.injectStyle(rule);
+	}
+	
 	/**
 	 * Replaces the current row or creates a new one.
 	 * @param index 
@@ -131,7 +147,7 @@ public class DivTable extends Composite
 	 */
 	private DivRow insertRow(int index)
 	{
-		DivRow row = new DivRow(tableId);
+		DivRow row = new DivRow(this);
 
 		if(index%2 == 0)
 		{
@@ -145,5 +161,12 @@ public class DivTable extends Composite
 		rows.add(index, row);
 		table.insert(row, index);
 		return row;
+	}
+	
+	public static interface DivTableHandler
+	{
+		String getColumnClassName(int columnIndex);
+		boolean initClassNameForColumn(int columnIndex);
+		void injectStyle(String rule);
 	}
 }
