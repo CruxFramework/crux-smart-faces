@@ -15,15 +15,11 @@
  */
 package org.cruxframework.crux.smartfaces.client.divtable;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -36,14 +32,12 @@ public class DivRow extends SelectableFlowPanel
 {
 	public static final String STYLES_FACES_GRID_COLUMN = "column";
 	public static final String STYLES_FACES_GRID_ROW = "row";
-	private static Set<Integer> columnsCreated = new HashSet<Integer>();
-	private static final String STYLES_FACES_GRID = "grid";
-	private final String divTableId;
+	private final DivTable divTable;
 
 	
-	protected DivRow(String divTableId)
+	protected DivRow(DivTable divTable)
 	{
-		this.divTableId = divTableId;
+		this.divTable = divTable;
 		setStyleName(STYLES_FACES_GRID_ROW);
 		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesDivTableRow());
 	}
@@ -89,22 +83,16 @@ public class DivRow extends SelectableFlowPanel
 	public void setColumnOrder(int columnIndex, int order)
 	{
 		assert(columnIndex < getColumnCount()) : "There is no column ["+columnIndex+"] on this row.";
-		String columnName = getColumnClassName(columnIndex);
-		StyleInjector.inject("."+columnName+"{order: " + order + ";}", false);
+		String columnName = divTable.getColumnClassName(columnIndex);
+		divTable.injectStyle("."+columnName+"{order: " + order + ";}");
 	}
 	
 	public void setColumnWidth(int columnIndex, String width)
 	{
 		assert(columnIndex < getColumnCount()) : "There is no column ["+columnIndex+"] on this row.";
-		String columnName = getColumnClassName(columnIndex);
-		StyleInjector.inject("."+columnName+"{width: " + width + ";}", false);
+		String columnName = divTable.getColumnClassName(columnIndex);
+		divTable.injectStyle("."+columnName+"{width: " + width + ";}");
 	}
-	
-	private String getColumnClassName(int columnIndex)
-    {
-	    String columnName = STYLES_FACES_GRID + "_" + divTableId + "_" + STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
-	    return columnName;
-    }
 	
 	private void initColumnStyle(final FlowPanel column, int columnIndex, String styleName, String width)
 	{
@@ -119,19 +107,19 @@ public class DivRow extends SelectableFlowPanel
 			return;
 		}
 		
-		String columnName = getColumnClassName(columnIndex);
+		String columnName = divTable.getColumnClassName(columnIndex);
 		element.addClassName(columnName);
 		
-		if (!columnsCreated.contains(columnIndex))
+		
+		if (divTable.initClassNameForColumn(columnIndex))
 		{
-			columnsCreated.add(columnIndex);
 			if (StringUtils.isEmpty(width))
 			{
-				StyleInjector.inject("."+columnName+"{order: " + columnIndex + ";flex: 1;}", false);
+				divTable.injectStyle("."+columnName+"{order: " + columnIndex + ";flex: 1;}");
 			}
 			else
 			{
-				StyleInjector.inject("."+columnName+"{order: " + columnIndex + ";width: " + width + ";}", false);
+				divTable.injectStyle("."+columnName+"{order: " + columnIndex + ";width: " + width + ";}");
 			}
 		}
 	}

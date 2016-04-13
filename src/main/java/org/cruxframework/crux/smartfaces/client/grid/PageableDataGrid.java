@@ -15,7 +15,9 @@
  */
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
@@ -35,6 +37,7 @@ import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneRes
 import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
 import org.cruxframework.crux.smartfaces.client.divtable.DivRow;
 import org.cruxframework.crux.smartfaces.client.divtable.DivTable;
+import org.cruxframework.crux.smartfaces.client.divtable.DivTable.DivTableHandler;
 import org.cruxframework.crux.smartfaces.client.grid.Column.ColumnComparator;
 import org.cruxframework.crux.smartfaces.client.grid.Type.RowSelectStrategy;
 import org.cruxframework.crux.smartfaces.client.image.Image;
@@ -43,9 +46,13 @@ import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 import org.cruxframework.crux.smartfaces.client.util.animation.InOutAnimation;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -63,17 +70,17 @@ import com.google.gwt.user.client.ui.RadioButton;
  */
 public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> implements HasEnabled, HasAnimation
 {
-	private static final String SYTLE_DATAGRID_HEADER_WRAPPER = "headerWrapper";
-	private static final String SYTLE_DATAGRID_ARROW_UP = "arrowUp";
-	private static final String SYTLE_DATAGRID_ARROW_DOWN = "arrowDown";
-	private static final String SYTLE_DATAGRID_ARROW_UP_DOWN = "arrowUpDown";
-	private static final String SYTLE_DATAGRID_ARROW = "arrow";
 	private static Array<String> columnClasses = CollectionFactory.createArray();
 	private static int nextTableId = 0;
+	private static final String SYTLE_DATAGRID_ARROW = "arrow";
+	private static final String SYTLE_DATAGRID_ARROW_DOWN = "arrowDown";
+	private static final String SYTLE_DATAGRID_ARROW_UP = "arrowUp";
+	private static final String SYTLE_DATAGRID_ARROW_UP_DOWN = "arrowUpDown";
 	private static final String SYTLE_DATAGRID_COLUMNGROUP = "columnGroup";
 	private static final String SYTLE_DATAGRID_COLUMNGROUP_HEADER = "columnGroupHeader";
 	private static final String SYTLE_DATAGRID_DETAILS = "details";
 	private static final String SYTLE_DATAGRID_DETAILS_ROW = "detailsRow";
+	private static final String SYTLE_DATAGRID_HEADER_WRAPPER = "headerWrapper";
 	private static final String SYTLE_DATAGRID_SELECTED = "-selected";
 	private static final String SYTLE_FACES_DATAGRID_HEADER = "header";
 	private static final String SYTLE_FACES_DATAGRID_HEADER_ROW = "headerRow";
@@ -86,23 +93,26 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private Array<ColumnGroup<T>> columnGroups = CollectionFactory.createArray();
 	private FlowPanel contentPanel = new FlowPanel();
 	private HandlerRegistration dataSelectionHandler;
+	private String defaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
 	private GridWidgetFactory detailColumnHeaderWidgetFactory = null;
+	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
 	private InOutAnimation dialogAnimation = InOutAnimation.bounce;
 	private DivTable headerSection;
-	private String defaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
-	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
-	private RowSelectStrategy rowSelectStrategy;
 	private double rowAnimationDuration = -1;
+	private RowSelectStrategy rowSelectStrategy;
+	private GridTableHandler tableHandler;
 
 	/**
 	 */
 	public PageableDataGrid(RowSelectStrategy rowSelectStrategy)
 	{
 		tableId = Integer.toString(nextTableId++);
-		headerSection = new DivTable(tableId);
+		tableHandler = new GridTableHandler(this);
+		
+		headerSection = new DivTable(tableHandler);
 		handleRowSelectStrategy(rowSelectStrategy);
 		initWidget(contentPanel);
 		getContentPanel().add(headerSection);
@@ -118,7 +128,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 		super.commit();
 	}
-
+	
 	/**
 	 * @return the column given its key and 'null' case none were found.
 	 */
@@ -191,14 +201,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return keys;
 	}
 
-	/**
-	 * @return all the table rows. 
-	 */
-	Array<Row<T>> getCurrentPageRows()
-	{
-		return rows;
-	}
-
 	public InOutAnimation getDialogAnimation()
 	{
 		return dialogAnimation;
@@ -237,6 +239,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		super.rollback();
 	}
 
+	public void setAnimationDuration(double duration)
+	{
+		this.rowAnimationDuration = duration;
+	}
+
 	@Override
 	public void setAnimationEnabled(boolean animated)
 	{
@@ -262,6 +269,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.detailColumnHeaderWidgetFactory = detailColumnHeaderWidgetFactory;
 	}
 
+	public void setDetailPopupHeader(String msgDetailPopupHeader)
+	{
+		this.detailPopupHeader = msgDetailPopupHeader;
+	}
+
 	public void setDetailTriggerWidgetFactory(GridWidgetFactory detailTriggerWidgetFactory)
 	{
 		this.detailTriggerWidgetFactory = detailTriggerWidgetFactory;
@@ -272,21 +284,11 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.dialogAnimation = dialogAnimation;
 	}
 
-	public void setDetailPopupHeader(String msgDetailPopupHeader)
-	{
-		this.detailPopupHeader = msgDetailPopupHeader;
-	}
-
 	public void setRowAnimation(InOutAnimation rowAnimation)
 	{
 		this.rowAnimation = rowAnimation;
 	}
 
-	public void setAnimationDuration(double duration)
-	{
-		this.rowAnimationDuration = duration;
-	}
-	
 	/**
 	 * @param rowSelectStrategy
 	 */
@@ -295,6 +297,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		this.rowSelectStrategy = rowSelectStrategy;
 	}
 
+	/**
+	 * @param column the column to be added.
+	 */
+	protected void addColumn(Column<T,?> column)
+	{
+		addColumn(null, column);
+	}
+	
 	/**
 	 * Replaces one column by another.
 	 * @param key of the column to be replaced.
@@ -310,28 +320,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		{
 			insertColumn(columns, column, getColumn(key));
 		}
-	}
-
-	private void insertColumn(Array<Column<T, ?>> columnList, Column<T, ?> column, Column<T, ?> oldColumn)
-	{
-		if(oldColumn != null)
-		{
-			int index = columnList.indexOf(oldColumn);
-			columnList.remove(oldColumn);
-			columnList.insert(index, column);
-		}
-		else
-		{
-			columnList.add(column);
-		}
-	}
-	
-	/**
-	 * @param column the column to be added.
-	 */
-	protected void addColumn(Column<T,?> column)
-	{
-		addColumn(null, column);
 	}
 
 	protected void addColumnGroup(ColumnGroup<T> columnGroup)
@@ -372,7 +360,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		});
 	}
-
+	
 	@Override
 	protected void clear()
 	{
@@ -461,7 +449,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	@Override
 	protected DivTable initializePagePanel()
 	{
-		DivTable divTable = new DivTable(tableId);
+		DivTable divTable = new DivTable(tableHandler);
 		return divTable;
 	}
 
@@ -513,6 +501,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		int columnIndex;
 		columnIndex = drawColumns(row);
 		drawDetails(row, columnIndex);
+	}
+
+	/**
+	 * @return all the table rows. 
+	 */
+	Array<Row<T>> getCurrentPageRows()
+	{
+		return rows;
 	}
 
 	private void createHeader(final Column<T, ?> column)
@@ -664,7 +660,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return index;
 	}
 
-
 	private GridWidgetFactory getDetailColumnHeaderWidgetFactory()
 	{
 		if (detailColumnHeaderWidgetFactory == null)
@@ -697,6 +692,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return detailTriggerWidgetFactory;
 	}
 
+
 	private String getStyleProperties(String type, int index, int classIndex)
 	{
 		String typeClassName = tableId + "_" + type+"_" + classIndex;
@@ -725,7 +721,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 			if(columnGroupTable == null)
 			{
-				columnGroupTable = new DivTable(tableId);
+				columnGroupTable = new DivTable(tableHandler);
 				headerSection.addStyleName(SYTLE_FACES_DATAGRID_HEADER);
 				columnGroupTable.setWidget(0, 0, column.columnGroup.header, column.columnGroup.width);			
 				column.columnGroup.header.asWidget().getParent().setStyleName(SYTLE_DATAGRID_COLUMNGROUP_HEADER);
@@ -891,6 +887,20 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 	}
 
+	private void insertColumn(Array<Column<T, ?>> columnList, Column<T, ?> column, Column<T, ?> oldColumn)
+	{
+		if(oldColumn != null)
+		{
+			int index = columnList.indexOf(oldColumn);
+			columnList.remove(oldColumn);
+			columnList.insert(index, column);
+		}
+		else
+		{
+			columnList.add(column);
+		}
+	}
+
 	private void setRowSelectionState(Row<T> row, boolean selected)
 	{
 		if(selected)
@@ -911,5 +921,71 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		{
 			row.radioButton.setValue(selected);
 		}
+	}
+
+	private static class GridTableHandler implements DivTableHandler
+	{
+		private static final String STYLES_FACES_GRID = "grid";
+		private Set<String> columnsCreated = new HashSet<String>();
+		private Element style;
+		private String tableId;
+		
+		private GridTableHandler(PageableDataGrid<?> grid)
+        {
+			this.tableId = grid.tableId;
+			grid.addAttachHandler(new Handler()
+			{
+				@Override
+				public void onAttachOrDetach(AttachEvent event)
+				{
+					if (!event.isAttached())
+					{
+						style.removeFromParent();
+						style = null;
+					}
+				}
+			});
+        }
+		
+		@Override
+		public String getColumnClassName(int columnIndex)
+		{
+		    String columnName = STYLES_FACES_GRID + "_" + tableId + "_" + DivRow.STYLES_FACES_GRID_COLUMN + "_" + columnIndex;
+		    return columnName;
+		}
+		
+		@Override
+		public boolean initClassNameForColumn(int columnIndex)
+		{
+			String columnName = getColumnClassName(columnIndex);
+			if (!columnsCreated.contains(columnName))
+			{
+				columnsCreated.add(columnName);
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+        public void injectStyle(String contents)
+        {
+			if (style == null)
+			{
+				String elementId = "__css__"+tableId;
+				style = Document.get().getElementById(elementId);
+				if (style == null)
+				{
+					style = Document.get().createStyleElement();
+					style.setPropertyString("language", "text/css");
+					getHead().appendChild(style);
+				}
+			}	            
+			style.setInnerText(style.getInnerText()+contents);
+        }		
+
+	    private Element getHead() 
+	    {
+	          return Document.get().getElementsByTagName("head").getItem(0);
+	    }
 	}
 }
