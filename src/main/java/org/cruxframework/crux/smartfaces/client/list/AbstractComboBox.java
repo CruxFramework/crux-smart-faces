@@ -575,4 +575,13 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		popup.setAnimation(animation);
 	}
+
+	/**
+	 * The duration of animations
+	 * @param animationDuration animation duration
+	 */
+	public void setAnimationDuration(double animationDuration)
+	{
+		popup.setAnimationDuration(animationDuration);
+	}
 }
