@@ -938,7 +938,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				@Override
 				public void onAttachOrDetach(AttachEvent event)
 				{
-					if (!event.isAttached())
+					if (!event.isAttached() && style != null)
 					{
 						style.removeFromParent();
 						style = null;
