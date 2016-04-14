@@ -116,6 +116,9 @@ public class DataGridFactory extends AbstractPageableFactory<WidgetCreatorContex
 			RowSelectStrategy.class.getCanonicalName() + "." + selectionStrategy + ");");
 
 		processChildren(out, context, context.getWidgetElement(), null);
+		
+		out.println(context.getWidget() + ".draw();");
+
 	}
 	
 	protected String createColumn(SourcePrinter out, WidgetCreatorContext context, JClassType dataObject, JSONObject columnElement)

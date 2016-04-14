@@ -98,6 +98,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
 	private GridWidgetFactory detailTriggerWidgetFactory = null;
 	private InOutAnimation dialogAnimation = InOutAnimation.bounce;
+	private boolean drawn = false;
 	private DivTable headerSection;
 	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
@@ -129,6 +130,36 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		super.commit();
 	}
 	
+	/**
+	 * Force the grid to be rendered, even if it has no data and no dataprovider events happened.
+	 * It will render its headers at least.
+	 */
+	public void draw()
+	{
+		if (!drawn)
+		{
+			drawHeaders();
+			drawn = true;
+			refresh();
+		}
+	}
+
+	private void drawHeaders()
+    {
+	    int columnIndex = -1;
+	    Column<T, ?> column = null;
+	    //iterate over the columns to render the body (and the header)
+	    for(columnIndex = 0; columnIndex < columns.size(); columnIndex++)
+	    {
+	    	column = columns.get(columnIndex);
+	    	createHeader(column);
+	    }			
+	    if (columnIndex >= 0)
+	    {
+	    	headerSection.setWidget(0, columnIndex, getDetailColumnHeaderWidgetFactory().createWidget(), column.width);
+	    }
+    }
+
 	/**
 	 * @return the column given its key and 'null' case none were found.
 	 */
@@ -296,7 +327,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		this.rowSelectStrategy = rowSelectStrategy;
 	}
-
+	
 	/**
 	 * @param column the column to be added.
 	 */
@@ -321,7 +352,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			insertColumn(columns, column, getColumn(key));
 		}
 	}
-
+	
 	protected void addColumnGroup(ColumnGroup<T> columnGroup)
 	{
 		columnGroups.add(columnGroup);
@@ -360,7 +391,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			}
 		});
 	}
-	
+
 	@Override
 	protected void clear()
 	{
@@ -368,7 +399,8 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		if(rows != null)
 		{
 			//remove row selecion handlers
-			for(int i=0; i<rows.size();i++)
+			int size = rows.size();
+			for(int i=0; i<size;i++)
 			{
 				Row<T> row = rows.get(i);
 				row.getDivRow().removeFromParent();
@@ -390,7 +422,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			getPagePanel().clear();
 		}
 	}
-
+	
 	@Override
 	protected void clearRange(int pageStart)
 	{
@@ -471,6 +503,14 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	}
 
 	@Override
+	protected void render(boolean refresh, boolean clearRange,
+	    org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable.RenderCallback callback)
+	{
+	    super.render(refresh, clearRange, callback);
+	    drawn = true;
+	}
+
+	@Override
 	protected void setForEdition(int index, T object)
 	{
 		super.setForEdition(index, object);
@@ -541,7 +581,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 			column.row = row;
 
 			//header
-			if(row.index == 0)
+			if(row.index == 0 && !drawn)
 			{
 				createHeader(column);
 			}
@@ -610,7 +650,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 				Column<T, ?> column = columns.get(columnIndex);
 
 				//first line 
-				if(row.index == 0)
+				if(row.index == 0 && !drawn)
 				{
 					//handle header
 					headerSection.setWidget(0, columnIndex, getDetailColumnHeaderWidgetFactory().createWidget(), column.width);
@@ -706,7 +746,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 
 	private void handleHeaderInsertion(final Column<T, ?> column, SelectableFlowPanel headerWrapper)
 	{
-		if(column.index == 0 && column.row.index == 0)
+		if(column.index == 0)
 		{
 			headerSection.clear();
 		}
