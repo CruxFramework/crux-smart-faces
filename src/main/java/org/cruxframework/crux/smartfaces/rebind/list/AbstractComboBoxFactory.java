@@ -142,7 +142,9 @@ public abstract class AbstractComboBoxFactory extends AbstractPageableFactory<Wi
 		{
 			out.println("@Override public "+IsWidget.class.getCanonicalName()+" createWidget(" + 
 											dataObjectName + " " + dataObjectVariable + "){");
-			out.println("return new " + Label.class.getCanonicalName() + "(" + textExpression + ");");
+			out.println("String " + resultVariable + ";");
+			out.println(textExpression + ";");
+			out.println("return new " + Label.class.getCanonicalName() + "(" + resultVariable + ");");
 			out.println("}");
 		}
 		out.println("@Override public " + getValueType() + " getValue(" + dataObjectName + " " + dataObjectVariable + "){");
