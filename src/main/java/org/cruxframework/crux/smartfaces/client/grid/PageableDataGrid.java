@@ -154,7 +154,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	    	column = columns.get(columnIndex);
 	    	createHeader(column);
 	    }			
-	    if (columnIndex >= 0)
+	    if (columnIndex >= 0 && detailColumns.size() > 0)
 	    {
 	    	headerSection.setWidget(0, columnIndex, getDetailColumnHeaderWidgetFactory().createWidget(), column.width);
 	    }
