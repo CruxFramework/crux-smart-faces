@@ -20,12 +20,21 @@ import org.cruxframework.crux.core.client.css.transition.Transition.Callback;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.event.TouchEventsHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -35,7 +44,6 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -46,7 +54,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SlideOutPanel extends Composite implements HasSlideStartHandlers, HasSlideEndHandlers, 
 														HasSelectHandlers, HasOpenHandlers<SlideOutPanel>, 
-														HasCloseHandlers<SlideOutPanel>
+														HasCloseHandlers<SlideOutPanel>,
+														TouchEventsHandler
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-SlideOutPanel";
 	private static final int DEFAULT_SLIDE_SENSITIVITY = 5;
@@ -59,17 +68,17 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	protected MenuOrientation menuOrientation;
 	protected SimplePanel menuPanel;
 	protected boolean open = false;
+	protected boolean preventDefaultTouchEvents = false;
 	protected boolean slideEnabled;
 	protected int slideSensitivity = DEFAULT_SLIDE_SENSITIVITY;
 	protected int slideTransitionDuration = 250;
 	protected boolean sliding = false;
-	protected FocusPanel touchPanel;
 	
+	protected boolean stopPropagationTouchEvents = false;
+	protected SimplePanel touchPanel;
 	private HandlerRegistration autoHideSelectHandler;
 	private SlideOutPanelEventHandlers eventHandlers;
 	private boolean hasSelectHandlers = false;
-	protected boolean preventDefaultTouchEvents = false;
-	protected boolean stopPropagationTouchEvents = false;
 	
 	/**
 	 * Constructor
@@ -77,7 +86,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	public SlideOutPanel() 
 	{
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
-		touchPanel = new FocusPanel();
+		touchPanel = new SimplePanel();
 		contentPanel = new FlowPanel();
 
 		touchPanel.add(contentPanel);
@@ -351,6 +360,11 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		menuPanel.setWidth(width);
 	}
 
+	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
+	{
+		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
+	}
+	
 	public void setSlideEnabled(boolean enabled)
     {
 		if (eventHandlers != null && !enabled && !hasSelectHandlers)
@@ -365,7 +379,7 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		}
 		this.slideEnabled = enabled;
     }
-	
+
 	public void setSlideSensitivity(int slideSensitivity)
 	{
 		this.slideSensitivity = slideSensitivity;
@@ -380,6 +394,31 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		this.slideTransitionDuration = transitionDuration;
 	}
 
+	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents)
+	{
+		this.stopPropagationTouchEvents = stopPropagationTouchEvents;
+	}
+
+	protected HandlerRegistration addClickHandler(ClickHandler handler)
+	{
+		return addDomHandler(handler, ClickEvent.getType());
+	}
+
+	protected HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
+	{
+		return addDomHandler(handler, TouchEndEvent.getType());
+	}
+	
+	protected HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
+	{
+		return addDomHandler(handler, TouchMoveEvent.getType());
+	}
+
+	protected HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
+	{
+		return addDomHandler(handler, TouchStartEvent.getType());
+	}
+	
 	/**
 	 * Verify if the hidden panel has a next widget to show.
 	 * @return true if has next widget
@@ -467,14 +506,5 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 			this.slideOutPanel = slideOutPanel;
 		}
 	}
-	
-	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
-	{
-		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
-	}
 
-	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents)
-	{
-		this.stopPropagationTouchEvents = stopPropagationTouchEvents;
-	}
 }
