@@ -40,15 +40,15 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEnabled, HasText
 {
-	private Breadcrumb breadcrumb;
-	private boolean enabled = true;
-	private HandlerManager handlerManager;
-	private SelectablePanel itemPanel;
-	private String name;
-	private HandlerRegistration showViewSelectHandler;
-	private String text;
-	private String viewId;
-	private String viewName;
+	protected Breadcrumb breadcrumb;
+	protected boolean enabled = true;
+	protected HandlerManager handlerManager;
+	protected SelectablePanel itemPanel;
+	protected String name;
+	protected HandlerRegistration showViewSelectHandler;
+	protected String text;
+	protected String viewId;
+	protected String viewName;
 
 	/**
 	 * Constructor
@@ -70,7 +70,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 				
 				if (isActive())
 				{
-					if (breadcrumb.isCollapsible())
+					if (breadcrumb.isCollapsible() && breadcrumb.size() > 1)
 					{
 						breadcrumb.setCollapsed(!breadcrumb.isCollapsed());
 					}
@@ -79,7 +79,7 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 				{
 					int index = breadcrumb.indexOf(BreadcrumbItem.this);
 					breadcrumb.setActiveIndex(index, true, true);
-					if (breadcrumb.isCollapsible())
+					if (breadcrumb.isCollapsible() && breadcrumb.size() > 1)
 					{
 						breadcrumb.setCollapsed(true);
 					}

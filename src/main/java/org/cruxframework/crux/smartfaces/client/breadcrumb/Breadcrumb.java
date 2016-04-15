@@ -755,11 +755,30 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		BreadcrumbItem activeItem = getActiveItem();
 		if (activeItem != null)
 		{
-			activeItem.addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
-			activeItem.removeStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX:STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+			setActiveStyleWhenCollapsible(activeItem);
+			clearActiveOldStyleWhenCollapsible(activeItem);
 		}    
 	}
 
+	private void setActiveStyleWhenCollapsible(BreadcrumbItem item)
+    {
+		if (size() > 1 && item.breadcrumb == this)
+		{
+			item.addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+		}
+    }
+
+	private void clearActiveOldStyleWhenCollapsible(BreadcrumbItem item)
+    {
+	    item.removeStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX:STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+    }
+
+	private void clearActiveStylesWhenCollapsible(BreadcrumbItem item)
+    {
+		item.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+		item.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+    }
+	
 	private Breadcrumb doSetActivateIndex(int index, boolean allowAnimations)
     {
 	    int s = size();
@@ -782,12 +801,11 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		}
 		if (collapsible)
 		{
-			children.get(index).addStyleDependentName(collapsed?STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX:STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
+			setActiveStyleWhenCollapsible(children.get(index));
 			if (activeIndex >= 0)
 			{
 				BreadcrumbItem activeItem = children.get(this.activeIndex);
-				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_CONTRACT_SUFFIX);
-				activeItem.removeStyleDependentName(STYLE_BREADCRUMB_ITEM_EXPAND_SUFFIX);
+				clearActiveStylesWhenCollapsible(activeItem);
 			}
 			if (collapsed)
 			{
