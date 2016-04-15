@@ -24,11 +24,13 @@ import org.cruxframework.crux.smartfaces.client.slider.SlideOutPanel.SlideOutPan
 
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 
 /**
  * 
@@ -54,48 +56,47 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
-		if (slideOutPanel.preventDefaultTouchEvents)
-		{
-			event.preventDefault();
-		}
-		if (slideOutPanel.stopPropagationTouchEvents)
-		{
-			event.stopPropagation();
-		}
-
+		event.stopPropagation();
+//		maybeStopEvent(event);
 		if (slideOutPanel.sliding)
 		{
 			return;
 		}
-		if (slideOutPanel.slideEnabled)
+		resetHandlers();
+
+		final boolean eventTargetsMenu = eventTargetsMenu(event.getNativeEvent());
+		//TODO: check this! Giving some time to onTouchEnd finalize.
+		//If we don't do it, focus events that runs inside any selectHandler
+		//will be overridden by (some crazy?) focus events onTouchEnd.
+		new Timer()
 		{
-			if (currentTouchPosition != startTouchPosition)
+			@Override
+			public void run() 
 			{
-				final int slideBy = getSlideBy();
-				slideOutPanel.slide(slideBy, false, slideBy != 0);
+
+				if (slideOutPanel.slideEnabled)
+				{
+					if (currentTouchPosition != startTouchPosition)
+					{
+						final int slideBy = getSlideBy();
+						slideOutPanel.slide(slideBy, false, slideBy != 0);
+					}
+					else
+					{
+						SlideEndEvent.fire(slideOutPanel);
+					}
+				}
+				if (!didMove)
+				{
+					if (!eventTargetsMenu)
+					{
+						SelectEvent.fire(slideOutPanel);
+					}
+				}
 			}
-			else
-			{
-				SlideEndEvent.fire(slideOutPanel);
-			}
-		}
-		if (!didMove)
-		{
-			if (!eventTargetsMenu(event.getNativeEvent()))
-			{
-				SelectEvent.fire(slideOutPanel);
-			}
-		}
-		if(touchMoveHandler != null)
-		{
-			touchMoveHandler.removeHandler();
-		}
-		if(touchEndHandler != null)
-		{
-			touchEndHandler.removeHandler();
-		}
+		}.schedule(50);
 	}
-	
+
 	@Override
 	public void onTouchMove(TouchMoveEvent event)
 	{
@@ -121,20 +122,13 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		startTouchPosition = slideOutPanel.isHorizontalOrientation()?event.getTouches().get(0).getClientX():event.getTouches().get(0).getClientY();
 		currentTouchPosition = startTouchPosition;
 		startTouchTime = new Date().getTime();
-		touchMoveHandler = slideOutPanel.touchPanel.addTouchMoveHandler(this);
-		touchEndHandler = slideOutPanel.touchPanel.addTouchEndHandler(this);
+		touchMoveHandler = slideOutPanel.addTouchMoveHandler(this);
+		touchEndHandler = slideOutPanel.addTouchEndHandler(this);
 		menuPanelWidth = slideOutPanel.menuPanel.getElement().getOffsetWidth();
 		menuPanelHeight = slideOutPanel.menuPanel.getElement().getOffsetHeight();
-		if (slideOutPanel.preventDefaultTouchEvents)
-		{
-			event.preventDefault();
-		}
-		if (slideOutPanel.stopPropagationTouchEvents)
-		{
-			event.stopPropagation();
-		}
+		maybeStopEvent(event);
 	}
-
+	
 	@Override
 	public void releaseEvents()
 	{
@@ -143,14 +137,15 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 	    	touchStartHandler.removeHandler();
 	    	touchStartHandler = null;
 	    }
+	    
 	    super.releaseEvents();
 	}
 
 	@Override
-	protected void handleEvents(SlideOutPanel slideOutPanel)
+	protected void handleEvents(final SlideOutPanel slideOutPanel)
 	{
 	    super.handleEvents(slideOutPanel);
-		touchStartHandler = slideOutPanel.touchPanel.addTouchStartHandler(this);
+		touchStartHandler = slideOutPanel.addTouchStartHandler(this);
 	}
 
 	private int getHorizontalSlideBy()
@@ -202,7 +197,7 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		}
 		return getVerticalSlideBy();
 	}
-	
+
 	private int getVerticalSlideBy()
     {
 	    int slideBy;
@@ -265,7 +260,7 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 				}
 			}
 		}
-    }	
+    }
 	
 	private void handleVerticalTouchMove(TouchMoveEvent event)
     {
@@ -309,5 +304,31 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 			}
 		}
 		return false;
-	}
+	}	
+	
+	private void maybeStopEvent(TouchEvent<?> event)
+    {
+		if (slideOutPanel.stopPropagationTouchEvents)
+		{
+			event.stopPropagation();
+		}
+		if (slideOutPanel.preventDefaultTouchEvents)
+		{
+			event.preventDefault();
+		}
+    }
+
+	private void resetHandlers()
+    {
+	    if(touchMoveHandler != null)
+		{
+			touchMoveHandler.removeHandler();
+			touchMoveHandler = null;
+		}
+		if(touchEndHandler != null)
+		{
+			touchEndHandler.removeHandler();
+			touchEndHandler = null;
+		}
+    }
 }

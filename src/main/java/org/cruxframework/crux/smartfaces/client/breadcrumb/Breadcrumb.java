@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.breadcrumb;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.css.animation.Animation;
+import org.cruxframework.crux.core.client.event.TouchEventsHandler;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
@@ -33,6 +34,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -47,6 +50,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A Breadcrumb component. Help to guide the user navigation. 
@@ -92,6 +96,35 @@ public class Breadcrumb extends Composite implements HasEnabled, HasAnimation, H
 		mainPanel = new BreadcrumbPanel(this);
 		initWidget(mainPanel);
 		setStyleName(DEFAULT_STYLE_NAME);
+		addAttachHandler(new Handler()
+		{
+			//Hack to avoid select bug on items from a breadcrumb. 
+			@Override
+			public void onAttachOrDetach(AttachEvent event)
+			{
+				if (event.isAttached())
+				{
+					boolean childOfSelectableWidget = false;
+					Widget parent = getParent();
+					while (parent != null)
+					{
+						if (parent instanceof TouchEventsHandler)
+						{
+							childOfSelectableWidget = true;
+							break;
+						}
+						parent = parent.getParent();
+					}
+					if (childOfSelectableWidget)
+					{
+						for (int i=0; i < children.size(); i++)
+						{
+							children.get(i).itemPanel.setPreventDefaultTouchEvents(true);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	/**

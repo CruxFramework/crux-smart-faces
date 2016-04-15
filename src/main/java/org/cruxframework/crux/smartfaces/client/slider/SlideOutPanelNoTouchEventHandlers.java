@@ -30,7 +30,7 @@ public class SlideOutPanelNoTouchEventHandlers extends SlideOutPanelEventHandler
 	protected void handleEvents(SlideOutPanel slideOutPanel)
 	{
 	    super.handleEvents(slideOutPanel);
-	    clickHandler = slideOutPanel.touchPanel.addClickHandler(new ClickHandler()
+	    clickHandler = slideOutPanel.addClickHandler(new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
