@@ -54,6 +54,15 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
+		if (slideOutPanel.preventDefaultTouchEvents)
+		{
+			event.preventDefault();
+		}
+		if (slideOutPanel.stopPropagationTouchEvents)
+		{
+			event.stopPropagation();
+		}
+
 		if (slideOutPanel.sliding)
 		{
 			return;
@@ -116,6 +125,14 @@ class SlideOutPanelTouchEventHandlers extends SlideOutPanelEventHandlers
 		touchEndHandler = slideOutPanel.touchPanel.addTouchEndHandler(this);
 		menuPanelWidth = slideOutPanel.menuPanel.getElement().getOffsetWidth();
 		menuPanelHeight = slideOutPanel.menuPanel.getElement().getOffsetHeight();
+		if (slideOutPanel.preventDefaultTouchEvents)
+		{
+			event.preventDefault();
+		}
+		if (slideOutPanel.stopPropagationTouchEvents)
+		{
+			event.stopPropagation();
+		}
 	}
 
 	@Override

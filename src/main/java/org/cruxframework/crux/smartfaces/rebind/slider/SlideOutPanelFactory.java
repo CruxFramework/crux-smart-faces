@@ -54,8 +54,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttribute(value="menuOrientation", type=MenuOrientation.class),
 	@TagAttribute(value="slideEnabled", type=Boolean.class, defaultValue="true"),
 	@TagAttribute(value="autoHideMenu", type=Boolean.class, defaultValue="false"),
-	@TagAttribute(value="slideSensitivity", type=Integer.class, defaultValue="5")
-	
+	@TagAttribute(value="slideSensitivity", type=Integer.class, defaultValue="5"),
+	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
+		description="If true, the panel will call preventDefault on all touch events."), 
+	@TagAttribute(value="stopPropagationTouchEvents", type=Boolean.class, defaultValue="false", 
+		description="If true, the panel will call stopPropagation on all touch events.")
 })
 @TagEvents({
 	@TagEvent(value=SlideStartEvtBind.class),
