@@ -68,6 +68,8 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 	private HandlerRegistration autoHideSelectHandler;
 	private SlideOutPanelEventHandlers eventHandlers;
 	private boolean hasSelectHandlers = false;
+	protected boolean preventDefaultTouchEvents = false;
+	protected boolean stopPropagationTouchEvents = false;
 	
 	/**
 	 * Constructor
@@ -464,5 +466,15 @@ public class SlideOutPanel extends Composite implements HasSlideStartHandlers, H
 		{
 			this.slideOutPanel = slideOutPanel;
 		}
+	}
+	
+	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
+	{
+		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
+	}
+
+	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents)
+	{
+		this.stopPropagationTouchEvents = stopPropagationTouchEvents;
 	}
 }
