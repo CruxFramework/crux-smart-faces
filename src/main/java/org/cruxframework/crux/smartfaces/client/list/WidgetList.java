@@ -64,7 +64,7 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 			{
 				if (pager != null && !pager.supportsInfiniteScroll())
 				{
-				int numPreviousPage = getDataProvider().getCurrentPage() - 1;
+					int numPreviousPage = getDataProvider().getCurrentPage() - 1;
 					widgetIndex += (numPreviousPage*getPageSize());
 				}
 					
@@ -84,14 +84,14 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 		FlowPanel pagePanel = getPagePanel();
 		return pagePanel != null ? pagePanel.getWidgetIndex(w) : -1;
 	}
-
+	
 	@Override
 	public void reset(boolean reloadData)
 	{
 		clear();
 		super.reset(reloadData);
 	}
-	
+
 	@Override
 	protected void clear()
 	{
@@ -134,7 +134,7 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
             }
 	    };
 	}
-
+	
 	protected String getPagePanelStyleName()
     {
 	    return PAGE_PANEL_STYLE_NAME;
@@ -146,5 +146,11 @@ public class WidgetList<T> extends AbstractPageable<T, FlowPanel>
 		FlowPanel pagePanel = new FlowPanel();
 		pagePanel.setStyleName(getPagePanelStyleName());
 		return pagePanel;
-    }	
+    }
+
+	@Override
+	protected void onDataSelected(T recordObject, boolean selected)
+	{
+	    // TODO This widget does not support selection
+	}	
 }

@@ -230,8 +230,9 @@ abstract class StoryboardPanel extends Composite
 			@Override
 			public void onSelect(SelectEvent event)
 			{
-				int index = getWidgetIndex(panel);
+				int index = mainPanel.getWidgetIndex(panel);
 			    SelectionEvent.fire(storyboard, index);
+			    setSelected(!isSelected(index), index);
 			}
 		});
 		return panel;
@@ -244,5 +245,25 @@ abstract class StoryboardPanel extends Composite
 	protected void setStoryboard(Storyboard storyboard)
 	{
 		this.storyboard = storyboard;
-	}		
+	}
+
+	public void setSelected(boolean selected, int index)
+    {
+		if (selected != isSelected(index))
+		{
+			if (selected)
+			{
+				mainPanel.getWidget(index).addStyleDependentName("selected");
+			}
+			else
+			{
+				mainPanel.getWidget(index).removeStyleDependentName("selected");
+			}
+		}
+    }
+
+	public boolean isSelected(int index)
+    {
+	    return mainPanel.getWidget(index).getStyleName().contains("-selected");
+    }		
 }
