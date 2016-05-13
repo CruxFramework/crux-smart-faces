@@ -16,12 +16,15 @@
 package org.cruxframework.crux.smartfaces.client.carousel;
 
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.storyboard.Storyboard;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -209,6 +212,10 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
             {
 				IsWidget widget = widgetFactory.createWidget(value);
 				getPagePanel().add(widget);
+				if (getDataProvider().isSelected(index))
+				{
+					getPagePanel().setSelected(true, index % getPageSize());
+				}
             }
 	    };
 	}
@@ -216,10 +223,23 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
 	@Override
     protected Storyboard initializePagePanel()
     {
-		Storyboard pagePanel = new Storyboard();
+		final Storyboard pagePanel = new Storyboard();
 		pagePanel.setStyleName(PAGE_PANEL_STYLE_NAME);
 		pagePanel.setFixedHeight(fixedHeight);
 		pagePanel.setFixedWidth(fixedWidth);
+		pagePanel.addSelectionHandler(new SelectionHandler<Integer>()
+		{
+			@Override
+			public void onSelection(SelectionEvent<Integer> event)
+			{
+				if (getDataProvider().getSelectionMode() != SelectionMode.unselectable)
+				{
+					int dataObjectIndex = getDataObjectIndexForWidgetIndex(event.getSelectedItem());
+					getDataProvider().select(dataObjectIndex, !getDataProvider().isSelected(dataObjectIndex));
+				}
+			}
+		});
+		
 		if (horizontalAlignment != null)
 		{
 			pagePanel.setHorizontalAlignment(horizontalAlignment);
@@ -242,4 +262,11 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
 		}
 		return pagePanel;
     }
+	
+	@Override
+	protected void onDataSelected(T recordObject, boolean selected)
+	{
+		int index = getDataProvider().indexOf(recordObject);
+		getPagePanel().setSelected(selected, index % getPageSize());
+	}
 }

@@ -249,4 +249,24 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 	{
 		storyboardPanel.setVerticalAlignment(child, value);
 	}
+
+	/**
+	 * Set the selected property for the given item on this Storyboard.
+	 * @param selected if selected
+	 * @param index item index
+	 */
+	public void setSelected(boolean selected, int index)
+    {
+		storyboardPanel.setSelected(selected, index);	    
+    }
+
+	/**
+	 * Retrieve the selected property for the given item on this Storyboard.
+	 * @param index item index
+	 * @return if selected
+	 */
+	public boolean isSelected(int index)
+	{
+		return storyboardPanel.isSelected(index);
+	}
 }

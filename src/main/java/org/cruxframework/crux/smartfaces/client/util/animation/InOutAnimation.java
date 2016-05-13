@@ -338,6 +338,19 @@ public abstract class InOutAnimation
 		}
 	};	
 
+	public static InOutAnimation slideTop = new InOutAnimation()
+	{
+		protected StandardAnimation getEntranceAnimation()
+        {
+	        return new StandardAnimation(StandardAnimation.Type.slideInUp);
+        }
+
+		protected StandardAnimation getExitAnimation()
+		{
+			return new StandardAnimation(StandardAnimation.Type.slideOutDown);
+		}
+	};	
+
 	public static InOutAnimation slideLeft = new InOutAnimation()
 	{
 		protected StandardAnimation getEntranceAnimation()
