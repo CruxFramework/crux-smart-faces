@@ -51,8 +51,8 @@ abstract class StoryboardPanel extends Composite
 		this.mainPanel = new FlowPanel();
 		initWidget(mainPanel);
 		
-		this.itemHeight = getItemHeight();
-		this.itemWidth = getItemWidth();
+		this.itemHeight = getDefaultItemHeight();
+		this.itemWidth = getDefaultItemWidth();
     }
 
 	public void add(Widget widget)
@@ -88,6 +88,11 @@ abstract class StoryboardPanel extends Composite
 		return -1;
 	}
 	
+	public boolean isSelected(int index)
+    {
+	    return mainPanel.getWidget(index).getStyleName().contains("-selected");
+    }
+
 	public Iterator<Widget> iterator()
     {
 	    return new Iterator<Widget>()
@@ -123,11 +128,11 @@ abstract class StoryboardPanel extends Composite
 		};
     }
 
-	public boolean remove(int index) 
+    public boolean remove(int index) 
 	{
 		return mainPanel.remove(index);
 	}
-
+    
     public boolean remove(Widget w)
     {
 	    int index = getWidgetIndex(w);
@@ -142,14 +147,15 @@ abstract class StoryboardPanel extends Composite
 	{
 		this.fixedHeight = fixedHeight;
 	}
-    
-    public void setFixedWidth(boolean fixedWidth) 
+
+	public void setFixedWidth(boolean fixedWidth) 
 	{
 		this.fixedWidth = fixedWidth;
 	}
 
-	public void setHorizontalAlignment(HorizontalAlignmentConstant value)
+    public void setHorizontalAlignment(HorizontalAlignmentConstant value)
     {
+    	storyboard.getElement().getStyle().setProperty("textAlign", value.getTextAlignString());
     }
 
     public void setHorizontalAlignment(IsWidget child, HorizontalAlignmentConstant value)
@@ -173,25 +179,48 @@ abstract class StoryboardPanel extends Composite
     {
     }
 
-    public void setSmallDeviceItemHeight(IsWidget child, String height)
+	public void setSelected(boolean selected, int index)
+    {
+		if (selected != isSelected(index))
+		{
+			if (selected)
+			{
+				mainPanel.getWidget(index).addStyleDependentName("selected");
+			}
+			else
+			{
+				mainPanel.getWidget(index).removeStyleDependentName("selected");
+			}
+		}
+    }
+	
+	public void setSmallDeviceItemHeight(IsWidget child, String height)
     {
     }
 
 	public void setSmallDeviceItemHeight(String height)
     {
     }
-	
+
+	public void setSmallDeviceItemWidth(IsWidget child, String width)
+    {
+    }
+
+    public void setSmallDeviceItemWidth(String width)
+    {
+    }
+
     public void setVerticalAlignment(IsWidget child, VerticalAlignmentConstant value)
     {
 		child.asWidget().getParent().getElement().getStyle().setProperty("verticalAlign", value.getVerticalAlignString());
     }
 
-    public void setVerticalAlignment(VerticalAlignmentConstant value)
+	public void setVerticalAlignment(VerticalAlignmentConstant value)
     {
     	storyboard.getElement().getStyle().setProperty("verticalAlign", value.getVerticalAlignString());
     }
 
-    protected void configHeightWidth(final Widget panel) 
+	protected void configHeightWidth(final Widget panel) 
 	{
 		if (!StringUtils.isEmpty(itemHeight))
 		{
@@ -235,35 +264,18 @@ abstract class StoryboardPanel extends Composite
 			    setSelected(!isSelected(index), index);
 			}
 		});
+		
+	    panel.getElement().getStyle().setProperty("display", "inline-table");
+		
 		return panel;
 	}
 
-	protected abstract String getItemHeight();
+	protected abstract String getDefaultItemHeight();
 
-	protected abstract String getItemWidth();
+	protected abstract String getDefaultItemWidth();
 
 	protected void setStoryboard(Storyboard storyboard)
 	{
 		this.storyboard = storyboard;
-	}
-
-	public void setSelected(boolean selected, int index)
-    {
-		if (selected != isSelected(index))
-		{
-			if (selected)
-			{
-				mainPanel.getWidget(index).addStyleDependentName("selected");
-			}
-			else
-			{
-				mainPanel.getWidget(index).removeStyleDependentName("selected");
-			}
-		}
-    }
-
-	public boolean isSelected(int index)
-    {
-	    return mainPanel.getWidget(index).getStyleName().contains("-selected");
-    }		
+	}		
 }

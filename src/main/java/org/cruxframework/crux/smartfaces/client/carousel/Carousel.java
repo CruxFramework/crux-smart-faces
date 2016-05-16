@@ -54,6 +54,7 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
 	protected String smallDeviceItemHeight;
 	protected VerticalAlignmentConstant verticalAlignment;
 	protected WidgetFactory<T> widgetFactory;
+	private String smallDeviceItemWidth;
 
 	/**
 	 * Constructor
@@ -162,6 +163,19 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
 	}
 	
 	/**
+	 * Set the width of each item on this carousel, when displaying on a small device. 
+	 * @param width item width.
+	 */
+	public void setSmallDeviceItemWidth(String width)
+	{
+		this.smallDeviceItemWidth = width;
+		if (getPagePanel() != null)
+		{
+			getPagePanel().setSmallDeviceItemWidth(smallDeviceItemWidth);
+		}
+	}
+
+	/**
 	 * Set the vertical alignment for items on this carousel.
 	 * @param value alignment
 	 */
@@ -255,6 +269,10 @@ public class Carousel<T> extends AbstractPageable<T, Storyboard>
 		if (smallDeviceItemHeight != null)
 		{
 			pagePanel.setSmallDeviceItemHeight(smallDeviceItemHeight);
+		}
+		if (smallDeviceItemWidth != null)
+		{
+			pagePanel.setSmallDeviceItemWidth(smallDeviceItemWidth);
 		}
 		if (verticalAlignment != null)
 		{

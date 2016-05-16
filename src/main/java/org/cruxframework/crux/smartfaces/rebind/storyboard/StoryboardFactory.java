@@ -59,11 +59,11 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 })
 @TagAttributes({
 	@TagAttribute(value="largeDeviceItemWidth", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
+	@TagAttribute(value="smallDeviceItemWidth", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),
 	@TagAttribute(value="smallDeviceItemHeight", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),
 	@TagAttribute(value="largeDeviceItemHeight", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
 	@TagAttribute(value="horizontalAlignment", type=HorizontalAlignment.class, widgetType=HorizontalAlignmentConstant.class, 
-	        processor=HorizontalAlignmentAttributeParser.class, defaultValue="center",  
-			supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
+	        processor=HorizontalAlignmentAttributeParser.class, defaultValue="center"),
 	@TagAttribute(value="verticalAlignment", type=VerticalAlignment.class, widgetType=VerticalAlignmentConstant.class,
 	processor=VerticalAlignmentAttributeParser.class, defaultValue="middle"), 
 	@TagAttribute(value="fixedWidth", type=Boolean.class, defaultValue="true"), 
