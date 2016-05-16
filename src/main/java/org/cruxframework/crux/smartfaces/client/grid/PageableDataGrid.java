@@ -23,9 +23,6 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.DataReader;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
-import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord;
-import org.cruxframework.crux.core.client.dataprovider.DataSelectionEvent;
-import org.cruxframework.crux.core.client.dataprovider.DataSelectionHandler;
 import org.cruxframework.crux.core.client.dataprovider.LazyProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
@@ -55,7 +52,6 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -92,7 +88,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private boolean animated = true;
 	private Array<ColumnGroup<T>> columnGroups = CollectionFactory.createArray();
 	private FlowPanel contentPanel = new FlowPanel();
-	private HandlerRegistration dataSelectionHandler;
 	private String defaultDetailPopupHeader = WidgetMsgFactory.getMessages().more();
 	private GridWidgetFactory detailColumnHeaderWidgetFactory = null;
 	private String detailPopupHeader = WidgetMsgFactory.getMessages().details();
@@ -100,7 +95,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	private InOutAnimation dialogAnimation = InOutAnimation.bounce;
 	private boolean drawn = false;
 	private DivTable headerSection;
-	private HandlerRegistration pageRequestedHandler;
 	private InOutAnimation rowAnimation = InOutAnimation.flipX;
 	private double rowAnimationDuration = -1;
 	private RowSelectStrategy rowSelectStrategy;
@@ -359,37 +353,16 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	}
 
 	@Override
-	protected void addDataProviderHandler()
+	protected void onDataSelected(T recordObject, boolean selected)
 	{
-		super.addDataProviderHandler();
-		dataSelectionHandler = getDataProvider().addDataSelectionHandler(new DataSelectionHandler<T>()
-		{
-			@Override
-			public void onDataSelection(DataSelectionEvent<T> event)
-			{
-				if(getDataProvider().getSelectionMode().equals(SelectionMode.unselectable))
-				{
-					return;
-				}
+		Row<T> row = getCurrentPageRow(recordObject);
 
-				Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
-				if(changedRecords != null)
-				{
-					for(int i=0; i<changedRecords.size(); i++)
-					{
-						DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
-						Row<T> row = getCurrentPageRow(dataProviderRecord.getRecordObject());
-						
-						//Row can be null is it's state is changed to unselected but it not
-						//present in the DOM. This happens when we remove a line.
-						if(row != null)
-						{
-							setRowSelectionState(row, dataProviderRecord.isSelected());
-						}
-					}
-				}
-			}
-		});
+		//Row can be null is it's state is changed to unselected but it not
+		//present in the DOM. This happens when we remove a line.
+		if(row != null)
+		{
+			setRowSelectionState(row, selected);
+		}
 	}
 
 	@Override
@@ -483,23 +456,6 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 	{
 		DivTable divTable = new DivTable(tableHandler);
 		return divTable;
-	}
-
-	@Override
-	protected void removeDataProviderHandler()
-	{
-		super.removeDataProviderHandler();
-
-		if (dataSelectionHandler != null)
-		{
-			dataSelectionHandler.removeHandler();
-			dataSelectionHandler = null;
-		}
-		if (pageRequestedHandler != null)
-		{
-			pageRequestedHandler.removeHandler();
-			pageRequestedHandler = null;
-		}
 	}
 
 	@Override
@@ -689,6 +645,7 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		return rows.get(currentRowIndex);
 	}
 
+	//TODO esta regra está errada. O item selecionado pelo data provider pode não estar na página selecionada
 	private int getCurrentRowIndex(int dataProviderRowIndex)
 	{
 		int index;

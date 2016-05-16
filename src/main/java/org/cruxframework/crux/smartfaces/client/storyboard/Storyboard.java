@@ -213,6 +213,17 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 	}
 	
 	/**
+	 * Set the width of each item on this Storyboard, when displaying on a large device. 
+	 * 
+	 * @param child the item
+	 * @param width the width
+	 */
+	public void setSmallDeviceItemWidth(IsWidget child, String width)
+    {
+		storyboardPanel.setLargeDeviceItemWidth(child, width);
+    }
+
+	/**
 	 * Set the height of the given item on this Storyboard, when displaying on a small device. 
 	 * @param child the item
 	 * @param height item height.
@@ -232,6 +243,15 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 	}
 	
 	/**
+	 * Set the height of each item on this Storyboard, when displaying on a small device. 
+	 * @param width item width
+	 */
+	public void setSmallDeviceItemWidth(String width)
+	{
+		storyboardPanel.setSmallDeviceItemWidth(width);
+	}
+
+	/**
 	 * Set the vertical alignment for items on this Storyboard.
 	 * @param value alignment
 	 */
@@ -248,5 +268,25 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 	public void setVerticalAlignment(IsWidget child, HasVerticalAlignment.VerticalAlignmentConstant value)
 	{
 		storyboardPanel.setVerticalAlignment(child, value);
+	}
+
+	/**
+	 * Set the selected property for the given item on this Storyboard.
+	 * @param selected if selected
+	 * @param index item index
+	 */
+	public void setSelected(boolean selected, int index)
+    {
+		storyboardPanel.setSelected(selected, index);	    
+    }
+
+	/**
+	 * Retrieve the selected property for the given item on this Storyboard.
+	 * @param index item index
+	 * @return if selected
+	 */
+	public boolean isSelected(int index)
+	{
+		return storyboardPanel.isSelected(index);
 	}
 }
