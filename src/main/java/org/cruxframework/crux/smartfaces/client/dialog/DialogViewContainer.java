@@ -527,6 +527,15 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 		dialog.setAnimation(animation);
 	}
 	
+	/**
+	 * Defines the duration for the animation used to animate popup entrances and exits
+	 * @param duration animatin duration in seconds.
+	 */
+	public void setAnimationDuration(double duration)
+	{
+		dialog.setAnimationDuration(duration);
+	}
+
 	@Override
     public boolean isAnimationEnabled()
     {
