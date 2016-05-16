@@ -213,6 +213,17 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 	}
 	
 	/**
+	 * Set the width of each item on this Storyboard, when displaying on a large device. 
+	 * 
+	 * @param child the item
+	 * @param width the width
+	 */
+	public void setSmallDeviceItemWidth(IsWidget child, String width)
+    {
+		storyboardPanel.setLargeDeviceItemWidth(child, width);
+    }
+
+	/**
 	 * Set the height of the given item on this Storyboard, when displaying on a small device. 
 	 * @param child the item
 	 * @param height item height.
@@ -231,6 +242,15 @@ public class Storyboard extends Composite implements HasWidgets.ForIsWidget, Ind
 		storyboardPanel.setSmallDeviceItemHeight(height);
 	}
 	
+	/**
+	 * Set the height of each item on this Storyboard, when displaying on a small device. 
+	 * @param width item width
+	 */
+	public void setSmallDeviceItemWidth(String width)
+	{
+		storyboardPanel.setSmallDeviceItemWidth(width);
+	}
+
 	/**
 	 * Set the vertical alignment for items on this Storyboard.
 	 * @param value alignment

@@ -34,12 +34,23 @@ class StoryboardPanelSmall extends StoryboardPanel
 		this.itemHeight = height;	    
     }
 	
-    protected String getItemHeight() 
+	public void setSmallDeviceItemWidth(IsWidget child, String width)
+    {
+		assert(child.asWidget().getParent() != null);
+		child.asWidget().getParent().setWidth(width);
+    }
+
+	public void setSmallDeviceItemWidth(String width)
+    {
+		this.itemWidth = width;	    
+    }
+	
+    protected String getDefaultItemHeight() 
 	{
 		return "75px";
 	}
 
-    protected String getItemWidth() 
+    protected String getDefaultItemWidth() 
 	{
 		return "100%";
 	}

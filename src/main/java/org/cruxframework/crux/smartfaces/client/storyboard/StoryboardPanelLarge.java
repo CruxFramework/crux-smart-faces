@@ -16,9 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.storyboard;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -26,11 +24,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class StoryboardPanelLarge extends StoryboardPanel 
 {
-	@Override
-    public void setHorizontalAlignment(HorizontalAlignmentConstant value)
-    {
-    	storyboard.getElement().getStyle().setProperty("textAlign", value.getTextAlignString());
-    }
 	
 	@Override
 	public void setLargeDeviceItemHeight(IsWidget child, String height)
@@ -59,21 +52,13 @@ public class StoryboardPanelLarge extends StoryboardPanel
     }
 
 	@Override
-	protected Widget createClickablePanelForCell(Widget widget)
-	{
-	    final Widget panel = super.createClickablePanelForCell(widget);
-	    panel.getElement().getStyle().setProperty("display", "inline-table");
-		return panel;
-	}
-	
-	@Override
-	protected String getItemHeight() 
+	protected String getDefaultItemHeight() 
 	{
 		return "200px";
 	}
 	
 	@Override
-	protected String getItemWidth() 
+	protected String getDefaultItemWidth() 
 	{
 		return "200px";
 	}
