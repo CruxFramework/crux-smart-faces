@@ -521,7 +521,10 @@ public abstract class PageableDataGrid<T> extends AbstractPageable<T, DivTable> 
 		}
 
 		//Handle sort events
-		handleSortEvents(column, headerWrapper);
+		if(getDataProvider() != null)
+		{
+			handleSortEvents(column, headerWrapper);
+		}
 
 		//Insert the element and set up the row
 		handleHeaderInsertion(column, headerWrapper);
