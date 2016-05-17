@@ -655,6 +655,18 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	}
 
 	/**
+	 * Determines whether or not this popup is showing.
+	 * 
+	 * @return <code>true</code> if the popup is showing
+	 * @see #show()
+	 * @see #hide()
+	 */
+	public boolean isShowing()
+	{
+		return dialog.isShowing();
+	}
+	
+	/**
 	 * Close the container dialog. If unloadView parameter is true, try to unload the current view first.
 	 * <p> If this view can not be unloaded (its unload event handler cancel the event), 
 	 * this method does not close the container and returns false.</p>
