@@ -78,11 +78,11 @@ public class BreadcrumbItem extends UIObject implements HasSelectHandlers, HasEn
 				else if (breadcrumb.isActivateItemsOnSelectionEnabled())
 				{
 					int index = breadcrumb.indexOf(BreadcrumbItem.this);
-					breadcrumb.setActiveIndex(index, true, true);
 					if (breadcrumb.isCollapsible() && breadcrumb.size() > 1)
 					{
 						breadcrumb.setCollapsed(true);
 					}
+					breadcrumb.setActiveIndex(index, true, true);
 				}
 				
 				SelectEvent.fire(BreadcrumbItem.this);
