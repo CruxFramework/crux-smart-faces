@@ -15,17 +15,15 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.label;
 
-import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllSelectHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAutoHorizontalAlignmentFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasTextFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasWordWrapFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
@@ -41,11 +39,9 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
 				  description="If true, the label will call preventDefault on all touch events.")
 })
-@TagEvents({
-	@TagEvent(SelectEvtBind.class)
-})
 public class LabelFactory extends WidgetCreator<WidgetCreatorContext> implements HasTextFactory<WidgetCreatorContext>, 
-													HasWordWrapFactory<WidgetCreatorContext>, HasAutoHorizontalAlignmentFactory<WidgetCreatorContext>
+													HasWordWrapFactory<WidgetCreatorContext>, HasAutoHorizontalAlignmentFactory<WidgetCreatorContext>,
+													HasAllSelectHandlersFactory<WidgetCreatorContext>
 {	
 	@Override
     public WidgetCreatorContext instantiateContext()

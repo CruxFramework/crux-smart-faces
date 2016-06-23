@@ -19,6 +19,7 @@ import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.FocusableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllFocusHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllSelectHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -44,15 +45,13 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
 						description="If true, the html will call preventDefault on all touch events.")
 })
-@TagEvents({
-	@TagEvent(SelectEvtBind.class)
-})
 @TagChildren({
 	@TagChild(SelectableFlowPanelFactory.WidgetContentProcessor.class)
 })
 public class SelectableFlowPanelFactory extends PanelFactory<WidgetCreatorContext>
 implements 	HasAllFocusHandlersFactory<WidgetCreatorContext>, HasEnabledFactory<WidgetCreatorContext>,
-			FocusableFactory<WidgetCreatorContext>
+			FocusableFactory<WidgetCreatorContext>,
+			HasAllSelectHandlersFactory<WidgetCreatorContext>
 {
 	@TagConstraints(minOccurs="0", maxOccurs="unbounded")
 	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}		

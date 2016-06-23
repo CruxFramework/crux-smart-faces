@@ -15,10 +15,10 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.panel;
 
-import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.FocusableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllFocusHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllSelectHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -27,8 +27,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
@@ -44,15 +42,13 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
 						description="If true, the html will call preventDefault on all touch events.")
 })
-@TagEvents({
-	@TagEvent(SelectEvtBind.class)
-})
 @TagChildren({
 	@TagChild(SelectablePanelFactory.WidgetContentProcessor.class)
 })
 public class SelectablePanelFactory extends PanelFactory<WidgetCreatorContext>
 implements 	HasAllFocusHandlersFactory<WidgetCreatorContext>, HasEnabledFactory<WidgetCreatorContext>,
-			FocusableFactory<WidgetCreatorContext>
+			FocusableFactory<WidgetCreatorContext>,
+			HasAllSelectHandlersFactory<WidgetCreatorContext>
 {
 	@TagConstraints(minOccurs="0", maxOccurs="1")
 	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}		
