@@ -18,12 +18,12 @@ package org.cruxframework.crux.smartfaces.rebind.image;
 import org.apache.commons.lang3.StringUtils;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllFocusHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAllSelectHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.LoadErrorEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.LoadEvtBind;
@@ -59,9 +59,12 @@ import com.google.gwt.resources.client.ImageResource;
     			description = "The alternate text of the image for user agents that can't render the image."),
     @TagAttribute(value = "visibleRect", supportsDataBinding=false, 
     			processor = ImageFactory.VisibleRectAttributeParser.class, description = "Visibility rectangle of an image.") })
-@TagEvents({ @TagEvent(LoadEvtBind.class), @TagEvent(LoadErrorEvtBind.class), @TagEvent(SelectEvtBind.class) })
+@TagEvents({ 
+	@TagEvent(LoadEvtBind.class), 
+	@TagEvent(LoadErrorEvtBind.class)
+})
 public class ImageFactory extends WidgetCreator<WidgetCreatorContext> implements HasAllFocusHandlersFactory<WidgetCreatorContext>,
-    HasEnabledFactory<WidgetCreatorContext>
+    HasEnabledFactory<WidgetCreatorContext>, HasAllSelectHandlersFactory<WidgetCreatorContext>
 {
 	public static class URLAttributeParser extends AttributeProcessor<WidgetCreatorContext>
 	{
