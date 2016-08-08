@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.input;
 
 import java.text.ParseException;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.event.paste.HasPasteHandlers;
 import org.cruxframework.crux.core.client.event.paste.PasteEvent;
 import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegister;
@@ -126,12 +128,18 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 	private Box box;
 
-	private Number enterValue = null;
+	private boolean changeEmulation;
 
+	private boolean changeEmulationHandlerInitialized = false;
+	
+	private Array<ChangeHandler> changeHandlers = CollectionFactory.createArray();
+	
+	private Number enterValue = null;
+	
 	private FormatterOptions formatterOptions;
-	
+
 	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
-	
+
 	private String localeGroupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
 	
 	private Number maxValue;
@@ -175,7 +183,19 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	@Override
     public HandlerRegistration addChangeHandler(ChangeHandler handler)
     {
-		return addDomHandler(handler, ChangeEvent.getType());
+		if (!changeEmulationHandlerInitialized)
+		{
+			changeEmulationHandlerInitialized = true;
+			addDomHandler(new ChangeHandler()
+			{
+				public void onChange(ChangeEvent event)
+				{
+					handleChangeEvent(event);
+				}
+			}, ChangeEvent.getType());
+		}
+
+		return handleChangeHandler(handler);
 	}
 
 	@Override
@@ -334,30 +354,30 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-
 	@Override
     public Direction getDirection()
     {
 	    return box.getDirection();
     }
-	
-	
+
 	@Override
     public DirectionEstimator getDirectionEstimator()
     {
 	    return box.getDirectionEstimator();
     }
-	
+
+
 	public Number getMaxValue()
 	{
 		return maxValue;
 	}
-
+	
+	
 	public Number getMinValue()
 	{
 		return minValue;
 	}
-
+	
 	@Override
     public String getName()
     {
@@ -456,7 +476,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		renderer.setNumberFormat(numberFormat);
 		this.formatterOptions = formatterOptions;
 	}
-	
+
 	public void setMaxValue(Number maxValue)
 	{
 		this.maxValue = maxValue;
@@ -476,7 +496,7 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			setValue(minValue);
 		}
 	}
-
+	
 	@Override
     public void setName(String name)
     {
@@ -503,8 +523,10 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 	private void fireChangeEvent()
 	{
+		this.changeEmulation = true;
 		Event changeEvent = Document.get().createChangeEvent().cast();
 		getElement().dispatchEvent(changeEvent);
+		this.changeEmulation = false;
 	}
 
 	/**
@@ -527,6 +549,30 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 				}
 			}
 		});
+    }
+
+	private void handleChangeEvent(ChangeEvent event)
+    {
+		if (this.changeEmulation)
+		{
+			for (int i=0; i < changeHandlers.size(); i++) 
+			{
+				changeHandlers.get(i).onChange(event);
+			}
+		}
+    }
+
+	private HandlerRegistration handleChangeHandler(final ChangeHandler handler)
+    {
+		changeHandlers.add(handler);
+	    return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				changeHandlers.remove(handler);
+			}
+		};
     }
 
 	private void saveEnterValue()
@@ -630,6 +676,14 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		}
 	}
 
+	public static class NumberBoxType
+	{
+		public void handleType(Widget widget)
+		{
+			widget.getElement().setAttribute("inputmode", "numeric");
+		}
+	}
+	
 	static class Box extends ValueBox<Number> implements HasPasteHandlers
 	{
         public Box(NumberRenderer renderer)
@@ -645,14 +699,6 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	    {
 			return addHandler(handler, PasteEvent.getType());
 	    }
-	}
-	
-	public static class NumberBoxType
-	{
-		public void handleType(Widget widget)
-		{
-			widget.getElement().setAttribute("inputmode", "numeric");
-		}
 	}
 
 	static class EventsHandler implements KeyDownHandler, KeyPressHandler, KeyUpHandler, BlurHandler, FocusHandler, PasteHandler
