@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.input;
 
 import java.text.ParseException;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.event.paste.HasPasteHandlers;
 import org.cruxframework.crux.core.client.event.paste.PasteEvent;
 import org.cruxframework.crux.core.client.event.paste.PasteEventSourceRegister;
@@ -111,35 +113,39 @@ import com.google.gwt.user.client.ui.ValueBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A numeric box 
+ * A numeric box
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class NumberBox extends Composite implements HasEnabled, Focusable, HasValue<Number>, HasName, 
-										HasDirectionEstimator, HasDirection,  HasClickHandlers, 
-										HasDoubleClickHandlers, HasAllDragAndDropHandlers, 
-										HasAllFocusHandlers, HasAllGestureHandlers,
-									    HasAllMouseHandlers, HasAllTouchHandlers, 
-									    HasChangeHandlers
+public class NumberBox extends Composite implements HasEnabled, Focusable, HasValue<Number>, HasName, HasDirectionEstimator, HasDirection,
+    HasClickHandlers, HasDoubleClickHandlers, HasAllDragAndDropHandlers, HasAllFocusHandlers, HasAllGestureHandlers, HasAllMouseHandlers,
+    HasAllTouchHandlers, HasChangeHandlers
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-NumberBox";
 
 	private Box box;
 
+	private boolean changeEmulation;
+
+	private boolean changeEmulationHandlerInitialized = false;
+
+	private Array<ChangeHandler> changeHandlers = CollectionFactory.createArray();
+	
 	private Number enterValue = null;
 
 	private FormatterOptions formatterOptions;
 	
 	private String localeDecimalSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
-	
+
 	private String localeGroupSeparator = LocaleInfo.getCurrentLocale().getNumberConstants().groupingSeparator();
-	
+
 	private Number maxValue;
 
 	private Number minValue;
 
 	private NumberRenderer renderer;
-	
+
 	private boolean valueChangeHandlerInitialized = false;
 
 	public NumberBox()
@@ -173,9 +179,21 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	}
 
 	@Override
-    public HandlerRegistration addChangeHandler(ChangeHandler handler)
-    {
-		return addDomHandler(handler, ChangeEvent.getType());
+	public HandlerRegistration addChangeHandler(ChangeHandler handler)
+	{
+		if (!changeEmulationHandlerInitialized)
+		{
+			changeEmulationHandlerInitialized = true;
+			addDomHandler(new ChangeHandler()
+			{
+				public void onChange(ChangeEvent event)
+				{
+					handleChangeEvent(event);
+				}
+			}, ChangeEvent.getType());
+		}
+
+		return handleChangeHandler(handler);
 	}
 
 	@Override
@@ -257,10 +275,10 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	}
 
 	@Override
-    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
-    {
-	    return addDomHandler(handler, MouseDownEvent.getType());
-    }
+	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
+	{
+		return addDomHandler(handler, MouseDownEvent.getType());
+	}
 
 	@Override
 	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler)
@@ -334,20 +352,18 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
+	@Override
+	public Direction getDirection()
+	{
+		return box.getDirection();
+	}
 
 	@Override
-    public Direction getDirection()
-    {
-	    return box.getDirection();
-    }
-	
-	
-	@Override
-    public DirectionEstimator getDirectionEstimator()
-    {
-	    return box.getDirectionEstimator();
-    }
-	
+	public DirectionEstimator getDirectionEstimator()
+	{
+		return box.getDirectionEstimator();
+	}
+
 	public Number getMaxValue()
 	{
 		return maxValue;
@@ -359,10 +375,10 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	}
 
 	@Override
-    public String getName()
-    {
-	    return box.getName();
-    }
+	public String getName()
+	{
+		return box.getName();
+	}
 
 	@Override
 	public int getTabIndex()
@@ -389,22 +405,22 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	}
 
 	@Override
-    public void setDirection(Direction direction)
-    {
+	public void setDirection(Direction direction)
+	{
 		box.setDirection(direction);
-    }
+	}
 
 	@Override
-    public void setDirectionEstimator(boolean enabled)
-    {
+	public void setDirectionEstimator(boolean enabled)
+	{
 		box.setDirectionEstimator(enabled);
-    }
+	}
 
 	@Override
-    public void setDirectionEstimator(DirectionEstimator directionEstimator)
-    {
+	public void setDirectionEstimator(DirectionEstimator directionEstimator)
+	{
 		box.setDirectionEstimator(directionEstimator);
-    }
+	}
 
 	@Override
 	public void setEnabled(boolean enabled)
@@ -449,19 +465,18 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			}
 
 		}
-		assert (!StringUtils.unsafeEquals(formatterOptions.decimalSeparator, formatterOptions.groupSeparator)) : 
-				"Invalid options. Decimal separator can not be equals to group separator.";
+		assert (!StringUtils.unsafeEquals(formatterOptions.decimalSeparator, formatterOptions.groupSeparator)) : "Invalid options. Decimal separator can not be equals to group separator.";
 
 		NumberFormat numberFormat = NumberFormat.getFormat(pattern.toString());
 		renderer.setNumberFormat(numberFormat);
 		this.formatterOptions = formatterOptions;
 	}
-	
+
 	public void setMaxValue(Number maxValue)
 	{
 		this.maxValue = maxValue;
 		Number value = getValue();
-		if (value!= null && maxValue != null && value.doubleValue() > maxValue.doubleValue())
+		if (value != null && maxValue != null && value.doubleValue() > maxValue.doubleValue())
 		{
 			setValue(maxValue);
 		}
@@ -471,17 +486,17 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 	{
 		this.minValue = minValue;
 		Number value = getValue();
-		if (value!= null && minValue != null && value.doubleValue() < minValue.doubleValue())
+		if (value != null && minValue != null && value.doubleValue() < minValue.doubleValue())
 		{
 			setValue(minValue);
 		}
 	}
 
 	@Override
-    public void setName(String name)
-    {
+	public void setName(String name)
+	{
 		box.setName(name);
-    }
+	}
 
 	@Override
 	public void setTabIndex(int index)
@@ -503,17 +518,19 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 	private void fireChangeEvent()
 	{
+		this.changeEmulation = true;
 		Event changeEvent = Document.get().createChangeEvent().cast();
 		getElement().dispatchEvent(changeEvent);
+		this.changeEmulation = false;
 	}
 
 	/**
-	 * The key events handling performed by this widget prevents the browser to call the change event.
-	 * So we need to force its call when blur event occurs.
+	 * The key events handling performed by this widget prevents the browser to call the change event. So we need to force its call when
+	 * blur event occurs.
 	 */
 	private void fixChangeEvents()
-    {
-	    addBlurHandler(new BlurHandler()
+	{
+		addBlurHandler(new BlurHandler()
 		{
 			public void onBlur(BlurEvent event)
 			{
@@ -527,29 +544,53 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 				}
 			}
 		});
-    }
+	}
 
+	private void handleChangeEvent(ChangeEvent event)
+     {
+ 		if (this.changeEmulation)
+ 		{
+ 			for (int i=0; i < changeHandlers.size(); i++) 
+ 			{
+ 				changeHandlers.get(i).onChange(event);
+ 			}
+ 		}
+     }
+ 
+ 	private HandlerRegistration handleChangeHandler(final ChangeHandler handler)
+     {
+ 		changeHandlers.add(handler);
+ 	    return new HandlerRegistration()
+ 		{
+ 			@Override
+ 			public void removeHandler()
+ 			{
+ 				changeHandlers.remove(handler);
+ 			}
+ 		};
+     }	
+	
 	private void saveEnterValue()
-    {
-		this.enterValue  = getValue();
-    }
+	{
+		this.enterValue = getValue();
+	}
 
 	private void setValue(Number value, boolean fireEvents, boolean ensureValueConstraints)
-    {
-	    if (ensureValueConstraints)
-	    {
-	    	if (value != null && maxValue != null && value.doubleValue() > maxValue.doubleValue())
-	    	{
-	    		value = maxValue;
-	    	}
-	    	if (value != null && minValue != null && value.doubleValue() < minValue.doubleValue())
-	    	{
-	    		value = minValue;
-	    	}
-	    }
-		
+	{
+		if (ensureValueConstraints)
+		{
+			if (value != null && maxValue != null && value.doubleValue() > maxValue.doubleValue())
+			{
+				value = maxValue;
+			}
+			if (value != null && minValue != null && value.doubleValue() < minValue.doubleValue())
+			{
+				value = minValue;
+			}
+		}
+
 		box.setValue(value, fireEvents);
-    }
+	}
 
 	public static class FormatterOptions
 	{
@@ -630,6 +671,14 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 		}
 	}
 
+	public static class NumberBoxType
+	{
+		public void handleType(Widget widget)
+		{
+			widget.getElement().setAttribute("inputmode", "numeric");
+		}
+	}
+
 	static class Box extends ValueBox<Number> implements HasPasteHandlers
 	{
 		public Box(NumberRenderer renderer)
@@ -639,19 +688,11 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			numberBoxType.handleType(this);
 			PasteEventSourceRegister.registerPasteEventSource(this, getElement());
 		}
-		
+
 		@Override
-	    public HandlerRegistration addPasteHandler(PasteHandler handler)
-	    {
-			return addHandler(handler, PasteEvent.getType());
-	    }
-	}
-	
-	public static class NumberBoxType
-	{
-		public void handleType(Widget widget)
+		public HandlerRegistration addPasteHandler(PasteHandler handler)
 		{
-			widget.getElement().setAttribute("inputmode", "numeric");
+			return addHandler(handler, PasteEvent.getType());
 		}
 	}
 
@@ -678,20 +719,20 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			else
 			{
 				Number value = numberBox.getValue();
-		    	if (value != null && 
-		    		  ((numberBox.maxValue != null && value.doubleValue() > numberBox.maxValue.doubleValue())
-		    		|| (numberBox.minValue != null && value.doubleValue() < numberBox.minValue.doubleValue())))
-		    	{
+				if (value != null
+				    && ((numberBox.maxValue != null && value.doubleValue() > numberBox.maxValue.doubleValue()) || (numberBox.minValue != null && value
+				        .doubleValue() < numberBox.minValue.doubleValue())))
+				{
 					numberBox.setValue(null);
-		    	}
+				}
 			}
 		}
-		
+
 		@Override
-        public void onFocus(FocusEvent event)
-        {
-	        numberBox.saveEnterValue();
-        }
+		public void onFocus(FocusEvent event)
+		{
+			numberBox.saveEnterValue();
+		}
 
 		@Override
 		public void onKeyDown(KeyDownEvent event)
@@ -699,13 +740,13 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 			ignored = false;
 			int keyCode = event.getNativeKeyCode();
 
-			boolean isNumber = (keyCode >= KeyCodes.KEY_ZERO && keyCode <= KeyCodes.KEY_NINE) || 
-							   (keyCode >= KeyCodes.KEY_NUM_ZERO && keyCode <= KeyCodes.KEY_NUM_NINE);
+			boolean isNumber = (keyCode >= KeyCodes.KEY_ZERO && keyCode <= KeyCodes.KEY_NINE)
+			    || (keyCode >= KeyCodes.KEY_NUM_ZERO && keyCode <= KeyCodes.KEY_NUM_NINE);
 
 			boolean isMinus = (keyCode == KeyCodes.KEY_NUM_MINUS || keyCode == DASH);
 
-			isControlChar = (keyCode <= KeyCodes.KEY_DELETE && keyCode != KeyCodes.KEY_SPACE) || 
-							 event.isControlKeyDown() || event.isAltKeyDown() || event.isMetaKeyDown();
+			isControlChar = (keyCode <= KeyCodes.KEY_DELETE && keyCode != KeyCodes.KEY_SPACE) || event.isControlKeyDown()
+			    || event.isAltKeyDown() || event.isMetaKeyDown();
 
 			if (isMinus && numberBox.formatterOptions.allowNegatives)
 			{
@@ -727,9 +768,9 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 				double value = (numVal != null ? numVal.doubleValue() : 0);
 				if (value == 0)
 				{
-					//This is a workaround to browsers that do not fire onKeyPress event
-					//@see issue github #798
-					if(!DeviceAdaptiveUtils.isInternetExplorerMobile())
+					// This is a workaround to browsers that do not fire onKeyPress event
+					// @see issue github #798
+					if (!DeviceAdaptiveUtils.isInternetExplorerMobile())
 					{
 						numberBox.setValue(null);
 					}
@@ -900,10 +941,10 @@ public class NumberBox extends Composite implements HasEnabled, Focusable, HasVa
 
 		private String changeText(String text, boolean toString)
 		{
-			boolean needsDecimalReplacement = (numberBox.formatterOptions.fractionDigits > 0 && 
-												!StringUtils.unsafeEquals(numberBox.formatterOptions.decimalSeparator, numberBox.localeDecimalSeparator));
-			boolean needsSeparatorReplacement = (numberBox.formatterOptions.showGroupSeparators && 
-												!StringUtils.unsafeEquals(numberBox.formatterOptions.groupSeparator, numberBox.localeGroupSeparator));
+			boolean needsDecimalReplacement = (numberBox.formatterOptions.fractionDigits > 0 && !StringUtils.unsafeEquals(
+			    numberBox.formatterOptions.decimalSeparator, numberBox.localeDecimalSeparator));
+			boolean needsSeparatorReplacement = (numberBox.formatterOptions.showGroupSeparators && !StringUtils.unsafeEquals(
+			    numberBox.formatterOptions.groupSeparator, numberBox.localeGroupSeparator));
 			if (needsDecimalReplacement)
 			{
 				if (toString)
